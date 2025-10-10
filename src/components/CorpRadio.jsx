@@ -1,7 +1,8 @@
 // src/components/CorpRadio.jsx
 import React, { useEffect, useState, useRef } from "react";
-import { Menu, X,Radio, Play, Mic,Users,TrendingUp, Award, Phone, Mail, Youtube, Linkedin, Instagram,} from "lucide-react";
+import { Menu, X, Radio, Play, Mic, Users, TrendingUp, Award, Phone, Mail, Youtube, Linkedin, Instagram, } from "lucide-react";
 import logo from "../assets/CorpRadioLogo.jpeg";
+import heroBg from "../assets/hero.jpeg";
 import "../App.css";
 
 export default function CorpRadio() {
@@ -101,7 +102,7 @@ export default function CorpRadio() {
     <div className="min-h-screen font-sans antialiased text-gray-900 bg-white">
       {/* NAV */}
       <header className="fixed inset-x-0 top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
             <div
@@ -109,7 +110,6 @@ export default function CorpRadio() {
               onClick={() => scrollTo("hero")}
             >
               <div className="w-12 h-12 rounded-full bg-[#001F3F] flex items-center justify-center overflow-hidden">
-                {/* local logo image */}
                 <img src={logo} alt="Corp Radio logo" className="object-cover w-full h-full" />
               </div>
               <div>
@@ -119,7 +119,45 @@ export default function CorpRadio() {
             </div>
 
             {/* Desktop nav - visible on md+ screens */}
-            <nav className=" block  md:hidden items-center gap-2">
+            {/* <nav className="hidden md:flex items-center gap-2">
+        {[
+          { label: "Shows", id: "shows" },
+          { label: "Public Episodes", id: "radio" },
+          { label: "Members", id: "members" },
+          { label: "About", id: "about" },
+          { label: "Contact", id: "contact" },
+        ].map((link) => (
+          <button
+            key={link.id}
+            onClick={() => scrollTo(link.id)}
+            className={`text-sm font-medium px-4 py-2 rounded-md transition-all ${
+              active === link.id
+                ? "text-[#001F3F] bg-blue-50"
+                : "text-gray-600 hover:text-[#001F3F] hover:bg-gray-50"
+            }`}
+          >
+            {link.label}
+          </button>
+        ))}
+      </nav>
+
+      <div className="hidden md:flex items-center gap-3 flex-shrink-0">
+        <button
+          onClick={() => scrollTo("contact")}
+          className="text-sm font-semibold text-[#001F3F] hover:text-blue-800 transition"
+        >
+          Advertise
+        </button>
+        <button
+          onClick={() => scrollTo("members")}
+          className="bg-[#001F3F] text-white text-sm font-semibold px-5 py-2.5 rounded-lg shadow-md hover:bg-blue-900 transition"
+        >
+          Join Free
+        </button>
+      </div> */}
+
+            {/* Desktop nav - visible on md+ screens */}
+            <nav className="hidden md:!flex cursor:pointer items-center gap-2">
               {[
                 { label: "Shows", id: "shows" },
                 { label: "Public Episodes", id: "radio" },
@@ -130,19 +168,19 @@ export default function CorpRadio() {
                 <button
                   key={link.id}
                   onClick={() => scrollTo(link.id)}
-                  className={`text-sm font-medium px-4 py-2 rounded-md transition-all ${
-                    active === link.id
-                      ? "text-[#001F3F] bg-blue-50"
-                      : "text-gray-600 hover:text-[#001F3F] hover:bg-gray-50"
-                  }`}
+                  className={`text-sm font-medium px-4 py-2 transition-all border-b-2 ${active === link.id
+                      ? "text-[#001F3F] border-[#001F3F]"
+                      : "text-gray-600 border-transparent hover:text-[#001F3F] hover:border-[#001F3F]"
+                    }`}
                 >
                   {link.label}
                 </button>
+
               ))}
             </nav>
 
             {/* Right side CTAs (visible on md+ screens) */}
-            <div className="block md:flex items-center gap-3 flex-shrink-0">
+            <div className="hidden md:!flex items-center gap-3 flex-shrink-0">
               <button
                 onClick={() => scrollTo("contact")}
                 className="text-sm font-semibold text-[#001F3F] hover:text-blue-800 transition"
@@ -190,10 +228,9 @@ export default function CorpRadio() {
       <section id="hero" className="relative pt-20 min-h-screen flex items-center justify-center">
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(0,31,63,0.75), rgba(0,31,63,0.85)), url('https://images.unsplash.com/photo-1497366216548-37526070297c?w=1920&q=80&auto=format&fit=crop')",
-          }}
+
+          style={{ backgroundImage: `linear-gradient(rgba(0,31,63,0.75), rgba(0,31,63,0.85)),url(${heroBg})`, }}
+
           aria-hidden
         />
 
@@ -204,7 +241,7 @@ export default function CorpRadio() {
               <span>Founded 2025 • South Africa</span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight mb-6">
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-extrabold text-white leading-tight mb-6">
               Your Business Growth,<br />
               <span className="text-gray-200">One Podcast at a Time</span>
             </h1>
@@ -266,14 +303,14 @@ export default function CorpRadio() {
                   <h3 className="text-lg font-bold text-[#001F3F] mb-3">{s.title}</h3>
                   <p className="text-sm text-gray-600 mb-4 leading-relaxed">{s.desc}</p>
                   <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
-                    <button 
-                      onClick={() => { setPublicTab(s.id); scrollTo('radio'); }} 
+                    <button
+                      onClick={() => { setPublicTab(s.id); scrollTo('radio'); }}
                       className="flex-1 text-sm font-semibold text-[#001F3F] hover:bg-blue-50 py-2 rounded transition"
                     >
                       Listen
                     </button>
-                    <button 
-                      onClick={() => { setMemberTab(s.id); scrollTo('members'); }} 
+                    <button
+                      onClick={() => { setMemberTab(s.id); scrollTo('members'); }}
                       className="text-sm font-medium border border-gray-300 px-3 py-2 rounded hover:border-[#001F3F] hover:text-[#001F3F] transition"
                     >
                       Members
@@ -300,11 +337,10 @@ export default function CorpRadio() {
                 <button
                   key={s.id}
                   onClick={() => setPublicTab(s.id)}
-                  className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${
-                    publicTab === s.id 
-                      ? "bg-[#001F3F] text-white shadow-lg" 
-                      : "bg-white border-2 border-gray-200 text-gray-700 hover:border-[#001F3F]"
-                  }`}
+                  className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${publicTab === s.id
+                    ? "bg-[#001F3F] text-white shadow-lg"
+                    : "bg-white border-2 border-gray-200 text-gray-700 hover:border-[#001F3F]"
+                    }`}
                 >
                   {s.title.replace("Show", "").trim()}
                 </button>
@@ -328,7 +364,7 @@ export default function CorpRadio() {
 
                 <div className="mt-6">
                   <h3 className="text-2xl font-bold text-[#001F3F]">{shows.find(s => s.id === publicTab)?.title}</h3>
-                  <p className="text-sm text-gray-500 mt-1 mb-3">Hosted by {shows.find(s => s.id === publicTab)?.host}</p>
+                  <p className="text-sm  text-gray-500 mt-1 mb-3">Hosted by {shows.find(s => s.id === publicTab)?.host}</p>
                   <p className="text-gray-700 leading-relaxed">{shows.find(s => s.id === publicTab)?.desc}</p>
                 </div>
               </div>
@@ -336,7 +372,7 @@ export default function CorpRadio() {
               {/* Right: list of episodes (placeholders) */}
               <aside className="space-y-3">
                 <h4 className="font-bold text-[#001F3F] mb-4">Recent Episodes</h4>
-                {[1,2,3,4].map(i => (
+                {[1, 2, 3, 4].map(i => (
                   <div key={i} className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-[#001F3F] hover:shadow-md transition cursor-pointer group">
                     <div className="w-16 h-12 bg-gradient-to-br from-blue-900 to-gray-700 flex items-center justify-center rounded flex-shrink-0">
                       <Play className="w-5 h-5 text-white group-hover:scale-110 transition" />
@@ -348,8 +384,8 @@ export default function CorpRadio() {
                   </div>
                 ))}
                 <div className="pt-4">
-                  <button 
-                    onClick={() => scrollTo('contact')} 
+                  <button
+                    onClick={() => scrollTo('contact')}
                     className="w-full bg-[#001F3F] text-white py-3 rounded-lg font-bold hover:bg-blue-900 transition shadow-md"
                   >
                     Enquire About Advertising
@@ -369,14 +405,14 @@ export default function CorpRadio() {
             <h2 className="text-3xl md:text-4xl font-bold text-[#001F3F] mb-4">Members Only Content</h2>
             <p className="text-gray-600 text-lg mb-8">Extended interviews, exclusive resources and behind-the-scenes content. Join our community for free.</p>
             <div className="flex flex-wrap justify-center gap-4">
-              <button 
-                onClick={() => window.open('https://forms.gle/YOUR_GOOGLE_FORM', '_blank')} 
+              <button
+                onClick={() => window.open('https://forms.gle/YOUR_GOOGLE_FORM', '_blank')}
                 className="bg-[#001F3F] text-white px-8 py-4 rounded-lg font-bold shadow-xl hover:bg-blue-900 transition-all transform hover:scale-105"
               >
                 Become a Member (Free)
               </button>
-              <button 
-                onClick={() => setMemberTab('corporate')} 
+              <button
+                onClick={() => setMemberTab('corporate')}
                 className="border-2 border-[#001F3F] text-[#001F3F] px-8 py-4 rounded-lg font-bold hover:bg-[#001F3F] hover:text-white transition-all"
               >
                 View Sample Content
@@ -442,14 +478,14 @@ export default function CorpRadio() {
               </div>
 
               <div className="flex flex-wrap gap-4">
-                <button 
-                  onClick={() => scrollTo('contact')} 
+                <button
+                  onClick={() => scrollTo('contact')}
                   className="bg-[#001F3F] text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-900 transition"
                 >
                   Get in Touch
                 </button>
-                <button 
-                  onClick={() => scrollTo('members')} 
+                <button
+                  onClick={() => scrollTo('members')}
                   className="border-2 border-[#001F3F] text-[#001F3F] px-6 py-3 rounded-lg font-bold hover:bg-[#001F3F] hover:text-white transition"
                 >
                   Join Community
@@ -459,9 +495,9 @@ export default function CorpRadio() {
 
             <div>
               <div className="rounded-2xl overflow-hidden shadow-2xl">
-                <img 
-                  src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1200&q=80&auto=format&fit=crop" 
-                  alt="Business team collaboration" 
+                <img
+                  src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1200&q=80&auto=format&fit=crop"
+                  alt="Business team collaboration"
                   className="w-full h-[500px] object-cover"
                 />
               </div>
@@ -471,170 +507,173 @@ export default function CorpRadio() {
       </section>
 
       {/* CONTACT */}
-      <section id="contact" className="py-24 bg-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h3 className="text-3xl md:text-4xl font-bold text-[#001F3F] mb-4">Get in Touch</h3>
-            <p className="text-gray-600 text-lg">Questions about advertising, partnerships or memberships? We'd love to hear from you.</p>
-          </div>
+      <section id="contact" className="py-24 bg-gray-50">
+  <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="text-center mb-16">
+      <h3 className="text-3xl md:text-4xl font-bold text-[#001F3F] mb-4">Get in Touch</h3>
+      <p className="text-gray-600 text-lg">Questions about advertising, partnerships or memberships? We'd love to hear from you.</p>
+    </div>
 
-          <div className="grid lg:grid-cols-2 gap-12">
-            {/* Contact Info */}
-            <div>
-              <div className="bg-gradient-to-br from-[#001F3F] to-blue-900 p-8 rounded-2xl shadow-xl text-white mb-6">
-                <h4 className="font-bold text-2xl mb-6">Contact Information</h4>
+    {/* Main Container wrapping both sides */}
+    <div className="bg-white rounded-3xl shadow-2xl items-center p-8 border border-gray-200">
+      <div className="grid lg:grid-cols-2 items-center gap-8">
+        {/* Contact Info - LEFT SIDE */}
+        <div className="space-y-6"> 
+          <div className="bg-gradient-to-br from-[#001F3F] to-blue-900 p-8 rounded-2xl shadow-xl text-white">
+            <h4 className="font-bold text-2xl mb-6">Contact Information</h4>
 
-                <div className="space-y-6">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Phone className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <div className="text-sm text-gray-200 mb-1">Phone</div>
-                      <a href="tel:0612019633" className="font-semibold text-lg hover:text-gray-200 transition">061 201 9633</a>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Mail className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <div className="text-sm text-gray-200 mb-1">Email</div>
-                      <a href="mailto:info@corpradio.online" className="font-semibold text-lg hover:text-gray-200 transition break-all">info@corpradio.online</a>
-                    </div>
-                  </div>
+            <div className="space-y-6">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Phone className="w-6 h-6" />
                 </div>
-
-                <div className="mt-8 pt-8 border-t border-white/20">
-                  <div className="text-sm text-gray-200 mb-4">Follow Us on Social Media</div>
-                  <div className="flex gap-3">
-                    <a href="https://youtube.com/@corpradio" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-lg bg-white/20 flex items-center justify-center hover:bg-white/30 transition transform hover:scale-110">
-                      <Youtube className="w-6 h-6" />
-                    </a>
-                    <a href="https://linkedin.com/company/corpradio" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-lg bg-white/20 flex items-center justify-center hover:bg-white/30 transition transform hover:scale-110">
-                      <Linkedin className="w-6 h-6" />
-                    </a>
-                    <a href="https://instagram.com/corpradio" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-lg bg-white/20 flex items-center justify-center hover:bg-white/30 transition transform hover:scale-110">
-                      <Instagram className="w-6 h-6" />
-                    </a>
-                  </div>
+                <div>
+                  <div className="text-sm text-gray-200 mb-1">Phone</div>
+                  <a href="tel:0612019633" className="font-semibold text-lg hover:text-gray-200 transition">061 201 9633</a>
                 </div>
               </div>
 
-              <div className="bg-blue-50 p-6 rounded-xl border border-blue-100">
-                <h5 className="font-bold text-[#001F3F] mb-3 flex items-center gap-2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  Business Hours
-                </h5>
-                <div className="space-y-2 text-sm text-gray-700">
-                  <div className="flex justify-between items-center py-2 border-b border-blue-100">
-                    <span className="font-medium">Monday - Friday:</span>
-                    <span className="font-semibold text-[#001F3F]">9:00 AM - 6:00 PM</span>
-                  </div>
-                  <div className="flex justify-between items-center py-2 border-b border-blue-100">
-                    <span className="font-medium">Saturday:</span>
-                    <span className="font-semibold text-[#001F3F]">10:00 AM - 2:00 PM</span>
-                  </div>
-                  <div className="flex justify-between items-center py-2">
-                    <span className="font-medium">Sunday:</span>
-                    <span className="font-semibold text-gray-500">Closed</span>
-                  </div>
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Mail className="w-6 h-6" />
+                </div>
+                <div>
+                  <div className="text-sm text-gray-200 mb-1">Email</div>
+                  <a href="mailto:info@corpradio.online" className="font-semibold text-lg hover:text-gray-200 transition break-all">info@corpradio.online</a>
                 </div>
               </div>
             </div>
 
-            {/* Contact Form */}
-            <div className="bg-gray-50 p-8 rounded-2xl shadow-lg border border-gray-200">
-              <h4 className="font-bold text-[#001F3F] mb-6 text-2xl">Send us a Message</h4>
-              <p className="text-gray-600 mb-6">Fill out the form below and we'll get back to you within 24 hours.</p>
+            <div className="mt-8 pt-8 border-t border-white/20">
+              <div className="text-sm text-gray-200 mb-4">Follow Us on Social Media</div>
+              <div className="flex gap-3">
+                <a href="https://youtube.com/@corpradio" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-lg bg-white/20 flex items-center justify-center hover:bg-white/30 transition transform hover:scale-110">
+                  <Youtube className="w-6 h-6" />
+                </a>
+                <a href="https://linkedin.com/company/corpradio" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-lg bg-white/20 flex items-center justify-center hover:bg-white/30 transition transform hover:scale-110">
+                  <Linkedin className="w-6 h-6" />
+                </a>
+                <a href="https://instagram.com/corpradio" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-lg bg-white/20 flex items-center justify-center hover:bg-white/30 transition transform hover:scale-110">
+                  <Instagram className="w-6 h-6" />
+                </a>
+              </div>
+            </div>
+          </div>
 
-              <div className="space-y-5">
-                <div>
-                  <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
-                    Full Name <span className="text-red-500">*</span>
-                  </label>
-                  <input 
-                    id="name"
-                    name="name" 
-                    type="text"
-                    value={contact.name} 
-                    onChange={onChange} 
-                    placeholder="John Doe" 
-                    required
-                    className="w-full p-4 rounded-lg border-2 border-gray-300 focus:border-[#001F3F] focus:ring-2 focus:ring-blue-100 outline-none transition"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
-                    Email Address <span className="text-red-500">*</span>
-                  </label>
-                  <input 
-                    id="email"
-                    type="email"
-                    name="email" 
-                    value={contact.email} 
-                    onChange={onChange} 
-                    placeholder="john@company.com" 
-                    required
-                    className="w-full p-4 rounded-lg border-2 border-gray-300 focus:border-[#001F3F] focus:ring-2 focus:ring-blue-100 outline-none transition"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="subject" className="block text-sm font-semibold text-gray-700 mb-2">
-                    Subject <span className="text-red-500">*</span>
-                  </label>
-                  <input 
-                    id="subject"
-                    type="text"
-                    name="subject" 
-                    value={contact.subject} 
-                    onChange={onChange} 
-                    placeholder="Advertising Inquiry" 
-                    required
-                    className="w-full p-4 rounded-lg border-2 border-gray-300 focus:border-[#001F3F] focus:ring-2 focus:ring-blue-100 outline-none transition"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-2">
-                    Message <span className="text-red-500">*</span>
-                  </label>
-                  <textarea 
-                    id="message"
-                    name="message" 
-                    value={contact.message} 
-                    onChange={onChange} 
-                    rows={6}
-                    placeholder="Tell us about your inquiry..." 
-                    required
-                    className="w-full p-4 rounded-lg border-2 border-gray-300 focus:border-[#001F3F] focus:ring-2 focus:ring-blue-100 outline-none transition resize-none"
-                  />
-                </div>
-
-                <button 
-                  type="submit" 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    // Add your form submission logic here
-                    alert('Message sent! We will get back to you within 24 hours.');
-                  }}
-                  className="w-full bg-[#001F3F] text-white p-4 rounded-lg font-bold hover:bg-blue-900 transition shadow-lg flex items-center justify-center gap-2 group"
-                >
-                  <span>Send Message</span>
-                  <Mail className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </button>
-
-                <p className="text-xs text-gray-500 text-center">
-                  <span className="text-red-500">*</span> Required fields. We respect your privacy and will never share your information.
-                </p>
+          <div className="bg-gradient-to-br from-[#001F3F] to-blue-900 p-6 rounded-xl border border-blue-100 shadow-md">
+            <h5 className="font-bold text-gray-200  mb-3 flex items-center gap-2">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              Business Hours
+            </h5>
+            <div className="space-y-2 text-sm text-gray-200 ">
+              <div className="flex justify-between items-center py-2 border-b border-blue-100">
+                <span className="font-medium">Monday - Friday:</span>
+                <span className="font-semibold text-gray-500 ">9:00 AM - 6:00 PM</span>
+              </div>
+              <div className="flex justify-between items-center py-2 border-b border-blue-100">
+                <span className="font-medium">Saturday:</span>
+                <span className="font-semibold text-gray-500 ">10:00 AM - 2:00 PM</span>
+              </div>
+              <div className="flex justify-between items-center py-2">
+                <span className="font-medium">Sunday:</span>
+                <span className="font-semibold text-gray-500">Closed</span>
               </div>
             </div>
           </div>
         </div>
-      </section>
+
+        {/* Contact Form - RIGHT SIDE */}
+        <div className="bg-gray-50 p-8 rounded-2xl shadow-lg border border-gray-200">
+          <h4 className="font-bold text-[#001F3F] mb-6 text-2xl">Send us a Message</h4>
+          <p className="text-gray-600 mb-6">Fill out the form below and we'll get back to you within 24 hours.</p>
+
+          <form className="space-y-5">
+            <div>
+              <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
+                Full Name <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                value={contact.name}
+                onChange={onChange}
+                placeholder="John Doe"
+                required
+                className="w-full p-4 rounded-lg border-2 border-gray-300 focus:border-[#001F3F] focus:ring-2 focus:ring-blue-100 outline-none transition"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+                Email Address <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="email"
+                type="email"
+                name="email"
+                value={contact.email}
+                onChange={onChange}
+                placeholder="john@company.com"
+                required
+                className="w-full p-4 rounded-lg border-2 border-gray-300 focus:border-[#001F3F] focus:ring-2 focus:ring-blue-100 outline-none transition"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="subject" className="block text-sm font-semibold text-gray-700 mb-2">
+                Subject <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="subject"
+                type="text"
+                name="subject"
+                value={contact.subject}
+                onChange={onChange}
+                placeholder="Advertising Inquiry"
+                required
+                className="w-full p-4 rounded-lg border-2 border-gray-300 focus:border-[#001F3F] focus:ring-2 focus:ring-blue-100 outline-none transition"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-2">
+                Message <span className="text-red-500">*</span>
+              </label>
+              <textarea
+                id="message"
+                name="message"
+                value={contact.message}
+                onChange={onChange}
+                rows={6}
+                placeholder="Tell us about your inquiry..."
+                required
+                className="w-full p-4 rounded-lg border-2 border-gray-300 focus:border-[#001F3F] focus:ring-2 focus:ring-blue-100 outline-none transition resize-none"
+              />
+            </div>
+
+            <button
+              type="submit"
+              onClick={(e) => {
+                e.preventDefault();
+                // Add your form submission logic here
+                alert('Message sent! We will get back to you within 24 hours.');
+              }}
+              className="w-full bg-[#001F3F] text-white p-4 rounded-lg font-bold hover:bg-blue-900 transition shadow-lg flex items-center justify-center gap-2 group"
+            >
+              <span>Send Message</span>
+              <Mail className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </button>
+
+            <p className="text-xs text-gray-500 text-center">
+              <span className="text-red-500">*</span> Required fields. We respect your privacy and will never share your information.
+            </p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* FOOTER */}
       <footer className="bg-[#001F3F] text-white py-12">
@@ -669,9 +708,9 @@ export default function CorpRadio() {
               <h4 className="font-bold mb-4">Shows</h4>
               <div className="space-y-2">
                 {shows.map((show) => (
-                  <button 
+                  <button
                     key={show.id}
-                    onClick={() => scrollTo('shows')} 
+                    onClick={() => scrollTo('shows')}
                     className="block text-gray-300 hover:text-white text-sm transition"
                   >
                     {show.title}
