@@ -200,7 +200,7 @@ export default function CorpRadio() {
           <div className="max-w-4xl mx-auto">
             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm mb-6 border border-white/20">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              <span>Founded 2025 • South Africa</span>
+              <span>Founded 2020 • South Africa</span>
             </div>
 
             <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-white leading-tight mb-6">
@@ -652,7 +652,7 @@ export default function CorpRadio() {
                 </div>
                 <div>
                   <div className="font-bold text-lg">Corp Radio</div>
-                  <div className="text-xs text-gray-300">Founded 2025</div>
+                  <div className="text-xs text-gray-300">Founded 2020</div>
                 </div>
               </div>
               <p className="text-sm text-gray-300 leading-relaxed">
