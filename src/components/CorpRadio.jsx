@@ -241,7 +241,7 @@ export default function CorpRadio() {
               <span>Founded 2025 • South Africa</span>
             </div>
 
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-extrabold text-white leading-tight mb-6">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-white leading-tight mb-6">
               Your Business Growth,<br />
               <span className="text-gray-200">One Podcast at a Time</span>
             </h1>
@@ -507,17 +507,16 @@ export default function CorpRadio() {
       </section>
 
       {/* CONTACT */}
-      <section id="contact" className="py-24 bg-gray-50">
+      {/* <section id="contact" className="py-24 bg-gray-50">
   <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
     <div className="text-center mb-16">
       <h3 className="text-3xl md:text-4xl font-bold text-[#001F3F] mb-4">Get in Touch</h3>
       <p className="text-gray-600 text-lg">Questions about advertising, partnerships or memberships? We'd love to hear from you.</p>
     </div>
 
-    {/* Main Container wrapping both sides */}
     <div className="bg-white rounded-3xl shadow-2xl items-center p-8 border border-gray-200">
       <div className="grid lg:grid-cols-2 items-center gap-8">
-        {/* Contact Info - LEFT SIDE */}
+
         <div className="space-y-6"> 
           <div className="bg-gradient-to-br from-[#001F3F] to-blue-900 p-8 rounded-2xl shadow-xl text-white">
             <h4 className="font-bold text-2xl mb-6">Contact Information</h4>
@@ -582,7 +581,6 @@ export default function CorpRadio() {
           </div>
         </div>
 
-        {/* Contact Form - RIGHT SIDE */}
         <div className="bg-gray-50 p-8 rounded-2xl shadow-lg border border-gray-200">
           <h4 className="font-bold text-[#001F3F] mb-6 text-2xl">Send us a Message</h4>
           <p className="text-gray-600 mb-6">Fill out the form below and we'll get back to you within 24 hours.</p>
@@ -673,7 +671,178 @@ export default function CorpRadio() {
       </div>
     </div>
   </div>
+</section> */}
+
+<section id="contact" className="py-24 bg-gray-50">
+  <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="text-center mb-16">
+      <h3 className="text-3xl md:text-4xl font-bold text-[#001F3F] mb-4">Get in Touch</h3>
+      <p className="text-gray-600 text-lg">Questions about advertising, partnerships or memberships? We'd love to hear from you.</p>
+    </div>
+
+    {/* Main Container wrapping both sides */}
+    <div className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-200">
+      <div className="grid lg:grid-cols-2 gap-8">
+        {/* Contact Info - LEFT SIDE */}
+        <div className="flex flex-col space-y-6 h-full"> 
+          <div className="bg-gradient-to-br from-[#001F3F] to-blue-900 p-8 rounded-2xl shadow-xl text-white flex-grow">
+            <h4 className="font-bold text-2xl mb-6">Contact Information</h4>
+
+            <div className="space-y-6">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Phone className="w-6 h-6" />
+                </div>
+                <div>
+                  <div className="text-sm text-gray-200 mb-1">Phone</div>
+                  <a href="tel:0612019633" className="font-semibold text-lg hover:text-gray-200 transition">061 201 9633</a>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Mail className="w-6 h-6" />
+                </div>
+                <div>
+                  <div className="text-sm text-gray-200 mb-1">Email</div>
+                  <a href="mailto:info@corpradio.online" className="font-semibold text-lg hover:text-gray-200 transition break-all">info@corpradio.online</a>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8 pt-8 border-t border-white/20">
+              <div className="text-sm text-gray-200 mb-4">Follow Us on Social Media</div>
+              <div className="flex gap-3">
+                <a href="https://youtube.com/@corpradio" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-lg bg-white/20 flex items-center justify-center hover:bg-white/30 transition transform hover:scale-110">
+                  <Youtube className="w-6 h-6" />
+                </a>
+                <a href="https://linkedin.com/company/corpradio" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-lg bg-white/20 flex items-center justify-center hover:bg-white/30 transition transform hover:scale-110">
+                  <Linkedin className="w-6 h-6" />
+                </a>
+                <a href="https://instagram.com/corpradio" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-lg bg-white/20 flex items-center justify-center hover:bg-white/30 transition transform hover:scale-110">
+                  <Instagram className="w-6 h-6" />
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-br from-[#001F3F] to-blue-900 p-6 rounded-xl border border-blue-100 shadow-md">
+            <h5 className="font-bold text-gray-200 mb-3 flex items-center gap-2">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              Business Hours
+            </h5>
+            <div className="space-y-2 text-sm text-gray-200">
+              <div className="flex justify-between items-center py-2 border-b border-white/20">
+                <span className="font-medium">Monday - Friday:</span>
+                <span className="font-semibold text-white">9:00 AM - 6:00 PM</span>
+              </div>
+              <div className="flex justify-between items-center py-2 border-b border-white/20">
+                <span className="font-medium">Saturday:</span>
+                <span className="font-semibold text-white">10:00 AM - 2:00 PM</span>
+              </div>
+              <div className="flex justify-between items-center py-2">
+                <span className="font-medium">Sunday:</span>
+                <span className="font-semibold text-gray-400">Closed</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Contact Form - RIGHT SIDE */}
+        <div className="bg-gray-50 p-8 rounded-2xl shadow-lg border border-gray-200 flex flex-col h-full">
+          <div className="flex-grow">
+            <h4 className="font-bold text-[#001F3F] mb-4 text-2xl">Send us a Message</h4>
+            <p className="text-gray-600 mb-4">Fill out the form below and we'll get back to you within 24 hours.</p>
+
+            <form className="space-y-3">
+              <div>
+                <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Full Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  value={contact.name}
+                  onChange={onChange}
+                  placeholder="John Doe"
+                  required
+                  className="w-full p-2 rounded-lg border-2 border-gray-300 focus:border-[#001F3F] focus:ring-2 focus:ring-blue-100 outline-none transition"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Email Address <span className="text-red-500">*</span>
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  name="email"
+                  value={contact.email}
+                  onChange={onChange}
+                  placeholder="john@company.com"
+                  required
+                  className="w-full p-2 rounded-lg border-2 border-gray-300 focus:border-[#001F3F] focus:ring-2 focus:ring-blue-100 outline-none transition"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="subject" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Subject <span className="text-red-500">*</span>
+                </label>
+                <input
+                  id="subject"
+                  type="text"
+                  name="subject"
+                  value={contact.subject}
+                  onChange={onChange}
+                  placeholder="Advertising Inquiry"
+                  required
+                  className="w-full p-2 rounded-lg border-2 border-gray-300 focus:border-[#001F3F] focus:ring-2 focus:ring-blue-100 outline-none transition"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Message <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  id="message"
+                  name="message"
+                  value={contact.message}
+                  onChange={onChange}
+                  rows={3}
+                  placeholder="Tell us about your inquiry..."
+                  required
+                  className="w-full p-4 rounded-lg border-2 border-gray-300 focus:border-[#001F3F] focus:ring-2 focus:ring-blue-100 outline-none transition "
+                />
+              </div>
+
+              <button
+                type="submit"
+                onClick={(e) => {
+                  e.preventDefault();
+                  // Add your form submission logic here
+                  alert('Message sent! We will get back to you within 24 hours.');
+                }}
+                className="w-full bg-[#001F3F] text-white p-4 rounded-lg font-bold hover:bg-blue-900 transition shadow-lg flex items-center justify-center gap-2 group"
+              >
+                <span>Send Message</span>
+                <Mail className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </button>
+
+              <p className="text-xs text-gray-500 text-center">
+                <span className="text-red-500">*</span> Required fields. We respect your privacy and will never share your information.
+              </p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
+
 
       {/* FOOTER */}
       <footer className="bg-[#001F3F] text-white py-12">
