@@ -17,50 +17,6 @@ export default function CorpRadio() {
   const sectionRefs = useRef({});
 
   // Show definitions (short & precise per brand guidelines)
-  // const shows = [
-  //   {
-  //     id: "corporate",
-  //     title: "The Corporate Show",
-  //     host: "Jeff Kahn",
-  //     desc:
-  //       "Warm, professional interviews with CEOs & C-suite — focused on leadership and strategy.",
-  //     img:
-  //       "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=800&q=60&auto=format&fit=crop",
-  //     color: "corpnavy",
-  //     youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-  //   },
-  //   {
-  //     id: "fundamentals",
-  //     title: "Business Fundamentals",
-  //     host: "Charlene Senosi",
-  //     desc:
-  //       "Tactical episodes on Sales, Marketing, HR, Funding and small-business growth.",
-  //     img:
-  //       "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=800&q=60&auto=format&fit=crop",
-  //     youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-  //   },
-  //   {
-  //     id: "acquisition",
-  //     title: "Acquisition & Franchise",
-  //     host: "Lester Philander",
-  //     desc:
-  //       "Practical guidance for acquisitions, franchising and growing via M&A strategies.",
-  //     img:
-  //       "src/assets/Lester.jpg",
-  //     Facebook: "https://www.facebook.com/reel/4359229150964045",
-  //   },
-  //   {
-  //     id: "ai",
-  //     title: "The AI Playbook",
-  //     host: "Charl Imalman",
-  //     desc:
-  //       "Real tools, case studies and policies for adopting AI in business workflows.",
-  //     img:
-  //       "https://images.unsplash.com/photo-1545239351-1141bd82e8a6?w=800&q=60&auto=format&fit=crop",
-  //       Youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-  //   },
-  // ];
-
   const shows = [
     {
       id: "corporate",
@@ -69,19 +25,59 @@ export default function CorpRadio() {
       desc: "Warm, professional interviews with CEOs & C-suite — focused on leadership and strategy.",
       img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=800&q=60&auto=format&fit=crop",
       color: "corpnavy",
-      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-      videoType: "youtube"
+      videoType: "youtube",
+      episodes: [
+        {
+          id: 1,
+          title: "Leadership in Crisis",
+          videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ"
+        },
+        {
+          id: 2,
+          title: "Building High-Performance Teams",
+          videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ"
+        },
+        {
+          id: 3,
+          title: "Strategic Planning for 2025",
+          videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ"
+        },
+        {
+          id: 4,
+          title: "Innovation & Disruption",
+          videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ"
+        }
+      ]
     },
-
-    
     {
       id: "fundamentals",
       title: "Business Fundamentals",
       host: "Charlene Senosi",
       desc: "Tactical episodes on Sales, Marketing, HR, Funding and small-business growth.",
       img: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=800&q=60&auto=format&fit=crop",
-      videoUrl: "https://www.youtube.com/embed/TQZ6QtmM8tU?si=zk2XvyPyjrxfqOs-",
-      videoType: "youtube"
+      videoType: "youtube",
+      episodes: [
+        {
+          id: 1,
+          title: "Sales Fundamentals",
+          videoUrl: "https://www.youtube.com/embed/TQZ6QtmM8tU?si=zk2XvyPyjrxfqOs-"
+        },
+        {
+          id: 2,
+          title: "Marketing Basics",
+          videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ"
+        },
+        {
+          id: 3,
+          title: "HR Essentials",
+          videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ"
+        },
+        {
+          id: 4,
+          title: "Funding Your Business",
+          videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ"
+        }
+      ]
     },
     {
       id: "acquisition",
@@ -89,11 +85,33 @@ export default function CorpRadio() {
       host: "Lester Philander",
       desc: "Practical guidance for acquisitions, franchising and growing via M&A strategies.",
       img: "src/assets/Lester.jpg",
-      // videoUrl: "https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F4359229150964045&show_text=false&width=560",
-      // videoUrl: "https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F783620987637550%2F&show_text=false&width=267&t=0",
-
-      videoUrl: "https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F4359229150964045&show_text=false&width=867&t=0",
-      videoType: "facebook"
+      videoType: "facebook",
+      episodes: [
+        {
+          id: 1,
+          title: "Franchise Fundamentals",
+          videoUrl: "https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F4359229150964045&show_text=false&width=867&t=0"
+        },
+        {
+          id: 2,
+          title: "Acquisition Strategies",
+          videoUrl: "https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F783620987637550%2F&show_text=false&width=867&t=0"
+        },
+        {
+          id: 3,
+          title: "M&A Best Practices",
+          videoUrl: "https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1143342667743660%2F&show_text=false&width=867&t=0"
+        
+        
+        
+        },
+        {
+          id: 4,
+          title: "Scaling Through Franchising",
+          videoUrl: "https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F814388837754086%2F&show_text=false&width=867&t=0"
+        
+        }
+      ]
     },
     {
       id: "ai",
@@ -101,11 +119,40 @@ export default function CorpRadio() {
       host: "Charl Imalman",
       desc: "Real tools, case studies and policies for adopting AI in business workflows.",
       img: "https://images.unsplash.com/photo-1545239351-1141bd82e8a6?w=800&q=60&auto=format&fit=crop",
-      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-      videoType: "youtube"
+      videoType: "youtube",
+      episodes: [
+        {
+          id: 1,
+          title: "AI Tools Overview",
+          videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ"
+        },
+        {
+          id: 2,
+          title: "Implementing AI in Business",
+          videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ"
+        },
+        {
+          id: 3,
+          title: "AI Policy & Ethics",
+          videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ"
+        },
+        {
+          id: 4,
+          title: "Case Studies: AI Success",
+          videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ"
+        }
+      ]
     },
   ];
+  const [currentEpisode, setCurrentEpisode] = useState({});
 
+  // Initialize current episode when publicTab changes
+  useEffect(() => {
+    const currentShow = shows.find(s => s.id === publicTab);
+    if (currentShow && currentShow.episodes && currentShow.episodes.length > 0) {
+      setCurrentEpisode({ [publicTab]: currentShow.episodes[0] });
+    }
+  }, [publicTab]);
   // Smooth scroll + close mobile
   const scrollTo = (id) => {
     setMenuOpen(false);
@@ -331,6 +378,7 @@ export default function CorpRadio() {
       </section>
 
       {/* RADIO (Public) */}
+      {/* RADIO (Public) */}
       <section id="radio" className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8 gap-4">
@@ -365,38 +413,56 @@ export default function CorpRadio() {
                       <iframe
                         title="Public episode player"
                         className="w-full h-full"
-                        src={shows.find(s => s.id === publicTab)?.videoUrl}
+                        src={currentEpisode[publicTab]?.videoUrl || shows.find(s => s.id === publicTab)?.episodes[0]?.videoUrl}
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                         allowFullScreen
                         scrolling="no"
                         style={{ border: 'none' }}
                       />
                       <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none"></div>
-
                     </div>
                   ) : (
                     <iframe
                       title="Public episode player"
                       className="w-full h-full"
-                      src={shows.find(s => s.id === publicTab)?.videoUrl || shows[0].videoUrl}
+                      src={currentEpisode[publicTab]?.videoUrl || shows.find(s => s.id === publicTab)?.episodes[0]?.videoUrl}
                       allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
                     />
                   )}
                 </div>
+
+                <div className="mt-6">
+                  <h3 className="text-2xl font-bold text-[#001F3F]">{shows.find(s => s.id === publicTab)?.title}</h3>
+                  <p className="text-sm text-gray-500 mt-1 mb-1">Hosted by {shows.find(s => s.id === publicTab)?.host}</p>
+                  <p className="text-lg font-semibold text-[#001F3F] mb-3">
+                    Episode {currentEpisode[publicTab]?.id || 1}: {currentEpisode[publicTab]?.title || shows.find(s => s.id === publicTab)?.episodes[0]?.title}
+                  </p>
+                  <p className="text-gray-700 leading-relaxed">{shows.find(s => s.id === publicTab)?.desc}</p>
+                </div>
               </div>
 
-              {/* Right: list of episodes (placeholders) */}
+              {/* Right: list of episodes */}
               <aside className="space-y-3">
-                <h4 className="font-bold text-[#001F3F] mb-4">Recent Episodes</h4>
-                {[1, 2, 3, 4].map(i => (
-                  <div key={i} className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-[#001F3F] hover:shadow-md transition cursor-pointer group">
-                    <div className="w-16 h-12 bg-gradient-to-br from-blue-900 to-gray-700 flex items-center justify-center rounded flex-shrink-0">
+                <h4 className="font-bold text-[#001F3F] mb-4">Episodes</h4>
+                {shows.find(s => s.id === publicTab)?.episodes?.map((episode) => (
+                  <div
+                    key={episode.id}
+                    onClick={() => setCurrentEpisode({ ...currentEpisode, [publicTab]: episode })}
+                    className={`flex items-center gap-3 p-3 rounded-lg border transition cursor-pointer group ${currentEpisode[publicTab]?.id === episode.id
+                        ? 'border-[#001F3F] bg-blue-50 shadow-md'
+                        : 'border-gray-200 hover:border-[#001F3F] hover:shadow-md'
+                      }`}
+                  >
+                    <div className={`w-16 h-12 rounded flex items-center justify-center flex-shrink-0 ${currentEpisode[publicTab]?.id === episode.id
+                        ? 'bg-[#001F3F]'
+                        : 'bg-gradient-to-br from-blue-900 to-gray-700'
+                      }`}>
                       <Play className="w-5 h-5 text-white group-hover:scale-110 transition" />
                     </div>
-                    <div>
-                      <div className="text-sm font-semibold text-gray-900">Episode {i}</div>
-                      <div className="text-xs text-gray-500">Click to watch</div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-semibold text-gray-900 truncate">Episode {episode.id}</div>
+                      <div className="text-xs text-gray-500 truncate">{episode.title}</div>
                     </div>
                   </div>
                 ))}
