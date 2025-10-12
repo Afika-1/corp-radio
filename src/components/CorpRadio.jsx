@@ -30,22 +30,22 @@ export default function CorpRadio() {
         {
           id: 1,
           title: "Leadership in Crisis",
-          videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ"
+          videoUrl: "https://www.youtube.com/embed/wguafJWO5Rs"
         },
         {
           id: 2,
           title: "Building High-Performance Teams",
-          videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ"
+          videoUrl: "https://www.youtube.com/embed/fNEYwdWrs1I"
         },
         {
           id: 3,
           title: "Strategic Planning for 2025",
-          videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ"
+          videoUrl: "https://www.youtube.com/embed/a-_DWgHUqq0"
         },
         {
           id: 4,
           title: "Innovation & Disruption",
-          videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ"
+          videoUrl: "https://www.youtube.com/embed/BPZeMI-V-YU"
         }
       ]
     },
@@ -60,22 +60,22 @@ export default function CorpRadio() {
         {
           id: 1,
           title: "Sales Fundamentals",
-          videoUrl: "https://www.youtube.com/embed/TQZ6QtmM8tU?si=zk2XvyPyjrxfqOs-"
+          videoUrl: "https://www.youtube.com/embed/gBBbOOM2onA"
         },
         {
           id: 2,
           title: "Marketing Basics",
-          videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ"
+          videoUrl: "https://www.youtube.com/embed/64MW4JM0q2k"
         },
         {
           id: 3,
           title: "HR Essentials",
-          videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ"
+          videoUrl: "https://www.youtube.com/embed/jtRV5QSvC7U"
         },
         {
           id: 4,
           title: "Funding Your Business",
-          videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ"
+          videoUrl: "https://www.youtube.com/embed/XLEFAcI98r0"
         }
       ]
     },
@@ -685,13 +685,13 @@ export default function CorpRadio() {
                   <div className="mt-8 pt-8 border-t border-white/20">
                     <div className="text-sm text-gray-200 mb-4">Follow Us on Social Media</div>
                     <div className="flex gap-3">
-                      <a href="https://youtube.com/@corpradio" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-lg bg-white/20 flex items-center justify-center hover:bg-white/30 transition transform hover:scale-110">
+                      <a href="http://www.youtube.com/@CorpradioZA" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-lg bg-white/20 flex items-center justify-center hover:bg-white/30 transition transform hover:scale-110">
                         <Youtube className="w-6 h-6" />
                       </a>
-                      <a href="https://linkedin.com/company/corpradio" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-lg bg-white/20 flex items-center justify-center hover:bg-white/30 transition transform hover:scale-110">
+                      <a href="https://www.linkedin.com/company/corp-radio/" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-lg bg-white/20 flex items-center justify-center hover:bg-white/30 transition transform hover:scale-110">
                         <Linkedin className="w-6 h-6" />
                       </a>
-                      <a href="https://instagram.com/corpradio" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-lg bg-white/20 flex items-center justify-center hover:bg-white/30 transition transform hover:scale-110">
+                      <a href="https://www.instagram.com/corp_radio?igsh=bG5rbzZkNDcwMHFr" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-lg bg-white/20 flex items-center justify-center hover:bg-white/30 transition transform hover:scale-110">
                         <Instagram className="w-6 h-6" />
                       </a>
                     </div>
@@ -720,7 +720,6 @@ export default function CorpRadio() {
                 </div>
               </div>
 
-              {/* Contact Form - RIGHT SIDE */}
               {/* Contact Form - RIGHT SIDE */}
               <div className="bg-gray-50 p-8 rounded-2xl shadow-lg border border-gray-200 flex flex-col h-full">
                 <div className="flex-grow">
@@ -877,13 +876,13 @@ export default function CorpRadio() {
                 <p className="text-gray-300">061 201 9633</p>
                 <p className="text-gray-300">info@corpradio.online</p>
                 <div className="flex gap-3 pt-2">
-                  <a href="#" className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center hover:bg-white/20 transition">
+                  <a href="http://www.youtube.com/@CorpradioZA" className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center hover:bg-white/20 transition">
                     <Youtube className="w-5 h-5" />
                   </a>
-                  <a href="#" className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center hover:bg-white/20 transition">
+                  <a href="https://www.linkedin.com/company/corp-radio/" className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center hover:bg-white/20 transition">
                     <Linkedin className="w-5 h-5" />
                   </a>
-                  <a href="#" className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center hover:bg-white/20 transition">
+                  <a href="https://www.instagram.com/corp_radio?igsh=bG5rbzZkNDcwMHFr" className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center hover:bg-white/20 transition">
                     <Instagram className="w-5 h-5" />
                   </a>
                 </div>
