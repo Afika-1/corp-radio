@@ -17,47 +17,92 @@ export default function CorpRadio() {
   const sectionRefs = useRef({});
 
   // Show definitions (short & precise per brand guidelines)
+  // const shows = [
+  //   {
+  //     id: "corporate",
+  //     title: "The Corporate Show",
+  //     host: "Jeff Kahn",
+  //     desc:
+  //       "Warm, professional interviews with CEOs & C-suite — focused on leadership and strategy.",
+  //     img:
+  //       "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=800&q=60&auto=format&fit=crop",
+  //     color: "corpnavy",
+  //     youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+  //   },
+  //   {
+  //     id: "fundamentals",
+  //     title: "Business Fundamentals",
+  //     host: "Charlene Senosi",
+  //     desc:
+  //       "Tactical episodes on Sales, Marketing, HR, Funding and small-business growth.",
+  //     img:
+  //       "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=800&q=60&auto=format&fit=crop",
+  //     youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+  //   },
+  //   {
+  //     id: "acquisition",
+  //     title: "Acquisition & Franchise",
+  //     host: "Lester Philander",
+  //     desc:
+  //       "Practical guidance for acquisitions, franchising and growing via M&A strategies.",
+  //     img:
+  //       "src/assets/Lester.jpg",
+  //     Facebook: "https://www.facebook.com/reel/4359229150964045",
+  //   },
+  //   {
+  //     id: "ai",
+  //     title: "The AI Playbook",
+  //     host: "Charl Imalman",
+  //     desc:
+  //       "Real tools, case studies and policies for adopting AI in business workflows.",
+  //     img:
+  //       "https://images.unsplash.com/photo-1545239351-1141bd82e8a6?w=800&q=60&auto=format&fit=crop",
+  //       Youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+  //   },
+  // ];
+
   const shows = [
     {
       id: "corporate",
       title: "The Corporate Show",
       host: "Jeff Kahn",
-      desc:
-        "Warm, professional interviews with CEOs & C-suite — focused on leadership and strategy.",
-      img:
-        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=800&q=60&auto=format&fit=crop",
+      desc: "Warm, professional interviews with CEOs & C-suite — focused on leadership and strategy.",
+      img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=800&q=60&auto=format&fit=crop",
       color: "corpnavy",
-      youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+      videoType: "youtube"
     },
+
+    
     {
       id: "fundamentals",
       title: "Business Fundamentals",
       host: "Charlene Senosi",
-      desc:
-        "Tactical episodes on Sales, Marketing, HR, Funding and small-business growth.",
-      img:
-        "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=800&q=60&auto=format&fit=crop",
-      youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+      desc: "Tactical episodes on Sales, Marketing, HR, Funding and small-business growth.",
+      img: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=800&q=60&auto=format&fit=crop",
+      videoUrl: "https://www.youtube.com/embed/TQZ6QtmM8tU?si=zk2XvyPyjrxfqOs-",
+      videoType: "youtube"
     },
     {
       id: "acquisition",
       title: "Acquisition & Franchise",
       host: "Lester Philander",
-      desc:
-        "Practical guidance for acquisitions, franchising and growing via M&A strategies.",
-      img:
-        "src/assets/Lester.jpg",
-      youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+      desc: "Practical guidance for acquisitions, franchising and growing via M&A strategies.",
+      img: "src/assets/Lester.jpg",
+      // videoUrl: "https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F4359229150964045&show_text=false&width=560",
+      // videoUrl: "https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F783620987637550%2F&show_text=false&width=267&t=0",
+
+      videoUrl: "https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F4359229150964045&show_text=false&width=867&t=0",
+      videoType: "facebook"
     },
     {
       id: "ai",
       title: "The AI Playbook",
       host: "Charl Imalman",
-      desc:
-        "Real tools, case studies and policies for adopting AI in business workflows.",
-      img:
-        "https://images.unsplash.com/photo-1545239351-1141bd82e8a6?w=800&q=60&auto=format&fit=crop",
-      Facebook: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+      desc: "Real tools, case studies and policies for adopting AI in business workflows.",
+      img: "https://images.unsplash.com/photo-1545239351-1141bd82e8a6?w=800&q=60&auto=format&fit=crop",
+      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+      videoType: "youtube"
     },
   ];
 
@@ -131,8 +176,8 @@ export default function CorpRadio() {
                   key={link.id}
                   onClick={() => scrollTo(link.id)}
                   className={`text-sm font-medium px-4 py-2 transition-all border-b-2 ${active === link.id
-                      ? "text-[#001F3F] border-[#001F3F]"
-                      : "text-gray-600 border-transparent hover:text-[#001F3F] hover:border-[#001F3F]"
+                    ? "text-[#001F3F] border-[#001F3F]"
+                    : "text-gray-600 border-transparent hover:text-[#001F3F] hover:border-[#001F3F]"
                     }`}
                 >
                   {link.label}
@@ -314,20 +359,30 @@ export default function CorpRadio() {
             <div className="grid lg:grid-cols-3 gap-8">
               {/* Left: large embed */}
               <div className="lg:col-span-2">
-                <div className="aspect-video bg-black rounded-xl overflow-hidden shadow-lg">
-                  <iframe
-                    title="Public episode player"
-                    className="w-full h-full"
-                    src={shows.find(s => s.id === publicTab)?.youtube || shows[0].youtube}
-                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                </div>
+                <div className="aspect-video bg-black rounded-xl overflow-hidden shadow-lg relative">
+                  {shows.find(s => s.id === publicTab)?.videoType === 'facebook' ? (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <iframe
+                        title="Public episode player"
+                        className="w-full h-full"
+                        src={shows.find(s => s.id === publicTab)?.videoUrl}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                        scrolling="no"
+                        style={{ border: 'none' }}
+                      />
+                      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none"></div>
 
-                <div className="mt-6">
-                  <h3 className="text-2xl font-bold text-[#001F3F]">{shows.find(s => s.id === publicTab)?.title}</h3>
-                  <p className="text-sm  text-gray-500 mt-1 mb-3">Hosted by {shows.find(s => s.id === publicTab)?.host}</p>
-                  <p className="text-gray-700 leading-relaxed">{shows.find(s => s.id === publicTab)?.desc}</p>
+                    </div>
+                  ) : (
+                    <iframe
+                      title="Public episode player"
+                      className="w-full h-full"
+                      src={shows.find(s => s.id === publicTab)?.videoUrl || shows[0].videoUrl}
+                      allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  )}
                 </div>
               </div>
 
@@ -470,175 +525,175 @@ export default function CorpRadio() {
 
       {/* CONTACT */}
 
-<section id="contact" className="py-24 bg-gray-50">
-  <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div className="text-center mb-16">
-      <h3 className="text-3xl md:text-4xl font-bold text-[#001F3F] mb-4">Get in Touch</h3>
-      <p className="text-gray-600 text-lg">Questions about advertising, partnerships or memberships? We'd love to hear from you.</p>
-    </div>
-
-    {/* Main Container wrapping both sides */}
-    <div className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-200">
-      <div className="grid lg:grid-cols-2 gap-8">
-        {/* Contact Info - LEFT SIDE */}
-        <div className="flex flex-col space-y-6 h-full"> 
-          <div className="bg-gradient-to-br from-[#001F3F] to-blue-900 p-8 rounded-2xl shadow-xl text-white flex-grow">
-            <h4 className="font-bold text-2xl mb-6">Contact Information</h4>
-
-            <div className="space-y-6">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Phone className="w-6 h-6" />
-                </div>
-                <div>
-                  <div className="text-sm text-gray-200 mb-1">Phone</div>
-                  <a href="tel:0612019633" className="font-semibold text-lg hover:text-gray-200 transition">061 201 9633</a>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Mail className="w-6 h-6" />
-                </div>
-                <div>
-                  <div className="text-sm text-gray-200 mb-1">Email</div>
-                  <a href="mailto:info@corpradio.online" className="font-semibold text-lg hover:text-gray-200 transition break-all">info@corpradio.online</a>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-8 pt-8 border-t border-white/20">
-              <div className="text-sm text-gray-200 mb-4">Follow Us on Social Media</div>
-              <div className="flex gap-3">
-                <a href="https://youtube.com/@corpradio" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-lg bg-white/20 flex items-center justify-center hover:bg-white/30 transition transform hover:scale-110">
-                  <Youtube className="w-6 h-6" />
-                </a>
-                <a href="https://linkedin.com/company/corpradio" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-lg bg-white/20 flex items-center justify-center hover:bg-white/30 transition transform hover:scale-110">
-                  <Linkedin className="w-6 h-6" />
-                </a>
-                <a href="https://instagram.com/corpradio" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-lg bg-white/20 flex items-center justify-center hover:bg-white/30 transition transform hover:scale-110">
-                  <Instagram className="w-6 h-6" />
-                </a>
-              </div>
-            </div>
+      <section id="contact" className="py-24 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h3 className="text-3xl md:text-4xl font-bold text-[#001F3F] mb-4">Get in Touch</h3>
+            <p className="text-gray-600 text-lg">Questions about advertising, partnerships or memberships? We'd love to hear from you.</p>
           </div>
 
-          <div className="bg-gradient-to-br from-[#001F3F] to-blue-900 p-6 rounded-xl border border-blue-100 shadow-md">
-            <h5 className="font-bold text-gray-200 mb-3 flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              Business Hours
-            </h5>
-            <div className="space-y-2 text-sm text-gray-200">
-              <div className="flex justify-between items-center py-2 border-b border-white/20">
-                <span className="font-medium">Monday - Friday:</span>
-                <span className="font-semibold text-white">9:00 AM - 6:00 PM</span>
+          {/* Main Container wrapping both sides */}
+          <div className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-200">
+            <div className="grid lg:grid-cols-2 gap-8">
+              {/* Contact Info - LEFT SIDE */}
+              <div className="flex flex-col space-y-6 h-full">
+                <div className="bg-gradient-to-br from-[#001F3F] to-blue-900 p-8 rounded-2xl shadow-xl text-white flex-grow">
+                  <h4 className="font-bold text-2xl mb-6">Contact Information</h4>
+
+                  <div className="space-y-6">
+                    <div className="flex items-start gap-4">
+                      <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <Phone className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <div className="text-sm text-gray-200 mb-1">Phone</div>
+                        <a href="tel:0612019633" className="font-semibold text-lg hover:text-gray-200 transition">061 201 9633</a>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-4">
+                      <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <Mail className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <div className="text-sm text-gray-200 mb-1">Email</div>
+                        <a href="mailto:info@corpradio.online" className="font-semibold text-lg hover:text-gray-200 transition break-all">info@corpradio.online</a>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-8 pt-8 border-t border-white/20">
+                    <div className="text-sm text-gray-200 mb-4">Follow Us on Social Media</div>
+                    <div className="flex gap-3">
+                      <a href="https://youtube.com/@corpradio" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-lg bg-white/20 flex items-center justify-center hover:bg-white/30 transition transform hover:scale-110">
+                        <Youtube className="w-6 h-6" />
+                      </a>
+                      <a href="https://linkedin.com/company/corpradio" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-lg bg-white/20 flex items-center justify-center hover:bg-white/30 transition transform hover:scale-110">
+                        <Linkedin className="w-6 h-6" />
+                      </a>
+                      <a href="https://instagram.com/corpradio" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-lg bg-white/20 flex items-center justify-center hover:bg-white/30 transition transform hover:scale-110">
+                        <Instagram className="w-6 h-6" />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-[#001F3F] to-blue-900 p-6 rounded-xl border border-blue-100 shadow-md">
+                  <h5 className="font-bold text-gray-200 mb-3 flex items-center gap-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    Business Hours
+                  </h5>
+                  <div className="space-y-2 text-sm text-gray-200">
+                    <div className="flex justify-between items-center py-2 border-b border-white/20">
+                      <span className="font-medium">Monday - Friday:</span>
+                      <span className="font-semibold text-white">9:00 AM - 6:00 PM</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2 border-b border-white/20">
+                      <span className="font-medium">Saturday:</span>
+                      <span className="font-semibold text-white">10:00 AM - 2:00 PM</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2">
+                      <span className="font-medium">Sunday:</span>
+                      <span className="font-semibold text-gray-400">Closed</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="flex justify-between items-center py-2 border-b border-white/20">
-                <span className="font-medium">Saturday:</span>
-                <span className="font-semibold text-white">10:00 AM - 2:00 PM</span>
-              </div>
-              <div className="flex justify-between items-center py-2">
-                <span className="font-medium">Sunday:</span>
-                <span className="font-semibold text-gray-400">Closed</span>
+
+              {/* Contact Form - RIGHT SIDE */}
+              <div className="bg-gray-50 p-8 rounded-2xl shadow-lg border border-gray-200 flex flex-col h-full">
+                <div className="flex-grow">
+                  <h4 className="font-bold text-[#001F3F] mb-4 text-2xl">Send us a Message</h4>
+                  <p className="text-gray-600 mb-4">Fill out the form below and we'll get back to you within 24 hours.</p>
+
+                  <form className="space-y-3">
+                    <div>
+                      <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
+                        Full Name <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        id="name"
+                        name="name"
+                        type="text"
+                        value={contact.name}
+                        onChange={onChange}
+                        placeholder="John Doe"
+                        required
+                        className="w-full p-2 rounded-lg border-2 border-gray-300 focus:border-[#001F3F] focus:ring-2 focus:ring-blue-100 outline-none transition"
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+                        Email Address <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        id="email"
+                        type="email"
+                        name="email"
+                        value={contact.email}
+                        onChange={onChange}
+                        placeholder="john@company.com"
+                        required
+                        className="w-full p-2 rounded-lg border-2 border-gray-300 focus:border-[#001F3F] focus:ring-2 focus:ring-blue-100 outline-none transition"
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor="subject" className="block text-sm font-semibold text-gray-700 mb-2">
+                        Subject <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        id="subject"
+                        type="text"
+                        name="subject"
+                        value={contact.subject}
+                        onChange={onChange}
+                        placeholder="Advertising Inquiry"
+                        required
+                        className="w-full p-2 rounded-lg border-2 border-gray-300 focus:border-[#001F3F] focus:ring-2 focus:ring-blue-100 outline-none transition"
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-2">
+                        Message <span className="text-red-500">*</span>
+                      </label>
+                      <textarea
+                        id="message"
+                        name="message"
+                        value={contact.message}
+                        onChange={onChange}
+                        rows={3}
+                        placeholder="Tell us about your inquiry..."
+                        required
+                        className="w-full p-4 rounded-lg border-2 border-gray-300 focus:border-[#001F3F] focus:ring-2 focus:ring-blue-100 outline-none transition "
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        // Add your form submission logic here
+                        alert('Message sent! We will get back to you within 24 hours.');
+                      }}
+                      className="w-full bg-[#001F3F] text-white p-4 rounded-lg font-bold hover:bg-blue-900 transition shadow-lg flex items-center justify-center gap-2 group"
+                    >
+                      <span>Send Message</span>
+                      <Mail className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    </button>
+
+                    <p className="text-xs text-gray-500 text-center">
+                      <span className="text-red-500">*</span> Required fields. We respect your privacy and will never share your information.
+                    </p>
+                  </form>
+                </div>
               </div>
             </div>
           </div>
         </div>
-
-        {/* Contact Form - RIGHT SIDE */}
-        <div className="bg-gray-50 p-8 rounded-2xl shadow-lg border border-gray-200 flex flex-col h-full">
-          <div className="flex-grow">
-            <h4 className="font-bold text-[#001F3F] mb-4 text-2xl">Send us a Message</h4>
-            <p className="text-gray-600 mb-4">Fill out the form below and we'll get back to you within 24 hours.</p>
-
-            <form className="space-y-3">
-              <div>
-                <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
-                  Full Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  value={contact.name}
-                  onChange={onChange}
-                  placeholder="John Doe"
-                  required
-                  className="w-full p-2 rounded-lg border-2 border-gray-300 focus:border-[#001F3F] focus:ring-2 focus:ring-blue-100 outline-none transition"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
-                  Email Address <span className="text-red-500">*</span>
-                </label>
-                <input
-                  id="email"
-                  type="email"
-                  name="email"
-                  value={contact.email}
-                  onChange={onChange}
-                  placeholder="john@company.com"
-                  required
-                  className="w-full p-2 rounded-lg border-2 border-gray-300 focus:border-[#001F3F] focus:ring-2 focus:ring-blue-100 outline-none transition"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="subject" className="block text-sm font-semibold text-gray-700 mb-2">
-                  Subject <span className="text-red-500">*</span>
-                </label>
-                <input
-                  id="subject"
-                  type="text"
-                  name="subject"
-                  value={contact.subject}
-                  onChange={onChange}
-                  placeholder="Advertising Inquiry"
-                  required
-                  className="w-full p-2 rounded-lg border-2 border-gray-300 focus:border-[#001F3F] focus:ring-2 focus:ring-blue-100 outline-none transition"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-2">
-                  Message <span className="text-red-500">*</span>
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  value={contact.message}
-                  onChange={onChange}
-                  rows={3}
-                  placeholder="Tell us about your inquiry..."
-                  required
-                  className="w-full p-4 rounded-lg border-2 border-gray-300 focus:border-[#001F3F] focus:ring-2 focus:ring-blue-100 outline-none transition "
-                />
-              </div>
-
-              <button
-                type="submit"
-                onClick={(e) => {
-                  e.preventDefault();
-                  // Add your form submission logic here
-                  alert('Message sent! We will get back to you within 24 hours.');
-                }}
-                className="w-full bg-[#001F3F] text-white p-4 rounded-lg font-bold hover:bg-blue-900 transition shadow-lg flex items-center justify-center gap-2 group"
-              >
-                <span>Send Message</span>
-                <Mail className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </button>
-
-              <p className="text-xs text-gray-500 text-center">
-                <span className="text-red-500">*</span> Required fields. We respect your privacy and will never share your information.
-              </p>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+      </section>
 
 
       {/* FOOTER */}
