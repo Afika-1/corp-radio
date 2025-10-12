@@ -101,15 +101,12 @@ export default function CorpRadio() {
           id: 3,
           title: "M&A Best Practices",
           videoUrl: "https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1474116340586636%2F&show_text=true&width=867&t=0"
-        
-        
-        
         },
         {
           id: 4,
           title: "Scaling Through Franchising",
           videoUrl: "https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F814388837754086%2F&show_text=false&width=867&t=0"
-        
+
         }
       ]
     },
@@ -188,8 +185,66 @@ export default function CorpRadio() {
     message: "",
   });
 
-  const onChange = (e) => setContact({ ...contact, [e.target.name]: e.target.value });
+  const [errors, setErrors] = useState({});
+  const [showSuccess, setShowSuccess] = useState(false);
 
+  const onChange = (e) => {
+    const { name, value } = e.target;
+    setContact({ ...contact, [name]: value });
+
+    // Clear error for this field when user starts typing
+    if (errors[name]) {
+      setErrors({ ...errors, [name]: false });
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    // Name validation
+    if (!contact.name.trim()) {
+      newErrors.name = true;
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!contact.email.trim() || !emailRegex.test(contact.email)) {
+      newErrors.email = true;
+    }
+
+    if (!contact.subject.trim()) {
+      newErrors.subject = true;
+    }
+
+    if (!contact.message.trim()) {
+      newErrors.message = true;
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (validateForm()) {
+      // Show success message
+      setShowSuccess(true);
+
+      setContact({
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
+      });
+      setTimeout(() => {
+        setShowSuccess(false);
+      }, 5000);
+
+      // Here you would normally send the data to your backend
+      console.log('Form submitted:', contact);
+    }
+  };
   return (
     <div className="min-h-screen font-sans antialiased text-gray-900 bg-white">
       {/* NAV */}
@@ -449,13 +504,13 @@ export default function CorpRadio() {
                     key={episode.id}
                     onClick={() => setCurrentEpisode({ ...currentEpisode, [publicTab]: episode })}
                     className={`flex items-center gap-3 p-3 rounded-lg border transition cursor-pointer group ${currentEpisode[publicTab]?.id === episode.id
-                        ? 'border-[#001F3F] bg-blue-50 shadow-md'
-                        : 'border-gray-200 hover:border-[#001F3F] hover:shadow-md'
+                      ? 'border-[#001F3F] bg-blue-50 shadow-md'
+                      : 'border-gray-200 hover:border-[#001F3F] hover:shadow-md'
                       }`}
                   >
                     <div className={`w-16 h-12 rounded flex items-center justify-center flex-shrink-0 ${currentEpisode[publicTab]?.id === episode.id
-                        ? 'bg-[#001F3F]'
-                        : 'bg-gradient-to-br from-blue-900 to-gray-700'
+                      ? 'bg-[#001F3F]'
+                      : 'bg-gradient-to-br from-blue-900 to-gray-700'
                       }`}>
                       <Play className="w-5 h-5 text-white group-hover:scale-110 transition" />
                     </div>
@@ -666,12 +721,28 @@ export default function CorpRadio() {
               </div>
 
               {/* Contact Form - RIGHT SIDE */}
+              {/* Contact Form - RIGHT SIDE */}
               <div className="bg-gray-50 p-8 rounded-2xl shadow-lg border border-gray-200 flex flex-col h-full">
                 <div className="flex-grow">
                   <h4 className="font-bold text-[#001F3F] mb-4 text-2xl">Send us a Message</h4>
                   <p className="text-gray-600 mb-4">Fill out the form below and we'll get back to you within 24 hours.</p>
 
-                  <form className="space-y-3">
+                  {/* Success Message */}
+                  {showSuccess && (
+                    <div className="mb-4 p-4 bg-green-50 border-2 border-green-500 rounded-lg flex items-start gap-3">
+                      <div className="flex-shrink-0">
+                        <svg className="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h5 className="font-bold text-green-800 mb-1">Message Sent Successfully!</h5>
+                        <p className="text-sm text-green-700">We'll get back to you within 24 hours.</p>
+                      </div>
+                    </div>
+                  )}
+
+                  <form className="space-y-3" onSubmit={handleSubmit}>
                     <div>
                       <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
                         Full Name <span className="text-red-500">*</span>
@@ -683,8 +754,8 @@ export default function CorpRadio() {
                         value={contact.name}
                         onChange={onChange}
                         placeholder="John Doe"
-                        required
-                        className="w-full p-2 rounded-lg border-2 border-gray-300 focus:border-[#001F3F] focus:ring-2 focus:ring-blue-100 outline-none transition"
+                        className={`w-full p-2 rounded-lg border-2 ${errors.name ? 'border-red-500' : 'border-gray-300'
+                          } focus:border-[#001F3F] focus:ring-2 focus:ring-blue-100 outline-none transition`}
                       />
                     </div>
 
@@ -699,8 +770,8 @@ export default function CorpRadio() {
                         value={contact.email}
                         onChange={onChange}
                         placeholder="john@company.com"
-                        required
-                        className="w-full p-2 rounded-lg border-2 border-gray-300 focus:border-[#001F3F] focus:ring-2 focus:ring-blue-100 outline-none transition"
+                        className={`w-full p-2 rounded-lg border-2 ${errors.email ? 'border-red-500' : 'border-gray-300'
+                          } focus:border-[#001F3F] focus:ring-2 focus:ring-blue-100 outline-none transition`}
                       />
                     </div>
 
@@ -715,8 +786,8 @@ export default function CorpRadio() {
                         value={contact.subject}
                         onChange={onChange}
                         placeholder="Advertising Inquiry"
-                        required
-                        className="w-full p-2 rounded-lg border-2 border-gray-300 focus:border-[#001F3F] focus:ring-2 focus:ring-blue-100 outline-none transition"
+                        className={`w-full p-2 rounded-lg border-2 ${errors.subject ? 'border-red-500' : 'border-gray-300'
+                          } focus:border-[#001F3F] focus:ring-2 focus:ring-blue-100 outline-none transition`}
                       />
                     </div>
 
@@ -731,18 +802,13 @@ export default function CorpRadio() {
                         onChange={onChange}
                         rows={3}
                         placeholder="Tell us about your inquiry..."
-                        required
-                        className="w-full p-4 rounded-lg border-2 border-gray-300 focus:border-[#001F3F] focus:ring-2 focus:ring-blue-100 outline-none transition "
+                        className={`w-full p-4 rounded-lg border-2 ${errors.message ? 'border-red-500' : 'border-gray-300'
+                          } focus:border-[#001F3F] focus:ring-2 focus:ring-blue-100 outline-none transition`}
                       />
                     </div>
 
                     <button
                       type="submit"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        // Add your form submission logic here
-                        alert('Message sent! We will get back to you within 24 hours.');
-                      }}
                       className="w-full bg-[#001F3F] text-white p-4 rounded-lg font-bold hover:bg-blue-900 transition shadow-lg flex items-center justify-center gap-2 group"
                     >
                       <span>Send Message</span>
