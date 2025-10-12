@@ -1,6 +1,6 @@
 // src/components/CorpRadio.jsx
 import React, { useEffect, useState, useRef } from "react";
-import { Menu, X, Radio, Play, Mic, Users, TrendingUp, Award, Phone, Mail, Youtube, Linkedin, Instagram, } from "lucide-react";
+import { Menu, X, Radio, Play, Mic, Users, TrendingUp, Award, Phone, Mail, Youtube, Linkedin, Instagram, Facebook, } from "lucide-react";
 import logo from "../assets/CorpRadioLogo.jpeg";
 import heroBg from "../assets/hero.jpeg";
 import "../App.css";
@@ -46,7 +46,7 @@ export default function CorpRadio() {
       desc:
         "Practical guidance for acquisitions, franchising and growing via M&A strategies.",
       img:
-        "https://images.unsplash.com/photo-1545239351-1141bd82e8a6?w=800&q=60&auto=format&fit=crop",
+        "src/assets/Lester.jpg",
       youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     },
     {
@@ -56,8 +56,8 @@ export default function CorpRadio() {
       desc:
         "Real tools, case studies and policies for adopting AI in business workflows.",
       img:
-        "https://images.unsplash.com/photo-1531497865146-3b1b3b7b8f39?w=800&q=60&auto=format&fit=crop",
-      youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        "https://images.unsplash.com/photo-1545239351-1141bd82e8a6?w=800&q=60&auto=format&fit=crop",
+      Facebook: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     },
   ];
 
