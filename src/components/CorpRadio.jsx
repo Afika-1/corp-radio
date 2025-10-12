@@ -100,7 +100,7 @@ export default function CorpRadio() {
         {
           id: 3,
           title: "M&A Best Practices",
-          videoUrl: "https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1143342667743660%2F&show_text=false&width=867&t=0"
+          videoUrl: "https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1474116340586636%2F&show_text=true&width=867&t=0"
         
         
         
@@ -292,7 +292,7 @@ export default function CorpRadio() {
           <div className="max-w-4xl mx-auto">
             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm mb-6 border border-white/20">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              <span>Founded 2020 • South Africa</span>
+              <span>Founded 2025 • South Africa</span>
             </div>
 
             <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-white leading-tight mb-6">
@@ -377,7 +377,6 @@ export default function CorpRadio() {
         </div>
       </section>
 
-      {/* RADIO (Public) */}
       {/* RADIO (Public) */}
       <section id="radio" className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -773,7 +772,7 @@ export default function CorpRadio() {
                 </div>
                 <div>
                   <div className="font-bold text-lg">Corp Radio</div>
-                  <div className="text-xs text-gray-300">Founded 2020</div>
+                  <div className="text-xs text-gray-300">Founded 2025</div>
                 </div>
               </div>
               <p className="text-sm text-gray-300 leading-relaxed">
