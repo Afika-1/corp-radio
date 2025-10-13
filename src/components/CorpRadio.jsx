@@ -247,10 +247,11 @@ export default function CorpRadio() {
       console.log('Form submitted:', contact);
     }
   };
+
   return (
     <div className="min-h-screen font-sans antialiased text-gray-900 bg-white">
       {/* NAV */}
-      <header className="fixed inset-x-0 top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm">
+      <header className="fixed inset-x-0 top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200  shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
@@ -259,7 +260,7 @@ export default function CorpRadio() {
               onClick={() => scrollTo("hero")}
             >
               <div className="w-12 h-12 rounded-full bg-[#001F3F] flex items-center justify-center overflow-hidden">
-                <img src={logo} alt="Corp Radio logo" className="object-cover w-full h-full opacity-50" />
+                <img src={logo} alt="Corp Radio logo" className="object-cover w-full h-full " />
               </div>
               <div>
                 <div className="text-xl font-bold tracking-tight text-[#001F3F]">CORP RADIO</div>
@@ -268,7 +269,7 @@ export default function CorpRadio() {
             </div>
 
             {/* Desktop nav - visible on md+ screens */}
-            <nav className="hidden md:!flex cursor:pointer items-center gap-2">
+            <nav className="hidden md:!flex  items-center gap-2">
               {[
                 { label: "Shows", id: "shows" },
                 { label: "Public Episodes", id: "radio" },
@@ -279,7 +280,7 @@ export default function CorpRadio() {
                 <button
                   key={link.id}
                   onClick={() => scrollTo(link.id)}
-                  className={`text-sm font-medium px-4 py-2 transition-all border-b-2 ${active === link.id
+                  className={`text-sm cursor-pointer font-medium px-4 py-2 transition-all border-b-2 ${active === link.id
                     ? "text-[#001F3F] border-[#001F3F]"
                     : "text-gray-600 border-transparent hover:text-[#001F3F] hover:border-[#001F3F]"
                     }`}
@@ -294,21 +295,23 @@ export default function CorpRadio() {
             <div className="hidden md:!flex items-center gap-3 flex-shrink-0">
               <button
                 onClick={() => scrollTo("contact")}
-                className="text-sm font-semibold text-[#001F3F] hover:text-blue-800 transition"
+                className="text-sm cursor-pointer font-semibold text-[#001F3F] hover:text-blue-800 transition"
               >
                 Advertise
               </button>
               <button
                 onClick={() => scrollTo("members")}
-                className="bg-[#001F3F] text-white text-sm font-semibold px-5 py-2.5 rounded-lg shadow-md hover:bg-blue-900 transition"
+                className="bg-[#001F3F] cursor-pointer text-white text-sm font-semibold px-5 py-2.5 rounded-lg shadow-md hover:bg-blue-900 transition"
               >
                 Join Free
               </button>
+
+
             </div>
 
             {/* Mobile menu toggle */}
             <button
-              className="md:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100"
+              className="md:hidden p-2 cursor-pointer rounded-md text-gray-700 hover:bg-gray-100"
               onClick={() => setMenuOpen((s) => !s)}
               aria-label="Menu"
             >
@@ -320,14 +323,16 @@ export default function CorpRadio() {
           {menuOpen && (
             <div className="md:hidden py-4 border-t border-gray-200">
               <div className="flex flex-col gap-2">
-                <button className="text-left px-3 py-2 text-sm font-semibold hover:bg-gray-50 rounded" onClick={() => scrollTo("shows")}>Shows</button>
-                <button className="text-left px-3 py-2 text-sm font-semibold hover:bg-gray-50 rounded" onClick={() => scrollTo("radio")}>Public Episodes</button>
-                <button className="text-left px-3 py-2 text-sm font-semibold hover:bg-gray-50 rounded" onClick={() => scrollTo("members")}>Members</button>
-                <button className="text-left px-3 py-2 text-sm font-semibold hover:bg-gray-50 rounded" onClick={() => scrollTo("about")}>About</button>
-                <button className="text-left px-3 py-2 text-sm font-semibold hover:bg-gray-50 rounded" onClick={() => scrollTo("contact")}>Contact</button>
+                <button className="text-left px-3 cursor-pointer py-2 text-sm font-semibold hover:bg-gray-50 rounded" onClick={() => scrollTo("shows")}>Shows</button>
+                <button className="text-left px-3 cursor-pointer py-2 text-sm font-semibold hover:bg-gray-50 rounded" onClick={() => scrollTo("radio")}>Public Episodes</button>
+                <button className="text-left px-3 cursor-pointer py-2 text-sm font-semibold hover:bg-gray-50 rounded" onClick={() => scrollTo("members")}>Members</button>
+                <button className="text-left px-3 cursor-pointer py-2 text-sm font-semibold hover:bg-gray-50 rounded" onClick={() => scrollTo("about")}>About</button>
+                <button className="text-left px-3 cursor-pointer py-2 text-sm font-semibold hover:bg-gray-50 rounded" onClick={() => scrollTo("contact")}>Contact</button>
                 <div className="flex gap-3 px-3 pt-4">
-                  <button onClick={() => scrollTo("contact")} className="flex-1 bg-[#001F3F] text-white rounded-lg py-2.5 font-semibold">Advertise</button>
-                  <button onClick={() => scrollTo("members")} className="flex-1 border-2 border-[#001F3F] text-[#001F3F] rounded-lg py-2.5 font-semibold">Join Free</button>
+                  <button onClick={() => scrollTo("contact")} className="flex-1 bg-[#001F3F] cursor-pointer text-white rounded-lg py-2.5 font-semibold">Advertise</button>
+                  <button onClick={() => scrollTo("members")} className="flex-1 cursor-pointer border-2 border-[#001F3F] text-[#001F3F] rounded-lg py-2.5 font-semibold">Join Free</button>
+
+
                 </div>
               </div>
             </div>
@@ -364,13 +369,13 @@ export default function CorpRadio() {
             <div className="flex flex-row lg:flex-row gap-4 justify-center mb-16">
               <button
                 onClick={() => scrollTo("contact")}
-                className="bg-white text-[#001F3F] px-8 py-4 rounded-lg font-bold shadow-xl hover:bg-gray-100 transition-all transform hover:scale-105"
+                className="bg-white cursor-pointer text-[#001F3F] px-8 py-4 rounded-lg font-bold shadow-xl hover:bg-gray-100 transition-all transform hover:scale-105"
               >
                 Enquire About Advertising
               </button>
               <button
                 onClick={() => scrollTo("members")}
-                className="border-2 border-white text-white px-8 py-4 rounded-lg font-bold hover:bg-white hover:text-[#001F3F] transition-all"
+                className="border-2 cursor-pointer border-white text-white px-8 py-4 rounded-lg font-bold hover:bg-white hover:text-[#001F3F] transition-all"
               >
                 Become a Member (Free)
               </button>
@@ -416,13 +421,13 @@ export default function CorpRadio() {
                   <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
                     <button
                       onClick={() => { setPublicTab(s.id); scrollTo('radio'); }}
-                      className="flex-1 text-sm font-semibold text-[#001F3F] hover:bg-blue-50 py-2 rounded transition"
+                      className="flex-1 cursor-pointer text-sm font-semibold text-[#001F3F] hover:bg-blue-50 py-2 rounded transition"
                     >
                       Listen
                     </button>
                     <button
                       onClick={() => { setMemberTab(s.id); scrollTo('members'); }}
-                      className="text-sm font-medium border border-gray-300 px-3 py-2 rounded hover:border-[#001F3F] hover:text-[#001F3F] transition"
+                      className="text-sm cursor-pointer font-medium border border-gray-300 px-3 py-2 rounded hover:border-[#001F3F] hover:text-[#001F3F] transition"
                     >
                       Members
                     </button>
@@ -448,7 +453,7 @@ export default function CorpRadio() {
                 <button
                   key={s.id}
                   onClick={() => setPublicTab(s.id)}
-                  className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${publicTab === s.id
+                  className={`px-5 py-2.5 cursor-pointer rounded-lg text-sm font-semibold transition-all ${publicTab === s.id
                     ? "bg-[#001F3F] text-white shadow-lg"
                     : "bg-white border-2 border-gray-200 text-gray-700 hover:border-[#001F3F]"
                     }`}
@@ -525,7 +530,7 @@ export default function CorpRadio() {
                 <div className="pt-4">
                   <button
                     onClick={() => scrollTo('contact')}
-                    className="w-full bg-[#001F3F] text-white py-3 rounded-lg font-bold hover:bg-blue-900 transition shadow-md"
+                    className="w-full bg-[#001F3F] cursor-pointer text-white py-3 rounded-lg font-bold hover:bg-blue-900 transition shadow-md"
                   >
                     Enquire About Advertising
                   </button>
@@ -546,13 +551,14 @@ export default function CorpRadio() {
             <div className="flex flex-wrap justify-center gap-4">
               <button
                 onClick={() => window.open('https://forms.gle/YOUR_GOOGLE_FORM', '_blank')}
-                className="bg-[#001F3F] text-white px-8 py-4 rounded-lg font-bold shadow-xl hover:bg-blue-900 transition-all transform hover:scale-105"
+                className="bg-[#001F3F] cursor-pointer text-white px-8 py-4 rounded-lg font-bold shadow-xl hover:bg-blue-900 transition-all transform hover:scale-105"
               >
                 Become a Member (Free)
               </button>
               <button
                 onClick={() => setMemberTab('corporate')}
-                className="border-2 border-[#001F3F] text-[#001F3F] px-8 py-4 rounded-lg font-bold hover:bg-[#001F3F] hover:text-white transition-all"
+                className="border-2 cursor-pointer border-[#001F3F] text-[#001F3F] px-8 py-4 rounded-lg font-bold 
+                cursor:pointer hover:text-white transition-all transform hover:scale-105"
               >
                 View Sample Content
               </button>
@@ -571,13 +577,13 @@ export default function CorpRadio() {
 
               <iframe
                 title="Members sample"
-                        className="w-full h-full"
-                        src={shows.find(s => s.id === memberTab)?.episodes[3]?.videoUrl}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowFullScreen
-                        scrolling="no"
-                        style={{ border: 'none' }}
-                      />
+                className="w-full h-full"
+                src={shows.find(s => s.id === memberTab)?.episodes[3]?.videoUrl}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+                scrolling="no"
+                style={{ border: 'none' }}
+              />
             </div>
           </div>
         </div>
@@ -629,13 +635,13 @@ export default function CorpRadio() {
               <div className="flex flex-wrap gap-4">
                 <button
                   onClick={() => scrollTo('contact')}
-                  className="bg-[#001F3F] text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-900 transition"
+                  className="bg-[#001F3F] cursor-pointer text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-900 transition"
                 >
                   Get in Touch
                 </button>
                 <button
                   onClick={() => scrollTo('members')}
-                  className="border-2 border-[#001F3F] text-[#001F3F] px-6 py-3 rounded-lg font-bold hover:bg-[#001F3F] hover:text-white transition"
+                  className="border-2 cursor-pointer border-[#001F3F] text-[#001F3F] px-6 py-3 rounded-lg font-bold hover:bg-[#001F3F] hover:text-white transition"
                 >
                   Join Community
                 </button>
@@ -820,7 +826,7 @@ export default function CorpRadio() {
 
                     <button
                       type="submit"
-                      className="w-full bg-[#001F3F] text-white p-4 rounded-lg font-bold hover:bg-blue-900 transition shadow-lg flex items-center justify-center gap-2 group"
+                      className="w-full cursor-pointer bg-[#001F3F] text-white p-4 rounded-lg font-bold hover:bg-blue-900 transition shadow-lg flex items-center justify-center gap-2 group"
                     >
                       <span>Send Message</span>
                       <Mail className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -848,8 +854,8 @@ export default function CorpRadio() {
                   <Radio className="w-6 h-6 text-white" />
                 </div> */}
                 <div className="w-12 h-12 rounded-full bg-[#001F3F] flex items-center justify-center overflow-hidden">
-                <img src={footerLogo} alt="Corp Radio logo" className="object-cover w-full h-full" />
-              </div>
+                  <img src={footerLogo} alt="Corp Radio logo" className="object-cover w-full h-full" />
+                </div>
                 <div>
                   <div className="font-bold text-lg">Corp Radio</div>
                   <div className="text-xs text-gray-300">Founded 2025</div>
@@ -863,10 +869,10 @@ export default function CorpRadio() {
             <div>
               <h4 className="font-bold mb-4">Quick Links</h4>
               <div className="space-y-2">
-                <button onClick={() => scrollTo('shows')} className="block text-gray-300 hover:text-white text-sm transition">Our Shows</button>
-                <button onClick={() => scrollTo('radio')} className="block text-gray-300 hover:text-white text-sm transition">Public Episodes</button>
-                <button onClick={() => scrollTo('members')} className="block text-gray-300 hover:text-white text-sm transition">Members Area</button>
-                <button onClick={() => scrollTo('about')} className="block text-gray-300 hover:text-white text-sm transition">About Us</button>
+                <button onClick={() => scrollTo('shows')} className="block text-gray-300 cursor-pointer hover:text-white text-sm transition">Our Shows</button>
+                <button onClick={() => scrollTo('radio')} className="block text-gray-300 cursor-pointer hover:text-white text-sm transition">Public Episodes</button>
+                <button onClick={() => scrollTo('members')} className="block text-gray-300 cursor-pointer hover:text-white text-sm transition">Members Area</button>
+                <button onClick={() => scrollTo('about')} className="block text-gray-300 cursor-pointer hover:text-white text-sm transition">About Us</button>
               </div>
             </div>
 
@@ -877,7 +883,7 @@ export default function CorpRadio() {
                   <button
                     key={show.id}
                     onClick={() => scrollTo('shows')}
-                    className="block text-gray-300 hover:text-white text-sm transition"
+                    className="block text-gray-300 cursor-pointer hover:text-white text-sm transition"
                   >
                     {show.title}
                   </button>
@@ -888,8 +894,10 @@ export default function CorpRadio() {
             <div>
               <h4 className="font-bold mb-4">Contact</h4>
               <div className="space-y-3 text-sm">
-                <p className="text-gray-300">061 201 9633</p>
-                <p className="text-gray-300">info@corpradio.online</p>
+                <p className="text-gray-300  hover:text-white text-sm transition">                        <a href="tel:0612019633">061 201 9633</a>
+                </p>
+                <p className="text-gray-300  hover:text-white text-sm transition">                        <a href="mailto:info@corpradio.online">info@corpradio.online</a>
+                </p>
                 <div className="flex gap-3 pt-2">
                   <a href="http://www.youtube.com/@CorpradioZA" className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center hover:bg-white/20 transition">
                     <Youtube className="w-5 h-5" />
