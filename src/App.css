@@ -5,7 +5,7 @@ iframe[src*="facebook.com"] {
   position: relative;
 }
 
-iframe[src*="facebook.com"]::after {
+/* iframe[src*="facebook.com"]::after {
   content: '';
   position: absolute;
   bottom: 0;
@@ -14,4 +14,4 @@ iframe[src*="facebook.com"]::after {
   height: 100px;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
   pointer-events: none;
-}
+} */

@@ -2,6 +2,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Menu, X, Radio, Play, Mic, Users, TrendingUp, Award, Phone, Mail, Youtube, Linkedin, Instagram, Facebook, } from "lucide-react";
 import logo from "../assets/CorpRadioLogo.jpeg";
+import footerLogo from "../assets/CorpRadioLogo - Copy.jpeg";
+
 import heroBg from "../assets/hero.jpeg";
 import "../App.css";
 
@@ -257,10 +259,10 @@ export default function CorpRadio() {
               onClick={() => scrollTo("hero")}
             >
               <div className="w-12 h-12 rounded-full bg-[#001F3F] flex items-center justify-center overflow-hidden">
-                <img src={logo} alt="Corp Radio logo" className="object-cover w-full h-full" />
+                <img src={logo} alt="Corp Radio logo" className="object-cover w-full h-full opacity-50" />
               </div>
               <div>
-                <div className="text-xl font-bold tracking-tight text-[#001F3F]">Corp Radio</div>
+                <div className="text-xl font-bold tracking-tight text-[#001F3F]">CORP RADIO</div>
                 <div className="text-xs text-gray-600">Tuned Into The Business Frequency</div>
               </div>
             </div>
@@ -560,12 +562,22 @@ export default function CorpRadio() {
           {/* sample member video */}
           <div className="max-w-5xl mx-auto">
             <div className="aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl">
-              <iframe
+              {/* <iframe
                 title="Members sample"
                 className="w-full h-full"
                 src={shows.find(s => s.id === memberTab)?.youtube || shows[0].youtube}
                 allowFullScreen
-              />
+              /> */}
+
+              <iframe
+                title="Members sample"
+                        className="w-full h-full"
+                        src={shows.find(s => s.id === memberTab)?.episodes[3]?.videoUrl}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                        scrolling="no"
+                        style={{ border: 'none' }}
+                      />
             </div>
           </div>
         </div>
@@ -832,9 +844,12 @@ export default function CorpRadio() {
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
+                {/* <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
                   <Radio className="w-6 h-6 text-white" />
-                </div>
+                </div> */}
+                <div className="w-12 h-12 rounded-full bg-[#001F3F] flex items-center justify-center overflow-hidden">
+                <img src={footerLogo} alt="Corp Radio logo" className="object-cover w-full h-full" />
+              </div>
                 <div>
                   <div className="font-bold text-lg">Corp Radio</div>
                   <div className="text-xs text-gray-300">Founded 2025</div>
