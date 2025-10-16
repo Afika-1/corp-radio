@@ -278,7 +278,7 @@ export default function CorpRadio() {
                       const el = document.getElementById('member-player');
                       if (el) el.scrollIntoView({ behavior: 'smooth' });
                     }}
-                    className="w-full bg-[#001F3F] text-white py-2.5 rounded-lg font-semibold hover:bg-blue-900 transition"
+                    className="w-full bg-[#001F3F] cursor-pointer text-white py-2.5 rounded-lg font-semibold hover:bg-blue-900 transition"
                   >
                     Watch Now
                   </button>
@@ -360,10 +360,10 @@ export default function CorpRadio() {
                   <Users className="w-4 h-4 text-[#001F3F]" />
                   <span className="text-sm font-semibold text-[#001F3F]">{currentUser?.username}</span>
                 </div>
-                <button onClick={() => setCurrentView('main')} className="text-sm font-medium text-gray-600 hover:text-[#001F3F] transition">
+                <button onClick={() => setCurrentView('main')} className="text-sm cursor-pointer font-medium text-gray-600 hover:text-[#001F3F] transition">
                   Back to Home
                 </button>
-                <button onClick={handleLogout} className="flex items-center gap-2 bg-red-50 text-red-600 px-4 py-2 rounded-lg hover:bg-red-100 transition">
+                <button onClick={handleLogout} className="flex items-center gap-2 cursor-pointer bg-red-50 text-red-600 px-4 py-2 rounded-lg hover:bg-red-100 transition">
                   <LogOut className="w-4 h-4" />
                   <span className="hidden md:inline text-sm font-semibold">Logout</span>
                 </button>
@@ -379,9 +379,9 @@ export default function CorpRadio() {
   return (
     <div className="min-h-screen font-sans antialiased text-gray-900 bg-white">
       {showAuthModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 relative">
-            <button onClick={() => setShowAuthModal(false)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+            <button onClick={() => setShowAuthModal(false)} className="absolute cursor-pointer top-4 right-4 text-gray-400 hover:text-gray-600">
               <X className="w-6 h-6" />
             </button>
             <div className="text-center mb-6">
@@ -429,7 +429,7 @@ export default function CorpRadio() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    className="absolute cursor-pointer right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                   >
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
@@ -452,7 +452,7 @@ export default function CorpRadio() {
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      className="absolute right-3 cursor-pointer top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                     >
                       {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                     </button>
@@ -460,7 +460,7 @@ export default function CorpRadio() {
                   {authErrors.confirmPassword && <p className="text-red-500 text-xs mt-1">{authErrors.confirmPassword}</p>}
                 </div>
               )}
-              <button type="submit" className="w-full bg-[#001F3F] text-white py-3 rounded-lg font-bold hover:bg-blue-900 transition">
+              <button type="submit" className="w-full bg-[#001F3F] cursor-pointer text-white py-3 rounded-lg font-bold hover:bg-blue-900 transition">
                 {authMode === 'login' ? 'Login' : 'Register'}
               </button>
               <div className="text-center">
@@ -470,7 +470,7 @@ export default function CorpRadio() {
                     setAuthMode(authMode === 'login' ? 'register' : 'login');
                     setAuthErrors({});
                   }}
-                  className="text-sm text-[#001F3F] hover:underline"
+                  className="text-sm cursor-pointer text-[#001F3F] hover:underline"
                 >
                   {authMode === 'login' ? "Don't have an account? Register" : 'Already have an account? Login'}
                 </button>
@@ -504,7 +504,7 @@ export default function CorpRadio() {
                 <button
                   key={link.id}
                   onClick={() => scrollTo(link.id)}
-                  className={`text-sm font-medium px-4 py-2 transition-all border-b-2 ${
+                  className={`text-sm cursor-pointer font-medium px-4 py-2 transition-all border-b-2 ${
                     active === link.id
                       ? "text-[#001F3F] border-[#001F3F]"
                       : "text-gray-600 border-transparent hover:text-[#001F3F] hover:border-[#001F3F]"
@@ -520,14 +520,14 @@ export default function CorpRadio() {
                 <>
                   <button
                     onClick={() => setCurrentView('members-dashboard')}
-                    className="flex items-center gap-2 text-sm font-semibold text-[#001F3F] hover:text-blue-800 transition"
+                    className="flex items-center cursor-pointer gap-2 text-sm font-semibold text-[#001F3F] hover:text-blue-800 transition"
                   >
                     <Users className="w-4 h-4" />
                     {currentUser?.username}
                   </button>
                   <button
                     onClick={handleLogout}
-                    className="flex items-center gap-2 bg-red-50 text-red-600 px-4 py-2 rounded-lg hover:bg-red-100 transition"
+                    className="flex items-center cursor-pointer gap-2 bg-red-50 text-red-600 px-4 py-2 rounded-lg hover:bg-red-100 transition"
                   >
                     <LogOut className="w-4 h-4" />
                     <span className="text-sm font-semibold">Logout</span>
@@ -535,12 +535,12 @@ export default function CorpRadio() {
                 </>
               ) : (
                 <>
-                  <button onClick={() => scrollTo("contact")} className="text-sm font-semibold text-[#001F3F] hover:text-blue-800 transition">
+                  <button onClick={() => scrollTo("contact")} className="text-sm cursor-pointer font-semibold text-[#001F3F] hover:text-blue-800 transition">
                     Advertise
                   </button>
                   <button
                     onClick={() => openAuthModal('login')}
-                    className="bg-[#001F3F] text-white text-sm font-semibold px-5 py-2.5 rounded-lg shadow-md hover:bg-blue-900 transition"
+                    className="bg-[#001F3F] text-white cursor-pointer text-sm font-semibold px-5 py-2.5 rounded-lg shadow-md hover:bg-blue-900 transition"
                   >
                     Login / Register
                   </button>
@@ -548,7 +548,7 @@ export default function CorpRadio() {
               )}
             </div>
 
-            <button className="md:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100" onClick={() => setMenuOpen((s) => !s)}>
+            <button className="md:hidden cursor-pointer p-2 rounded-md text-gray-700 hover:bg-gray-100" onClick={() => setMenuOpen((s) => !s)}>
               {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
@@ -556,27 +556,27 @@ export default function CorpRadio() {
           {menuOpen && (
             <div className="md:hidden py-4 border-t border-gray-200">
               <div className="flex flex-col gap-2">
-                <button className="text-left px-3 py-2 text-sm font-semibold hover:bg-gray-50 rounded" onClick={() => scrollTo("shows")}>Shows</button>
-                <button className="text-left px-3 py-2 text-sm font-semibold hover:bg-gray-50 rounded" onClick={() => scrollTo("radio")}>Public Episodes</button>
-                <button className="text-left px-3 py-2 text-sm font-semibold hover:bg-gray-50 rounded" onClick={() => scrollTo("members")}>Members</button>
-                <button className="text-left px-3 py-2 text-sm font-semibold hover:bg-gray-50 rounded" onClick={() => scrollTo("about")}>About</button>
-                <button className="text-left px-3 py-2 text-sm font-semibold hover:bg-gray-50 rounded" onClick={() => scrollTo("contact")}>Contact</button>
+                <button className="text-left px-3 py-2 text-sm font-semibold cursor-pointer hover:bg-gray-50 rounded" onClick={() => scrollTo("shows")}>Shows</button>
+                <button className="text-left px-3 py-2 text-sm font-semibold cursor-pointer hover:bg-gray-50 rounded" onClick={() => scrollTo("radio")}>Public Episodes</button>
+                <button className="text-left px-3 py-2 text-sm font-semibold cursor-pointer hover:bg-gray-50 rounded" onClick={() => scrollTo("members")}>Members</button>
+                <button className="text-left px-3 py-2 text-sm font-semibold cursor-pointer hover:bg-gray-50 rounded" onClick={() => scrollTo("about")}>About</button>
+                <button className="text-left px-3 py-2 text-sm font-semibold cursor-pointer hover:bg-gray-50 rounded" onClick={() => scrollTo("contact")}>Contact</button>
                 <div className="flex gap-3 px-3 pt-4">
                   {isAuthenticated ? (
                     <>
-                      <button onClick={() => setCurrentView('members-dashboard')} className="flex-1 bg-[#001F3F] text-white rounded-lg py-2.5 font-semibold">
+                      <button onClick={() => setCurrentView('members-dashboard')} className="flex-1 bg-[#001F3F] cursor-pointer text-white rounded-lg py-2.5 font-semibold">
                         Dashboard
                       </button>
-                      <button onClick={handleLogout} className="flex-1 border-2 border-red-600 text-red-600 rounded-lg py-2.5 font-semibold">
+                      <button onClick={handleLogout} className="flex-1 border-2 cursor-pointer border-red-600 text-red-600 rounded-lg py-2.5 font-semibold">
                         Logout
                       </button>
                     </>
                   ) : (
                     <>
-                      <button onClick={() => scrollTo("contact")} className="flex-1 bg-[#001F3F] text-white rounded-lg py-2.5 font-semibold">
+                      <button onClick={() => scrollTo("contact")} className="flex-1 bg-[#001F3F] cursor-pointer text-white rounded-lg py-2.5 font-semibold">
                         Advertise
                       </button>
-                      <button onClick={() => openAuthModal('login')} className="flex-1 border-2 border-[#001F3F] text-[#001F3F] rounded-lg py-2.5 font-semibold">
+                      <button onClick={() => openAuthModal('login')} className="flex-1 border-2 cursor-pointer border-[#001F3F] text-[#001F3F] rounded-lg py-2.5 font-semibold">
                         Login
                       </button>
                     </>
@@ -591,7 +591,7 @@ export default function CorpRadio() {
       <section id="hero" className="relative pt-20 min-h-screen flex items-center justify-center">
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `linear-gradient(rgba(0,31,63,0.75), rgba(0,31,63,0.85)),url(https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1600&q=80&auto=format&fit=crop)` }}
+          style={{ backgroundImage: `linear-gradient(rgba(0,31,63,0.75), rgba(0,31,63,0.85)),url(${heroBg})` }}
         />
         <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
           <div className="max-w-4xl mx-auto">
@@ -606,16 +606,16 @@ export default function CorpRadio() {
             <p className="text-lg sm:text-xl text-gray-200 mb-10 max-w-3xl mx-auto leading-relaxed">
               Premium content, mentorship and networking for CEOs, founders and senior leaders—actionable episodes you can use today.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+            <div className="flex flex-row lg:flex-row gap-4 justify-center mb-16">
               <button
                 onClick={() => scrollTo("contact")}
-                className="bg-white text-[#001F3F] px-8 py-4 rounded-lg font-bold shadow-xl hover:bg-gray-100 transition-all transform hover:scale-105"
+                className="bg-white cursor-pointer text-[#001F3F] px-8 py-4 rounded-lg font-bold shadow-xl hover:bg-gray-100 transition-all transform hover:scale-105"
               >
                 Enquire About Advertising
               </button>
               <button
                 onClick={() => isAuthenticated ? setCurrentView('members-dashboard') : openAuthModal('register')}
-                className="border-2 border-white text-white px-8 py-4 rounded-lg font-bold hover:bg-white hover:text-[#001F3F] transition-all"
+                className="border-2 cursor-pointer border-white text-white px-8 py-4 rounded-lg font-bold hover:bg-white hover:text-[#001F3F] transition-all"
               >
                 {isAuthenticated ? 'Go to Dashboard' : 'Become a Member (Free)'}
               </button>
@@ -657,13 +657,13 @@ export default function CorpRadio() {
                   <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
                     <button
                       onClick={() => { setPublicTab(s.id); scrollTo('radio'); }}
-                      className="flex-1 text-sm font-semibold text-[#001F3F] hover:bg-blue-50 py-2 rounded transition"
+                      className="flex-1 cursor-pointer text-sm font-semibold text-[#001F3F] hover:bg-blue-50 py-2 rounded transition"
                     >
                       Listen
                     </button>
                     <button
                       onClick={() => isAuthenticated ? setCurrentView('members-dashboard') : openAuthModal('register')}
-                      className="text-sm font-medium border border-gray-300 px-3 py-2 rounded hover:border-[#001F3F] hover:text-[#001F3F] transition"
+                      className="text-sm cursor-pointer font-medium border border-gray-300 px-3 py-2 rounded hover:border-[#001F3F] hover:text-[#001F3F] transition"
                     >
                       Members
                     </button>
@@ -687,7 +687,7 @@ export default function CorpRadio() {
                 <button
                   key={s.id}
                   onClick={() => setPublicTab(s.id)}
-                  className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${
+                  className={`px-5 cursor-pointer py-2.5 rounded-lg text-sm font-semibold transition-all ${
                     publicTab === s.id
                       ? "bg-[#001F3F] text-white shadow-lg"
                       : "bg-white border-2 border-gray-200 text-gray-700 hover:border-[#001F3F]"
@@ -701,7 +701,7 @@ export default function CorpRadio() {
 
           <div className="bg-white border border-gray-200 rounded-2xl shadow-xl p-6 lg:p-8 relative">
             {!isAuthenticated && (
-              <div className="absolute inset-0 bg-white/95 backdrop-blur-sm z-10 rounded-2xl flex items-center justify-center">
+              <div className="absolute inset-0  backdrop-blur-sm z-10 rounded-2xl flex items-center justify-center">
                 <div className="text-center p-8 max-w-md">
                   <div className="w-20 h-20 bg-[#001F3F] rounded-full flex items-center justify-center mx-auto mb-6">
                     <Lock className="w-10 h-10 text-white" />
@@ -711,13 +711,13 @@ export default function CorpRadio() {
                   <div className="flex gap-3 justify-center">
                     <button
                       onClick={() => openAuthModal('login')}
-                      className="bg-[#001F3F] text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-900 transition"
+                      className="bg-[#001F3F] cursor-pointer text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-900 transition"
                     >
                       Login
                     </button>
                     <button
                       onClick={() => openAuthModal('register')}
-                      className="border-2 border-[#001F3F] text-[#001F3F] px-6 py-3 rounded-lg font-bold hover:bg-[#001F3F] hover:text-white transition"
+                      className="border-2 cursor-pointer border-[#001F3F] text-[#001F3F] px-6 py-3 rounded-lg font-bold hover:bg-[#001F3F] hover:text-white transition"
                     >
                       Register Free
                     </button>
@@ -784,7 +784,7 @@ export default function CorpRadio() {
                   <div className="pt-4">
                     <button
                       onClick={() => scrollTo('contact')}
-                      className="w-full bg-[#001F3F] text-white py-3 rounded-lg font-bold hover:bg-blue-900 transition shadow-md"
+                      className="w-full cursor-pointer bg-[#001F3F] text-white py-3 rounded-lg font-bold hover:bg-blue-900 transition shadow-md"
                     >
                       Enquire About Advertising
                     </button>
@@ -805,14 +805,14 @@ export default function CorpRadio() {
             <div className="flex flex-wrap justify-center gap-4">
               <button
                 onClick={() => isAuthenticated ? setCurrentView('members-dashboard') : openAuthModal('register')}
-                className="bg-[#001F3F] text-white px-8 py-4 rounded-lg font-bold shadow-xl hover:bg-blue-900 transition-all transform hover:scale-105"
+                className="bg-[#001F3F] cursor-pointer text-white px-8 py-4 rounded-lg font-bold shadow-xl hover:bg-blue-900 transition-all transform hover:scale-105"
               >
                 {isAuthenticated ? 'Go to Dashboard' : 'Become a Member (Free)'}
               </button>
               {!isAuthenticated && (
                 <button
                   onClick={() => openAuthModal('login')}
-                  className="border-2 border-[#001F3F] text-[#001F3F] px-8 py-4 rounded-lg font-bold hover:bg-[#001F3F] hover:text-white transition-all transform hover:scale-105"
+                  className="border-2 cursor-pointer border-[#001F3F] text-[#001F3F] px-8 py-4 rounded-lg font-bold hover:bg-[#001F3F] hover:text-white transition-all transform hover:scale-105"
                 >
                   Already a Member? Login
                 </button>
@@ -828,7 +828,7 @@ export default function CorpRadio() {
                   <p className="text-white text-xl font-bold mb-4">Premium Content Locked</p>
                   <button
                     onClick={() => openAuthModal('register')}
-                    className="bg-white text-[#001F3F] px-6 py-3 rounded-lg font-bold hover:bg-gray-100 transition"
+                    className="bg-white cursor-pointer text-[#001F3F] px-6 py-3 rounded-lg font-bold hover:bg-gray-100 transition"
                   >
                     Register to Unlock
                   </button>
@@ -891,13 +891,13 @@ export default function CorpRadio() {
               <div className="flex flex-wrap gap-4">
                 <button
                   onClick={() => scrollTo('contact')}
-                  className="bg-[#001F3F] text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-900 transition"
+                  className="bg-[#001F3F] cursor-pointer text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-900 transition"
                 >
                   Get in Touch
                 </button>
                 <button
                   onClick={() => isAuthenticated ? setCurrentView('members-dashboard') : openAuthModal('register')}
-                  className="border-2 border-[#001F3F] text-[#001F3F] px-6 py-3 rounded-lg font-bold hover:bg-[#001F3F] hover:text-white transition"
+                  className="border-2 cursor-pointer border-[#001F3F] text-[#001F3F] px-6 py-3 rounded-lg font-bold hover:bg-[#001F3F] hover:text-white transition"
                 >
                   Join Community
                 </button>
@@ -916,7 +916,7 @@ export default function CorpRadio() {
         </div>
       </section>
 
-      <section id="contact" className="py-24 bg-gray-50">
+      <section id="contact" className="py-24 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h3 className="text-3xl md:text-4xl font-bold text-[#001F3F] mb-4">Get in Touch</h3>
@@ -1056,7 +1056,7 @@ export default function CorpRadio() {
                   </div>
                   <button
                     type="submit"
-                    className="w-full bg-[#001F3F] text-white p-4 rounded-lg font-bold hover:bg-blue-900 transition shadow-lg flex items-center justify-center gap-2 group"
+                    className="w-full bg-[#001F3F] cursor-pointer text-white p-4 rounded-lg font-bold hover:bg-blue-900 transition shadow-lg flex items-center justify-center gap-2 group"
                   >
                     <span>Send Message</span>
                     <Mail className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -1076,8 +1076,8 @@ export default function CorpRadio() {
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
-                  <Radio className="w-6 h-6 text-white" />
+                <div className="w-12 h-12 rounded-full bg-[#001F3F] flex items-center justify-center overflow-hidden">
+                  <img src={footerLogo} alt="Corp Radio logo" className="object-cover w-full h-full" />
                 </div>
                 <div>
                   <div className="font-bold text-lg">Corp Radio</div>
@@ -1091,10 +1091,10 @@ export default function CorpRadio() {
             <div>
               <h4 className="font-bold mb-4">Quick Links</h4>
               <div className="space-y-2">
-                <button onClick={() => scrollTo('shows')} className="block text-gray-300 hover:text-white text-sm transition">Our Shows</button>
-                <button onClick={() => scrollTo('radio')} className="block text-gray-300 hover:text-white text-sm transition">Public Episodes</button>
-                <button onClick={() => scrollTo('members')} className="block text-gray-300 hover:text-white text-sm transition">Members Area</button>
-                <button onClick={() => scrollTo('about')} className="block text-gray-300 hover:text-white text-sm transition">About Us</button>
+                <button onClick={() => scrollTo('shows')} className="block text-gray-300 cursor-pointer hover:text-white text-sm transition">Our Shows</button>
+                <button onClick={() => scrollTo('radio')} className="block text-gray-300 cursor-pointer hover:text-white text-sm transition">Public Episodes</button>
+                <button onClick={() => scrollTo('members')} className="block text-gray-300 cursor-pointer hover:text-white text-sm transition">Members Area</button>
+                <button onClick={() => scrollTo('about')} className="block text-gray-300 cursor-pointer hover:text-white text-sm transition">About Us</button>
               </div>
             </div>
             <div>
@@ -1104,7 +1104,7 @@ export default function CorpRadio() {
                   <button
                     key={show.id}
                     onClick={() => scrollTo('shows')}
-                    className="block text-gray-300 hover:text-white text-sm transition"
+                    className="block text-gray-300 cursor-pointer hover:text-white text-sm transition"
                   >
                     {show.title}
                   </button>
