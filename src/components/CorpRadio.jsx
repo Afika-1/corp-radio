@@ -1,7 +1,6 @@
-// src/components/CorpRadio.jsx
 import React, { useEffect, useState, useRef } from "react";
 import { Menu, X, Radio, Play, Mic, Users, TrendingUp, Award, Phone, Mail, Youtube, Linkedin, Instagram, Facebook, } from "lucide-react";
-import logo from "../assets/CorpRadioLogo.jpeg";
+import logo from "../assets/CorpRadioLogo - Copy.jpeg";
 import footerLogo from "../assets/CorpRadioLogo - Copy.jpeg";
 
 import heroBg from "../assets/hero.jpeg";
@@ -263,7 +262,7 @@ export default function CorpRadio() {
                 <img src={logo} alt="Corp Radio logo" className="object-cover w-full h-full " />
               </div>
               <div>
-                <div className="text-xl font-bold tracking-tight text-[#001F3F]">CORP RADIO</div>
+                <div className="text-xl font-bold tracking-tight text-[#001F3F]">Corp Radio</div>
                 <div className="text-xs text-gray-600">Tuned Into The Business Frequency</div>
               </div>
             </div>
@@ -641,7 +640,7 @@ export default function CorpRadio() {
                 </button>
                 <button
                   onClick={() => scrollTo('members')}
-                  className="border-2 cursor-pointer border-[#001F3F] text-[#001F3F] px-6 py-3 rounded-lg font-bold hover:bg-[#001F3F] hover:text-white transition"
+  className="border-2 cursor-pointer border-[#001F3F] text-[#001F3F] hover:text-white px-6 py-3 rounded-lg font-bold hover:bg-[#001F3F] transition-all"
                 >
                   Join Community
                 </button>

@@ -4,14 +4,3 @@
 iframe[src*="facebook.com"] {
   position: relative;
 }
-
-/* iframe[src*="facebook.com"]::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 100px;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
-  pointer-events: none;
-} */
