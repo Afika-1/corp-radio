@@ -32,6 +32,44 @@ export default function CorpRadio() {
     { username: 'demo', password: 'demo123' }
   ]);
 
+  //Members only limited viewership
+  const [videoWatchTime, setVideoWatchTime] = useState(0);
+  const [showTimeoutWarning, setShowTimeoutWarning] = useState(false);
+  const videoTimeoutRef = useRef(null);
+
+  useEffect(() => {
+    if (!isAuthenticated && videoWatchTime > 0) {
+      if (videoTimeoutRef.current) {
+        clearTimeout(videoTimeoutRef.current);
+      }
+
+      if (videoWatchTime >= 60) {
+        setShowTimeoutWarning(true);
+      }
+
+      if (videoWatchTime >= 90) {
+        // Lock the video after 90 seconds
+        setVideoWatchTime(0);
+        setShowTimeoutWarning(false);
+        // Force show the lock overlay
+        const memberSection = document.getElementById('members');
+        if (memberSection) {
+          memberSection.scrollIntoView({ behavior: 'smooth' });
+        }
+      } else {
+        videoTimeoutRef.current = setTimeout(() => {
+          setVideoWatchTime(prev => prev + 1);
+        }, 1000);
+      }
+    }
+
+    return () => {
+      if (videoTimeoutRef.current) {
+        clearTimeout(videoTimeoutRef.current);
+      }
+    };
+  }, [videoWatchTime, isAuthenticated]);
+
   // Check if user is logged in on mount
   useEffect(() => {
     const savedUser = sessionStorage.getItem('corpRadioUser');
@@ -100,7 +138,7 @@ export default function CorpRadio() {
       ]
     }
   ];
-  
+
   const [currentEpisode, setCurrentEpisode] = useState({});
 
   useEffect(() => {
@@ -186,7 +224,7 @@ export default function CorpRadio() {
 
   useEffect(() => {
     if (currentView !== 'main') return;
-    
+
     const options = { root: null, rootMargin: "-20% 0px -60% 0px", threshold: 0 };
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -316,15 +354,13 @@ export default function CorpRadio() {
                 <div
                   key={episode.id}
                   onClick={() => setCurrentEpisode({ ...currentEpisode, [memberTab]: episode })}
-                  className={`flex items-center gap-3 p-3 rounded-lg border transition cursor-pointer group ${
-                    currentEpisode[memberTab]?.id === episode.id
-                      ? 'border-[#001F3F] bg-blue-50 shadow-md'
-                      : 'border-gray-200 hover:border-[#001F3F] hover:shadow-md'
-                  }`}
+                  className={`flex items-center gap-3 p-3 rounded-lg border transition cursor-pointer group ${currentEpisode[memberTab]?.id === episode.id
+                    ? 'border-[#001F3F] bg-blue-50 shadow-md'
+                    : 'border-gray-200 hover:border-[#001F3F] hover:shadow-md'
+                    }`}
                 >
-                  <div className={`w-16 h-12 rounded flex items-center justify-center flex-shrink-0 ${
-                    currentEpisode[memberTab]?.id === episode.id ? 'bg-[#001F3F]' : 'bg-gradient-to-br from-blue-900 to-gray-700'
-                  }`}>
+                  <div className={`w-16 h-12 rounded flex items-center justify-center flex-shrink-0 ${currentEpisode[memberTab]?.id === episode.id ? 'bg-[#001F3F]' : 'bg-gradient-to-br from-blue-900 to-gray-700'
+                    }`}>
                     <Play className="w-5 h-5 text-white group-hover:scale-110 transition" />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -407,9 +443,8 @@ export default function CorpRadio() {
                   type="text"
                   value={authForm.username}
                   onChange={(e) => setAuthForm({ ...authForm, username: e.target.value })}
-                  className={`w-full p-3 border-2 rounded-lg outline-none transition ${
-                    authErrors.username ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'
-                  }`}
+                  className={`w-full p-3 border-2 rounded-lg outline-none transition ${authErrors.username ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'
+                    }`}
                   placeholder="Enter username"
                 />
                 {authErrors.username && <p className="text-red-500 text-xs mt-1">{authErrors.username}</p>}
@@ -421,9 +456,8 @@ export default function CorpRadio() {
                     type={showPassword ? "text" : "password"}
                     value={authForm.password}
                     onChange={(e) => setAuthForm({ ...authForm, password: e.target.value })}
-                    className={`w-full p-3 border-2 rounded-lg outline-none transition pr-10 ${
-                      authErrors.password ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'
-                    }`}
+                    className={`w-full p-3 border-2 rounded-lg outline-none transition pr-10 ${authErrors.password ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'
+                      }`}
                     placeholder="Enter password"
                   />
                   <button
@@ -444,9 +478,8 @@ export default function CorpRadio() {
                       type={showConfirmPassword ? "text" : "password"}
                       value={authForm.confirmPassword}
                       onChange={(e) => setAuthForm({ ...authForm, confirmPassword: e.target.value })}
-                      className={`w-full p-3 border-2 rounded-lg outline-none transition pr-10 ${
-                        authErrors.confirmPassword ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'
-                      }`}
+                      className={`w-full p-3 border-2 rounded-lg outline-none transition pr-10 ${authErrors.confirmPassword ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'
+                        }`}
                       placeholder="Confirm password"
                     />
                     <button
@@ -504,11 +537,10 @@ export default function CorpRadio() {
                 <button
                   key={link.id}
                   onClick={() => scrollTo(link.id)}
-                  className={`text-sm cursor-pointer font-medium px-4 py-2 transition-all border-b-2 ${
-                    active === link.id
-                      ? "text-[#001F3F] border-[#001F3F]"
-                      : "text-gray-600 border-transparent hover:text-[#001F3F] hover:border-[#001F3F]"
-                  }`}
+                  className={`text-sm cursor-pointer font-medium px-4 py-2 transition-all border-b-2 ${active === link.id
+                    ? "text-[#001F3F] border-[#001F3F]"
+                    : "text-gray-600 border-transparent hover:text-[#001F3F] hover:border-[#001F3F]"
+                    }`}
                 >
                   {link.label}
                 </button>
@@ -687,11 +719,10 @@ export default function CorpRadio() {
                 <button
                   key={s.id}
                   onClick={() => setPublicTab(s.id)}
-                  className={`px-5 cursor-pointer py-2.5 rounded-lg text-sm font-semibold transition-all ${
-                    publicTab === s.id
-                      ? "bg-[#001F3F] text-white shadow-lg"
-                      : "bg-white border-2 border-gray-200 text-gray-700 hover:border-[#001F3F]"
-                  }`}
+                  className={`px-5 cursor-pointer py-2.5 rounded-lg text-sm font-semibold transition-all ${publicTab === s.id
+                    ? "bg-[#001F3F] text-white shadow-lg"
+                    : "bg-white border-2 border-gray-200 text-gray-700 hover:border-[#001F3F]"
+                    }`}
                 >
                   {s.title.replace("Show", "").trim()}
                 </button>
@@ -764,15 +795,13 @@ export default function CorpRadio() {
                     <div
                       key={episode.id}
                       onClick={() => setCurrentEpisode({ ...currentEpisode, [publicTab]: episode })}
-                      className={`flex items-center gap-3 p-3 rounded-lg border transition cursor-pointer group ${
-                        currentEpisode[publicTab]?.id === episode.id
-                          ? 'border-[#001F3F] bg-blue-50 shadow-md'
-                          : 'border-gray-200 hover:border-[#001F3F] hover:shadow-md'
-                      }`}
+                      className={`flex items-center gap-3 p-3 rounded-lg border transition cursor-pointer group ${currentEpisode[publicTab]?.id === episode.id
+                        ? 'border-[#001F3F] bg-blue-50 shadow-md'
+                        : 'border-gray-200 hover:border-[#001F3F] hover:shadow-md'
+                        }`}
                     >
-                      <div className={`w-16 h-12 rounded flex items-center justify-center flex-shrink-0 ${
-                        currentEpisode[publicTab]?.id === episode.id ? 'bg-[#001F3F]' : 'bg-gradient-to-br from-blue-900 to-gray-700'
-                      }`}>
+                      <div className={`w-16 h-12 rounded flex items-center justify-center flex-shrink-0 ${currentEpisode[publicTab]?.id === episode.id ? 'bg-[#001F3F]' : 'bg-gradient-to-br from-blue-900 to-gray-700'
+                        }`}>
                         <Play className="w-5 h-5 text-white group-hover:scale-110 transition" />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -821,27 +850,43 @@ export default function CorpRadio() {
           </div>
 
           <div className="max-w-5xl mx-auto relative">
-            {!isAuthenticated && (
+            {!isAuthenticated && videoWatchTime >= 30 && (
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent z-10 rounded-2xl flex items-center justify-center">
                 <div className="text-center p-8">
-                  <Lock className="w-16 h-16 text-white mx-auto mb-4" />
-                  <p className="text-white text-xl font-bold mb-4">Premium Content Locked</p>
+                  <Lock className="w-16  from-black/80 via-black/20 h-16 text-white mx-auto mb-4" />
+                  <p className="text-white text-xl font-bold mb-2">Preview Time Expired</p>
+                  <p className="text-white text-sm mb-4">Register now to continue watching</p>
                   <button
                     onClick={() => openAuthModal('register')}
                     className="bg-white cursor-pointer text-[#001F3F] px-6 py-3 rounded-lg font-bold hover:bg-gray-100 transition"
                   >
-                    Register to Unlock
+                    Register to Continue
                   </button>
                 </div>
               </div>
             )}
-            <div className={`aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl ${!isAuthenticated ? 'blur-sm' : ''}`}>
+
+            {!isAuthenticated && videoWatchTime > 0 && videoWatchTime < 90 && showTimeoutWarning && (
+              <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20 bg-yellow-500 text-black px-4 py-2 rounded-lg shadow-lg flex items-center gap-2">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+                <span className="text-sm font-semibold">{90 - videoWatchTime}s remaining - Register to continue</span>
+              </div>
+            )}
+
+            <div className={`aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl ${!isAuthenticated && videoWatchTime >= 90 ? 'blur-sm pointer-events-none' : ''}`}>
               <iframe
                 title="Members sample"
                 className="w-full h-full"
                 src={shows.find(s => s.id === memberTab)?.episodes[3]?.videoUrl}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
+                onLoad={() => {
+                  if (!isAuthenticated) {
+                    setVideoWatchTime(1); // Start the timer when video loads
+                  }
+                }}
               />
             </div>
           </div>
