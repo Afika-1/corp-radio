@@ -11,7 +11,7 @@ export default function CorpRadio() {
   const [currentUser, setCurrentUser] = useState(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState('login');
-  const [authForm, setAuthForm] = useState({ username: '', password: '', confirmPassword: '' });
+  const [authForm, setAuthForm] = useState({ fullName: '', username: '', password: '', confirmPassword: '' });
   const [authErrors, setAuthErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -29,7 +29,7 @@ export default function CorpRadio() {
 
   // Initialize users from memory
   const [users, setUsers] = useState([
-    { username: 'demo', password: 'demo123' }
+    { fullName: 'Demo User', username: 'demo@corpradio.com', password: 'demo123' }
   ]);
 
   //Members only limited viewership
@@ -153,14 +153,23 @@ export default function CorpRadio() {
     e.preventDefault();
     const errors = {};
 
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     if (!authForm.username.trim()) {
-      errors.username = 'Username is required';
+      errors.username = 'Email is required';
+    } else if (!emailRegex.test(authForm.username)) {
+      errors.username = 'Please enter a valid email address';
     }
+
     if (!authForm.password) {
       errors.password = 'Password is required';
     }
 
     if (authMode === 'register') {
+      if (!authForm.fullName.trim()) {
+        errors.fullName = 'Full name is required';
+      }
       if (authForm.password.length < 6) {
         errors.password = 'Password must be at least 6 characters';
       }
@@ -168,7 +177,7 @@ export default function CorpRadio() {
         errors.confirmPassword = 'Passwords do not match';
       }
       if (users.find(u => u.username === authForm.username)) {
-        errors.username = 'Username already exists';
+        errors.username = 'Email already exists';
       }
     }
 
@@ -180,24 +189,28 @@ export default function CorpRadio() {
     if (authMode === 'login') {
       const user = users.find(u => u.username === authForm.username && u.password === authForm.password);
       if (user) {
-        const userData = { username: user.username };
+        const userData = { fullName: user.fullName, username: user.username };
         setCurrentUser(userData);
         setIsAuthenticated(true);
         sessionStorage.setItem('corpRadioUser', JSON.stringify(userData));
         setShowAuthModal(false);
-        setAuthForm({ username: '', password: '', confirmPassword: '' });
+        setAuthForm({ fullName: '', username: '', password: '', confirmPassword: '' });
       } else {
-        setAuthErrors({ general: 'Invalid username or password' });
+        setAuthErrors({ general: 'Invalid email or password' });
       }
     } else {
-      const newUser = { username: authForm.username, password: authForm.password };
+      const newUser = {
+        fullName: authForm.fullName,
+        username: authForm.username,
+        password: authForm.password
+      };
       setUsers([...users, newUser]);
-      const userData = { username: newUser.username };
+      const userData = { fullName: newUser.fullName, username: newUser.username };
       setCurrentUser(userData);
       setIsAuthenticated(true);
       sessionStorage.setItem('corpRadioUser', JSON.stringify(userData));
       setShowAuthModal(false);
-      setAuthForm({ username: '', password: '', confirmPassword: '' });
+      setAuthForm({ fullName: '', username: '', password: '', confirmPassword: '' });
     }
   };
 
@@ -213,7 +226,7 @@ export default function CorpRadio() {
     setAuthMode(mode);
     setShowAuthModal(true);
     setAuthErrors({});
-    setAuthForm({ username: '', password: '', confirmPassword: '' });
+    setAuthForm({ fullName: '', username: '', password: '', confirmPassword: '' });
   };
 
   const scrollTo = (id) => {
@@ -283,8 +296,7 @@ export default function CorpRadio() {
         <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-3xl font-bold text-[#001F3F] mb-2">Welcome Back, {currentUser?.username}!</h1>
-              <p className="text-gray-600">Access all exclusive member content below</p>
+              <h1 className="text-3xl font-bold text-[#001F3F] mb-2">Welcome Back, {currentUser?.fullName}!</h1>              <p className="text-gray-600">Access all exclusive member content below</p>
             </div>
             <div className="flex items-center gap-2 bg-green-50 px-4 py-2 rounded-lg border border-green-200">
               <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
@@ -394,8 +406,7 @@ export default function CorpRadio() {
               <div className="flex items-center gap-4">
                 <div className="hidden md:flex items-center gap-2 bg-blue-50 px-4 py-2 rounded-lg border border-blue-200">
                   <Users className="w-4 h-4 text-[#001F3F]" />
-                  <span className="text-sm font-semibold text-[#001F3F]">{currentUser?.username}</span>
-                </div>
+                  <span className="text-sm font-semibold text-[#001F3F]">{currentUser?.fullName}</span>                </div>
                 <button onClick={() => setCurrentView('main')} className="text-sm cursor-pointer font-medium text-gray-600 hover:text-[#001F3F] transition">
                   Back to Home
                 </button>
@@ -437,18 +448,36 @@ export default function CorpRadio() {
               </div>
             )}
             <form onSubmit={handleAuthSubmit} className="space-y-4">
+              {authMode === 'register' && (
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
+                  <input
+                    type="text"
+                    value={authForm.fullName}
+                    onChange={(e) => setAuthForm({ ...authForm, fullName: e.target.value })}
+                    className={`w-full p-3 border-2 rounded-lg outline-none transition ${authErrors.fullName ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'
+                      }`}
+                    placeholder="Enter your full name"
+                  />
+                  {authErrors.fullName && <p className="text-red-500 text-xs mt-1">{authErrors.fullName}</p>}
+                </div>
+              )}
+
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Username</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  {authMode === 'register' ? 'Email Address' : 'Email'}
+                </label>
                 <input
-                  type="text"
+                  type="email"
                   value={authForm.username}
                   onChange={(e) => setAuthForm({ ...authForm, username: e.target.value })}
                   className={`w-full p-3 border-2 rounded-lg outline-none transition ${authErrors.username ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'
                     }`}
-                  placeholder="Enter username"
+                  placeholder="your@email.com"
                 />
                 {authErrors.username && <p className="text-red-500 text-xs mt-1">{authErrors.username}</p>}
               </div>
+
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Password</label>
                 <div className="relative">
@@ -470,6 +499,7 @@ export default function CorpRadio() {
                 </div>
                 {authErrors.password && <p className="text-red-500 text-xs mt-1">{authErrors.password}</p>}
               </div>
+
               {authMode === 'register' && (
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Confirm Password</label>
@@ -485,7 +515,7 @@ export default function CorpRadio() {
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute right-3 cursor-pointer top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      className="absolute cursor-pointer right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                     >
                       {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                     </button>
@@ -493,9 +523,11 @@ export default function CorpRadio() {
                   {authErrors.confirmPassword && <p className="text-red-500 text-xs mt-1">{authErrors.confirmPassword}</p>}
                 </div>
               )}
+
               <button type="submit" className="w-full bg-[#001F3F] cursor-pointer text-white py-3 rounded-lg font-bold hover:bg-blue-900 transition">
                 {authMode === 'login' ? 'Login' : 'Register'}
               </button>
+
               <div className="text-center">
                 <button
                   type="button"
@@ -555,7 +587,7 @@ export default function CorpRadio() {
                     className="flex items-center cursor-pointer gap-2 text-sm font-semibold text-[#001F3F] hover:text-blue-800 transition"
                   >
                     <Users className="w-4 h-4" />
-                    {currentUser?.username}
+                    {currentUser?.fullName}
                   </button>
                   <button
                     onClick={handleLogout}
@@ -748,7 +780,7 @@ export default function CorpRadio() {
                     </button>
                     <button
                       onClick={() => openAuthModal('register')}
-                      className="border-2 cursor-pointer border-[#001F3F] text-[#001F3F] px-6 py-3 rounded-lg font-bold hover:bg-[#001F3F] hover:text-white transition"
+                      className="border-2 cursor-pointer border-[#001F3F] text-[#001F3F] px-6 py-3 rounded-lg font-bold hover:bg-[#001F3F] hover:!text-white transition"
                     >
                       Register Free
                     </button>
@@ -841,7 +873,7 @@ export default function CorpRadio() {
               {!isAuthenticated && (
                 <button
                   onClick={() => openAuthModal('login')}
-                  className="border-2 cursor-pointer border-[#001F3F] text-[#001F3F] px-8 py-4 rounded-lg font-bold hover:bg-[#001F3F] hover:text-white transition-all transform hover:scale-105"
+                  className="border-2 cursor-pointer border-[#001F3F] text-[#001F3F] px-8 py-4 rounded-lg font-bold hover:bg-[#001F3F] hover:!text-white transition-all transform hover:scale-105"
                 >
                   Already a Member? Login
                 </button>
@@ -866,16 +898,16 @@ export default function CorpRadio() {
               </div>
             )}
 
-            {!isAuthenticated && videoWatchTime > 0 && videoWatchTime < 90 && showTimeoutWarning && (
+            {!isAuthenticated && videoWatchTime > 0 && videoWatchTime < 30 && showTimeoutWarning && (
               <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20 bg-yellow-500 text-black px-4 py-2 rounded-lg shadow-lg flex items-center gap-2">
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                 </svg>
-                <span className="text-sm font-semibold">{90 - videoWatchTime}s remaining - Register to continue</span>
+                <span className="text-sm font-semibold">{30 - videoWatchTime}s remaining - Register to continue</span>
               </div>
             )}
 
-            <div className={`aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl ${!isAuthenticated && videoWatchTime >= 90 ? 'blur-sm pointer-events-none' : ''}`}>
+            <div className={`aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl ${!isAuthenticated && videoWatchTime >= 30 ? 'blur-sm pointer-events-none' : ''}`}>
               <iframe
                 title="Members sample"
                 className="w-full h-full"
@@ -942,7 +974,7 @@ export default function CorpRadio() {
                 </button>
                 <button
                   onClick={() => isAuthenticated ? setCurrentView('members-dashboard') : openAuthModal('register')}
-                  className="border-2 cursor-pointer border-[#001F3F] text-[#001F3F] px-6 py-3 rounded-lg font-bold hover:bg-[#001F3F] hover:text-white transition"
+                  className="border-2 cursor-pointer border-[#001F3F] text-[#001F3F] px-6 py-3 rounded-lg font-bold hover:bg-[#001F3F] hover:!text-white transition"
                 >
                   Join Community
                 </button>
