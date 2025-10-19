@@ -16,6 +16,21 @@ export default function CorpRadio() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  const [showChangePassword, setShowChangePassword] = useState(false);
+  const [changePasswordForm, setChangePasswordForm] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmNewPassword: ''
+  });
+  const [changePasswordErrors, setChangePasswordErrors] = useState({});
+
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetErrors, setResetErrors] = useState({});
+  const [showResetSuccess, setShowResetSuccess] = useState(false);
+  const [tempPassword, setTempPassword] = useState('');
   // UI state
   const [menuOpen, setMenuOpen] = useState(false);
   const [active, setActive] = useState("hero");
@@ -98,9 +113,9 @@ export default function CorpRadio() {
     {
       id: "fundamentals",
       title: "Business Fundamentals",
-      host: "Charlene Senosi",
+      host: "Lester Philander",
       desc: "Tactical episodes on Sales, Marketing, HR, Funding and small-business growth.",
-      img: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=800&q=60&auto=format&fit=crop",
+      img: "src/assets/Lester.jpg",
       videoType: "youtube",
       episodes: [
         { id: 1, title: "Sales Fundamentals", videoUrl: "https://www.youtube.com/embed/gBBbOOM2onA" },
@@ -109,11 +124,25 @@ export default function CorpRadio() {
         { id: 4, title: "Funding Your Business", videoUrl: "https://www.youtube.com/embed/XLEFAcI98r0" }
       ]
     },
+    // {
+    //   id: "acquisition",
+    //   title: "Acquisition & Franchise",
+    //   host: "Lester Philander",
+    //   desc: "Practical guidance for acquisitions, franchising and growing via M&A strategies.",
+    //   img: "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=800&q=60&auto=format&fit=crop",
+    //   videoType: "facebook",
+    //   episodes: [
+    //     { id: 1, title: "Franchise Fundamentals", videoUrl: "https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F4359229150964045&show_text=false&width=867&t=0" },
+    //     { id: 2, title: "Acquisition Strategies", videoUrl: "https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F783620987637550%2F&show_text=false&width=867&t=0" },
+    //     { id: 3, title: "M&A Best Practices", videoUrl: "https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1474116340586636%2F&show_text=true&width=867&t=0" },
+    //     { id: 4, title: "Scaling Through Franchising", videoUrl: "https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F814388837754086%2F&show_text=false&width=867&t=0" }
+    //   ]
+    // },
     {
-      id: "acquisition",
-      title: "Acquisition & Franchise",
-      host: "Lester Philander",
-      desc: "Practical guidance for acquisitions, franchising and growing via M&A strategies.",
+      id: "ai",
+      title: "The AI Playbook",
+      host: "Charl Imalman",
+      desc: "Real tools, case studies and policies for adopting AI in business workflows.",
       img: "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=800&q=60&auto=format&fit=crop",
       videoType: "facebook",
       episodes: [
@@ -123,20 +152,6 @@ export default function CorpRadio() {
         { id: 4, title: "Scaling Through Franchising", videoUrl: "https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F814388837754086%2F&show_text=false&width=867&t=0" }
       ]
     },
-    {
-      id: "ai",
-      title: "The AI Playbook",
-      host: "Charl Imalman",
-      desc: "Real tools, case studies and policies for adopting AI in business workflows.",
-      img: "https://images.unsplash.com/photo-1545239351-1141bd82e8a6?w=800&q=60&auto=format&fit=crop",
-      videoType: "youtube",
-      episodes: [
-        { id: 1, title: "AI Tools Overview", videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
-        { id: 2, title: "Implementing AI in Business", videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
-        { id: 3, title: "AI Policy & Ethics", videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
-        { id: 4, title: "Case Studies: AI Success", videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ" }
-      ]
-    }
   ];
 
   const [currentEpisode, setCurrentEpisode] = useState({});
@@ -153,7 +168,6 @@ export default function CorpRadio() {
     e.preventDefault();
     const errors = {};
 
-    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!authForm.username.trim()) {
@@ -195,6 +209,11 @@ export default function CorpRadio() {
         sessionStorage.setItem('corpRadioUser', JSON.stringify(userData));
         setShowAuthModal(false);
         setAuthForm({ fullName: '', username: '', password: '', confirmPassword: '' });
+
+        // Show success popup
+        setSuccessMessage(`Welcome back, ${user.fullName}! You've successfully logged in.`);
+        setShowSuccessPopup(true);
+        setTimeout(() => setShowSuccessPopup(false), 4000);
       } else {
         setAuthErrors({ general: 'Invalid email or password' });
       }
@@ -211,7 +230,142 @@ export default function CorpRadio() {
       sessionStorage.setItem('corpRadioUser', JSON.stringify(userData));
       setShowAuthModal(false);
       setAuthForm({ fullName: '', username: '', password: '', confirmPassword: '' });
+
+      // Show success popup
+      setSuccessMessage(`Welcome, ${newUser.fullName}! You've successfully registered and logged in.`);
+      setShowSuccessPopup(true);
+      setTimeout(() => setShowSuccessPopup(false), 4000);
     }
+  };
+
+  const handleForgotPassword = (e) => {
+    e.preventDefault();
+    const errors = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!resetEmail.trim()) {
+      errors.email = 'Email is required';
+    } else if (!emailRegex.test(resetEmail)) {
+      errors.email = 'Please enter a valid email address';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setResetErrors(errors);
+      return;
+    }
+
+    const user = users.find(u => u.username === resetEmail);
+    if (!user) {
+      setResetErrors({ email: 'No account found with this email address' });
+      return;
+    }
+
+    // Simulate password reset (in real app, send email)
+    // For demo, we'll just set a temporary password
+    // Generates an 8-character temporary password with at least:
+    // 1 uppercase, 1 lowercase, 1 digit and 1 symbol.
+    function generateTempPassword(length = 8) {
+      const upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      const lower = "abcdefghijklmnopqrstuvwxyz";
+      const digits = "0123456789";
+      const symbols = "!@#$%^&*()-_=+[]{}<>?";
+      const all = upper + lower + digits + symbols;
+
+      // secure random int [0, max)
+      const secureRandomInt = (max) => {
+        if (typeof crypto !== "undefined" && crypto.getRandomValues) {
+          // browser or secure environment
+          const arr = new Uint32Array(1);
+          crypto.getRandomValues(arr);
+          return arr[0] % max;
+        }
+        // fallback
+        return Math.floor(Math.random() * max);
+      };
+
+      const pick = (set) => set[secureRandomInt(set.length)];
+
+      // Ensure at least one of each required type
+      const pwdChars = [
+        pick(upper),
+        pick(lower),
+        pick(digits),
+        pick(symbols),
+      ];
+
+      // Fill the rest with random chars from the full set
+      for (let i = pwdChars.length; i < length; i++) {
+        pwdChars.push(pick(all));
+      }
+
+      // Shuffle (Fisher-Yates) using secureRandomInt
+      for (let i = pwdChars.length - 1; i > 0; i--) {
+        const j = secureRandomInt(i + 1);
+        [pwdChars[i], pwdChars[j]] = [pwdChars[j], pwdChars[i]];
+      }
+
+      return pwdChars.join("");
+    }
+
+    // Example usage
+    const newTempPassword = generateTempPassword(8);
+setTempPassword(newTempPassword); // Store in state
+console.log("Temp password:", newTempPassword);
+
+    const updatedUsers = users.map(u =>
+      u.username === resetEmail ? { ...u, password: newTempPassword  } : u
+    );
+    setUsers(updatedUsers);
+
+    setShowResetSuccess(true);
+    setResetEmail('');
+    setTimeout(() => {
+      setShowResetSuccess(false);
+      setShowForgotPassword(false);
+      setShowAuthModal(true);
+      setAuthMode('login');
+    }, 5000);
+  };
+
+  const handleChangePassword = (e) => {
+    e.preventDefault();
+    const errors = {};
+
+    if (!changePasswordForm.currentPassword) {
+      errors.currentPassword = 'Current password is required';
+    }
+    if (changePasswordForm.newPassword.length < 6) {
+      errors.newPassword = 'New password must be at least 6 characters';
+    }
+    if (changePasswordForm.newPassword !== changePasswordForm.confirmNewPassword) {
+      errors.confirmNewPassword = 'Passwords do not match';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setChangePasswordErrors(errors);
+      return;
+    }
+
+    // Verify current password
+    const user = users.find(u => u.username === currentUser.username);
+    if (!user || user.password !== changePasswordForm.currentPassword) {
+      setChangePasswordErrors({ currentPassword: 'Current password is incorrect' });
+      return;
+    }
+
+    // Update password
+    const updatedUsers = users.map(u =>
+      u.username === currentUser.username ? { ...u, password: changePasswordForm.newPassword } : u
+    );
+    setUsers(updatedUsers);
+
+    setSuccessMessage('Password changed successfully!');
+    setShowSuccessPopup(true);
+    setTimeout(() => setShowSuccessPopup(false), 4000);
+
+    setShowChangePassword(false);
+    setChangePasswordForm({ currentPassword: '', newPassword: '', confirmNewPassword: '' });
+    setChangePasswordErrors({});
   };
 
   const handleLogout = () => {
@@ -387,16 +541,229 @@ export default function CorpRadio() {
       </div>
     </div>
   );
-
   if (currentView === 'members-dashboard' && isAuthenticated) {
     return (
       <div className="min-h-screen font-sans antialiased text-gray-900 bg-white">
+        {/* Change Password Modal */}
+        {showChangePassword && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 relative">
+              <button
+                onClick={() => {
+                  setShowChangePassword(false);
+                  setChangePasswordForm({ currentPassword: '', newPassword: '', confirmNewPassword: '' });
+                  setChangePasswordErrors({});
+                }}
+                className="absolute cursor-pointer top-4 right-4 text-gray-400 hover:text-gray-600"
+              >
+                <X className="w-6 h-6" />
+              </button>
+
+              <div className="text-center mb-6">
+                <div className="w-16 h-16 bg-[#001F3F] rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Lock className="w-8 h-8 text-white" />
+                </div>
+                <h2 className="text-2xl font-bold text-[#001F3F] mb-2">Change Password</h2>
+                <p className="text-gray-600">Update your account password</p>
+              </div>
+
+              <form onSubmit={handleChangePassword} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Current Password</label>
+                  <input
+                    type="password"
+                    value={changePasswordForm.currentPassword}
+                    onChange={(e) => setChangePasswordForm({ ...changePasswordForm, currentPassword: e.target.value })}
+                    className={`w-full p-3 border-2 rounded-lg outline-none transition ${changePasswordErrors.currentPassword ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'
+                      }`}
+                    placeholder="Enter current password"
+                  />
+                  {changePasswordErrors.currentPassword && (
+                    <p className="text-red-500 text-xs mt-1">{changePasswordErrors.currentPassword}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">New Password</label>
+                  <input
+                    type="password"
+                    value={changePasswordForm.newPassword}
+                    onChange={(e) => setChangePasswordForm({ ...changePasswordForm, newPassword: e.target.value })}
+                    className={`w-full p-3 border-2 rounded-lg outline-none transition ${changePasswordErrors.newPassword ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'
+                      }`}
+                    placeholder="Enter new password"
+                  />
+                  {changePasswordErrors.newPassword && (
+                    <p className="text-red-500 text-xs mt-1">{changePasswordErrors.newPassword}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Confirm New Password</label>
+                  <input
+                    type="password"
+                    value={changePasswordForm.confirmNewPassword}
+                    onChange={(e) => setChangePasswordForm({ ...changePasswordForm, confirmNewPassword: e.target.value })}
+                    className={`w-full p-3 border-2 rounded-lg outline-none transition ${changePasswordErrors.confirmNewPassword ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'
+                      }`}
+                    placeholder="Confirm new password"
+                  />
+                  {changePasswordErrors.confirmNewPassword && (
+                    <p className="text-red-500 text-xs mt-1">{changePasswordErrors.confirmNewPassword}</p>
+                  )}
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full bg-[#001F3F] cursor-pointer text-white py-3 rounded-lg font-bold hover:bg-blue-900 transition"
+                >
+                  Update Password
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {showAuthModal && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 relative">
+              <button onClick={() => setShowAuthModal(false)} className="absolute cursor-pointer top-4 right-4 text-gray-400 hover:text-gray-600">
+                <X className="w-6 h-6" />
+              </button>
+              <div className="text-center mb-6">
+                <div className="w-16 h-16 bg-[#001F3F] rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Lock className="w-8 h-8 text-white" />
+                </div>
+                <h2 className="text-2xl font-bold text-[#001F3F] mb-2">
+                  {authMode === 'login' ? 'Welcome Back' : 'Create Account'}
+                </h2>
+                <p className="text-gray-600">
+                  {authMode === 'login' ? 'Login to access member content' : 'Register for free access'}
+                </p>
+              </div>
+              {authErrors.general && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
+                  {authErrors.general}
+                </div>
+              )}
+              <form onSubmit={handleAuthSubmit} className="space-y-4">
+                {authMode === 'register' && (
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1">Full Name</label>
+                    <input
+                      type="text"
+                      value={authForm.fullName}
+                      onChange={(e) => setAuthForm({ ...authForm, fullName: e.target.value })}
+                      className={`w-full p-1 border-2 rounded-lg outline-none transition ${authErrors.fullName ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'
+                        }`}
+                      placeholder="Enter your full name"
+                    />
+                    {authErrors.fullName && <p className="text-red-500 text-xs mt-1">{authErrors.fullName}</p>}
+                  </div>
+                )}
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">
+                    {authMode === 'register' ? 'Email Address' : 'Email'}
+                  </label>
+                  <input
+                    type="email"
+                    value={authForm.username}
+                    onChange={(e) => setAuthForm({ ...authForm, username: e.target.value })}
+                    className={`w-full p-1 border-2 rounded-lg outline-none transition ${authErrors.username ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'
+                      }`}
+                    placeholder="your@email.com"
+                  />
+                  {authErrors.username && <p className="text-red-500 text-xs mt-1">{authErrors.username}</p>}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">Password</label>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      value={authForm.password}
+                      onChange={(e) => setAuthForm({ ...authForm, password: e.target.value })}
+                      className={`w-full p-1 border-2 rounded-lg outline-none transition pr-10 ${authErrors.password ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'
+                        }`}
+                      placeholder="Enter password"
+                    />
+
+
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute cursor-pointer right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    >
+                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    </button>
+                  </div>
+                  {authErrors.password && <p className="text-red-500 text-xs mt-1">{authErrors.password}</p>}
+                </div>
+                {authMode === 'login' && (
+                  <div className="text-right">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowAuthModal(false);
+                        setShowForgotPassword(true);
+                      }}
+                      className="text-sm cursor-pointer text-[#001F3F] hover:underline font-semibold"
+                    >
+                      Forgot Password?
+                    </button>
+                  </div>
+                )}
+                {authMode === 'register' && (
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1">Confirm Password</label>
+                    <div className="relative">
+                      <input
+                        type={showConfirmPassword ? "text" : "password"}
+                        value={authForm.confirmPassword}
+                        onChange={(e) => setAuthForm({ ...authForm, confirmPassword: e.target.value })}
+                        className={`w-full p-1 border-2 rounded-lg outline-none transition pr-10 ${authErrors.confirmPassword ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'
+                          }`}
+                        placeholder="Confirm password"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        className="absolute cursor-pointer right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      >
+                        {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                      </button>
+                    </div>
+                    {authErrors.confirmPassword && <p className="text-red-500 text-xs mt-1">{authErrors.confirmPassword}</p>}
+                  </div>
+                )}
+
+                <button type="submit" className="w-full bg-[#001F3F] cursor-pointer text-white py-2 rounded-lg font-bold hover:bg-blue-900 transition">
+                  {authMode === 'login' ? 'Login' : 'Register'}
+                </button>
+
+                <div className="text-center">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAuthMode(authMode === 'login' ? 'register' : 'login');
+                      setAuthErrors({});
+                    }}
+                    className="text-sm cursor-pointer text-[#001F3F] hover:underline"
+                  >
+                    {authMode === 'login' ? "Don't have an account? Register" : 'Already have an account? Login'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
         <header className="fixed inset-x-0 top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-20">
               <div className="flex items-center gap-3 cursor-pointer" onClick={() => setCurrentView('main')}>
-                <div className="w-12 h-12 rounded-full bg-[#001F3F] flex items-center justify-center">
-                  <Radio className="w-6 h-6 text-white" />
+                <div className="w-12 h-12 rounded-full bg-[#001F3F] flex items-center justify-center overflow-hidden">
+                  <img src={logo} alt="Corp Radio logo" className="object-cover w-full h-full " />
                 </div>
                 <div>
                   <div className="text-xl font-bold tracking-tight text-[#001F3F]">Corp Radio</div>
@@ -407,6 +774,12 @@ export default function CorpRadio() {
                 <div className="hidden md:flex items-center gap-2 bg-blue-50 px-4 py-2 rounded-lg border border-blue-200">
                   <Users className="w-4 h-4 text-[#001F3F]" />
                   <span className="text-sm font-semibold text-[#001F3F]">{currentUser?.fullName}</span>                </div>
+                <button
+                  onClick={() => setShowChangePassword(true)}
+                  className="text-sm cursor-pointer font-medium text-[#001F3F] hover:text-blue-800 transition"
+                >
+                  Change Password
+                </button>
                 <button onClick={() => setCurrentView('main')} className="text-sm cursor-pointer font-medium text-gray-600 hover:text-[#001F3F] transition">
                   Back to Home
                 </button>
@@ -423,8 +796,206 @@ export default function CorpRadio() {
     );
   }
 
+
+
+
+
   return (
     <div className="min-h-screen font-sans antialiased text-gray-900 bg-white">
+      {/* Success Popup */}
+      {
+        showSuccessPopup && (
+          <div className="fixed top-24 right-4 z-[70] animate-slide-in">
+            <div className="bg-white rounded-xl shadow-2xl p-6 border-l-4 border-green-500 max-w-md">
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0">
+                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                    <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-gray-900 mb-1">Success!</h3>
+                  <p className="text-sm text-gray-600">{successMessage}</p>
+                </div>
+                <button
+                  onClick={() => setShowSuccessPopup(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+          </div>
+        )
+      }
+      {/* Forgot Password Modal */}
+      {showForgotPassword && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 relative">
+            <button
+              onClick={() => {
+                setShowForgotPassword(false);
+                setResetEmail('');
+                setResetErrors({});
+                setShowResetSuccess(false);
+                setTempPassword('');
+              }}
+              className="absolute cursor-pointer top-4 right-4 text-gray-400 hover:text-gray-600"
+            >
+              <X className="w-6 h-6" />
+            </button>
+
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Mail className="w-8 h-8 text-[#001F3F]" />
+              </div>
+              <h2 className="text-2xl font-bold text-[#001F3F] mb-2">Forgot Password?</h2>
+              <p className="text-gray-600">Enter your email to reset your password</p>
+            </div>
+
+            {showResetSuccess ? (
+              <div className="text-center py-8">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Password Reset Successful!</h3>
+                <p className="text-gray-600 mb-4">
+                  Your temporary password is: <span className="font-mono font-bold text-[#001F3F]">{tempPassword}</span>
+                </p>
+                <p className="text-sm text-gray-500">
+                  Please login with this temporary password and change it immediately in you DASHBOARD.
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={handleForgotPassword} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
+                  <input
+                    type="email"
+                    value={resetEmail}
+                    onChange={(e) => {
+                      setResetEmail(e.target.value);
+                      setResetErrors({});
+                    }}
+                    className={`w-full p-3 border-2 rounded-lg outline-none transition ${resetErrors.email ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'
+                      }`}
+                    placeholder="your@email.com"
+                  />
+                  {resetErrors.email && (
+                    <p className="text-red-500 text-xs mt-1">{resetErrors.email}</p>
+                  )}
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full bg-[#001F3F] cursor-pointer text-white py-3 rounded-lg font-bold hover:bg-blue-900 transition"
+                >
+                  Reset Password
+                </button>
+
+                <div className="text-center">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowForgotPassword(false);
+                      setShowAuthModal(true);
+                    }}
+                    className="text-sm cursor-pointer text-[#001F3F] hover:underline"
+                  >
+                    Back to Login
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      )
+      }
+
+      {/* Change Password Modal */}
+      {showChangePassword && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 relative">
+            <button
+              onClick={() => {
+                setShowChangePassword(false);
+                setChangePasswordForm({ currentPassword: '', newPassword: '', confirmNewPassword: '' });
+                setChangePasswordErrors({});
+              }}
+              className="absolute cursor-pointer top-4 right-4 text-gray-400 hover:text-gray-600"
+            >
+              <X className="w-6 h-6" />
+            </button>
+
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 bg-[#001F3F] rounded-full flex items-center justify-center mx-auto mb-4">
+                <Lock className="w-8 h-8 text-white" />
+              </div>
+              <h2 className="text-2xl font-bold text-[#001F3F] mb-2">Change Password</h2>
+              <p className="text-gray-600">Update your account password</p>
+            </div>
+
+            <form onSubmit={handleChangePassword} className="space-y-4">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Current Password</label>
+                <input
+                  type="password"
+                  value={changePasswordForm.currentPassword}
+                  onChange={(e) => setChangePasswordForm({ ...changePasswordForm, currentPassword: e.target.value })}
+                  className={`w-full p-3 border-2 rounded-lg outline-none transition ${changePasswordErrors.currentPassword ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'
+                    }`}
+                  placeholder="Enter current password"
+                />
+                {changePasswordErrors.currentPassword && (
+                  <p className="text-red-500 text-xs mt-1">{changePasswordErrors.currentPassword}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">New Password</label>
+                <input
+                  type="password"
+                  value={changePasswordForm.newPassword}
+                  onChange={(e) => setChangePasswordForm({ ...changePasswordForm, newPassword: e.target.value })}
+                  className={`w-full p-3 border-2 rounded-lg outline-none transition ${changePasswordErrors.newPassword ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'
+                    }`}
+                  placeholder="Enter new password"
+                />
+                {changePasswordErrors.newPassword && (
+                  <p className="text-red-500 text-xs mt-1">{changePasswordErrors.newPassword}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Confirm New Password</label>
+                <input
+                  type="password"
+                  value={changePasswordForm.confirmNewPassword}
+                  onChange={(e) => setChangePasswordForm({ ...changePasswordForm, confirmNewPassword: e.target.value })}
+                  className={`w-full p-3 border-2 rounded-lg outline-none transition ${changePasswordErrors.confirmNewPassword ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'
+                    }`}
+                  placeholder="Confirm new password"
+                />
+                {changePasswordErrors.confirmNewPassword && (
+                  <p className="text-red-500 text-xs mt-1">{changePasswordErrors.confirmNewPassword}</p>
+                )}
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-[#001F3F] cursor-pointer text-white py-3 rounded-lg font-bold hover:bg-blue-900 transition"
+              >
+                Update Password
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
       {showAuthModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 relative">
@@ -450,12 +1021,12 @@ export default function CorpRadio() {
             <form onSubmit={handleAuthSubmit} className="space-y-4">
               {authMode === 'register' && (
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">Full Name</label>
                   <input
                     type="text"
                     value={authForm.fullName}
                     onChange={(e) => setAuthForm({ ...authForm, fullName: e.target.value })}
-                    className={`w-full p-3 border-2 rounded-lg outline-none transition ${authErrors.fullName ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'
+                    className={`w-full p-1 border-2 rounded-lg outline-none transition ${authErrors.fullName ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'
                       }`}
                     placeholder="Enter your full name"
                   />
@@ -464,14 +1035,14 @@ export default function CorpRadio() {
               )}
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-700 mb-1">
                   {authMode === 'register' ? 'Email Address' : 'Email'}
                 </label>
                 <input
                   type="email"
                   value={authForm.username}
                   onChange={(e) => setAuthForm({ ...authForm, username: e.target.value })}
-                  className={`w-full p-3 border-2 rounded-lg outline-none transition ${authErrors.username ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'
+                  className={`w-full p-1 border-2 rounded-lg outline-none transition ${authErrors.username ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'
                     }`}
                   placeholder="your@email.com"
                 />
@@ -479,16 +1050,18 @@ export default function CorpRadio() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Password</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">Password</label>
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
                     value={authForm.password}
                     onChange={(e) => setAuthForm({ ...authForm, password: e.target.value })}
-                    className={`w-full p-3 border-2 rounded-lg outline-none transition pr-10 ${authErrors.password ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'
+                    className={`w-full p-1 border-2 rounded-lg outline-none transition pr-10 ${authErrors.password ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'
                       }`}
                     placeholder="Enter password"
                   />
+
+
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
@@ -499,16 +1072,29 @@ export default function CorpRadio() {
                 </div>
                 {authErrors.password && <p className="text-red-500 text-xs mt-1">{authErrors.password}</p>}
               </div>
-
+              {authMode === 'login' && (
+                <div className="text-right">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowAuthModal(false);
+                      setShowForgotPassword(true);
+                    }}
+                    className="text-sm cursor-pointer text-[#001F3F] hover:underline font-semibold"
+                  >
+                    Forgot Password?
+                  </button>
+                </div>
+              )}
               {authMode === 'register' && (
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Confirm Password</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">Confirm Password</label>
                   <div className="relative">
                     <input
                       type={showConfirmPassword ? "text" : "password"}
                       value={authForm.confirmPassword}
                       onChange={(e) => setAuthForm({ ...authForm, confirmPassword: e.target.value })}
-                      className={`w-full p-3 border-2 rounded-lg outline-none transition pr-10 ${authErrors.confirmPassword ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'
+                      className={`w-full p-1 border-2 rounded-lg outline-none transition pr-10 ${authErrors.confirmPassword ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'
                         }`}
                       placeholder="Confirm password"
                     />
@@ -524,7 +1110,7 @@ export default function CorpRadio() {
                 </div>
               )}
 
-              <button type="submit" className="w-full bg-[#001F3F] cursor-pointer text-white py-3 rounded-lg font-bold hover:bg-blue-900 transition">
+              <button type="submit" className="w-full bg-[#001F3F] cursor-pointer text-white py-2 rounded-lg font-bold hover:bg-blue-900 transition">
                 {authMode === 'login' ? 'Login' : 'Register'}
               </button>
 
@@ -704,29 +1290,57 @@ export default function CorpRadio() {
 
       <section id="shows" className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Heading */}
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold text-[#001F3F] mb-4">Our Shows</h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">Short, high-value series hosted by experienced presenters—tailored to business outcomes.</p>
+            <h2 className="text-3xl md:text-5xl font-bold text-[#001F3F] mb-4">
+              Our Shows
+            </h2>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+              Short, high-value series hosted by experienced presenters—tailored to
+              business outcomes.
+            </p>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+          {/* Centered grid - simpler approach */}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
             {shows.map((s) => (
-              <article key={s.id} className="group rounded-2xl overflow-hidden border border-gray-200 shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 bg-white">
+              <article
+                key={s.id}
+                className="group rounded-2xl overflow-hidden border border-gray-200 shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 bg-white w-full max-w-sm"
+              >
                 <div className="h-56 bg-gray-100 overflow-hidden">
-                  <img src={s.img} alt={s.host} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+                  <img
+                    src={s.img}
+                    alt={s.host}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
                 </div>
                 <div className="p-5">
-                  <div className="text-xs text-gray-500 uppercase tracking-wider mb-2 font-semibold">{s.host}</div>
-                  <h3 className="text-lg font-bold text-[#001F3F] mb-3">{s.title}</h3>
-                  <p className="text-sm text-gray-600 mb-4 leading-relaxed">{s.desc}</p>
+                  <div className="text-xs text-gray-500 uppercase tracking-wider mb-2 font-semibold">
+                    {s.host}
+                  </div>
+                  <h3 className="text-lg font-bold text-[#001F3F] mb-3">
+                    {s.title}
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-4 leading-relaxed">
+                    {s.desc}
+                  </p>
                   <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
                     <button
-                      onClick={() => { setPublicTab(s.id); scrollTo('radio'); }}
+                      onClick={() => {
+                        setPublicTab(s.id);
+                        scrollTo("radio");
+                      }}
                       className="flex-1 cursor-pointer text-sm font-semibold text-[#001F3F] hover:bg-blue-50 py-2 rounded transition"
                     >
                       Listen
                     </button>
                     <button
-                      onClick={() => isAuthenticated ? setCurrentView('members-dashboard') : openAuthModal('register')}
+                      onClick={() =>
+                        isAuthenticated
+                          ? setCurrentView("members-dashboard")
+                          : openAuthModal("register")
+                      }
                       className="text-sm cursor-pointer font-medium border border-gray-300 px-3 py-2 rounded hover:border-[#001F3F] hover:text-[#001F3F] transition"
                     >
                       Members
@@ -903,7 +1517,7 @@ export default function CorpRadio() {
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                 </svg>
-                <span className="text-sm font-semibold">{30 - videoWatchTime}s remaining - Register to continue</span>
+                <span className="text-sm font-semibold">{10 - videoWatchTime}s remaining - Register to continue</span>
               </div>
             )}
 
