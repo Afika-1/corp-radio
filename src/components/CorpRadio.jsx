@@ -1,10 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Menu, X, Radio, Play, Mic, Users, TrendingUp, Award, Phone, Mail, Youtube, Linkedin, Instagram, Facebook, Lock, LogOut, Eye, EyeOff } from "lucide-react";
 import "../App.css";
-
 import logo from "../assets/CorpRadioLogo - Copy.jpeg";
 import footerLogo from "../assets/CorpRadioLogo - Copy.jpeg";
 import heroBg from "../assets/hero.jpeg";
+
+import { supabase } from '../supabaseClient'
+
 export default function CorpRadio() {
   // Auth state
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -43,9 +45,9 @@ export default function CorpRadio() {
   const sectionRefs = useRef({});
 
   // Initialize users from memory
-  const [users, setUsers] = useState([
-    { fullName: 'Demo User', username: 'demo@corpradio.com', password: 'demo123' }
-  ]);
+  // const [users, setUsers] = useState([
+  //   { fullName: 'Demo User', username: 'demo@corpradio.com', password: 'demo123' }
+  // ]);
 
   //Members only limited viewership
   const [videoWatchTime, setVideoWatchTime] = useState(0);
@@ -86,13 +88,52 @@ export default function CorpRadio() {
   }, [videoWatchTime, isAuthenticated]);
 
   // Check if user is logged in on mount
-  useEffect(() => {
-    const savedUser = sessionStorage.getItem('corpRadioUser');
-    if (savedUser) {
-      setCurrentUser(JSON.parse(savedUser));
+useEffect(() => {
+  const checkUser = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.user) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('full_name')
+        .eq('id', session.user.id)
+        .single();
+      
+      setCurrentUser({
+        fullName: profile?.full_name || session.user.email,
+        username: session.user.email
+      });
       setIsAuthenticated(true);
     }
-  }, []);
+  };
+  
+  checkUser();
+    // Listen for auth changes
+  const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    if (session?.user) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('full_name')
+        .eq('id', session.user.id)
+        .single();
+      
+      setCurrentUser({
+        fullName: profile?.full_name || session.user.email,
+        username: session.user.email
+      });
+      setIsAuthenticated(true);
+    } else {
+      setIsAuthenticated(false);
+      setCurrentUser(null);
+    }
+  });
+
+  return () => subscription.unsubscribe();
+}, []);
+
+useEffect(() => {
+  console.log('Supabase client:', supabase);
+  console.log('Is connected:', supabase ? 'Yes' : 'No');
+}, []);
 
   // Show definitions
   const shows = [
@@ -164,200 +205,167 @@ export default function CorpRadio() {
   }, [publicTab]);
 
   // Auth functions
-  const handleAuthSubmit = (e) => {
-    e.preventDefault();
-    const errors = {};
+  const handleAuthSubmit = async (e) => {
+  e.preventDefault();
+  const errors = {};
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!authForm.username.trim()) {
-      errors.username = 'Email is required';
-    } else if (!emailRegex.test(authForm.username)) {
-      errors.username = 'Please enter a valid email address';
+  if (!authForm.username.trim()) {
+    errors.username = 'Email is required';
+  } else if (!emailRegex.test(authForm.username)) {
+    errors.username = 'Please enter a valid email address';
+  }
+
+  if (!authForm.password) {
+    errors.password = 'Password is required';
+  }
+
+  if (authMode === 'register') {
+    if (!authForm.fullName.trim()) {
+      errors.fullName = 'Full name is required';
     }
-
-    if (!authForm.password) {
-      errors.password = 'Password is required';
+    if (authForm.password.length < 6) {
+      errors.password = 'Password must be at least 6 characters';
     }
-
-    if (authMode === 'register') {
-      if (!authForm.fullName.trim()) {
-        errors.fullName = 'Full name is required';
-      }
-      if (authForm.password.length < 6) {
-        errors.password = 'Password must be at least 6 characters';
-      }
-      if (authForm.password !== authForm.confirmPassword) {
-        errors.confirmPassword = 'Passwords do not match';
-      }
-      if (users.find(u => u.username === authForm.username)) {
-        errors.username = 'Email already exists';
-      }
+    if (authForm.password !== authForm.confirmPassword) {
+      errors.confirmPassword = 'Passwords do not match';
     }
+  }
 
-    if (Object.keys(errors).length > 0) {
-      setAuthErrors(errors);
-      return;
-    }
+  if (Object.keys(errors).length > 0) {
+    setAuthErrors(errors);
+    return;
+  }
 
+  try {
     if (authMode === 'login') {
-      const user = users.find(u => u.username === authForm.username && u.password === authForm.password);
-      if (user) {
-        const userData = { fullName: user.fullName, username: user.username };
-        setCurrentUser(userData);
-        setIsAuthenticated(true);
-        sessionStorage.setItem('corpRadioUser', JSON.stringify(userData));
-        setShowAuthModal(false);
-        setAuthForm({ fullName: '', username: '', password: '', confirmPassword: '' });
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: authForm.username,
+        password: authForm.password,
+      });
 
-        // Show success popup
-        setSuccessMessage(`Welcome back, ${user.fullName}! You've successfully logged in.`);
-        setShowSuccessPopup(true);
-        setTimeout(() => setShowSuccessPopup(false), 4000);
-      } else {
-        setAuthErrors({ general: 'Invalid email or password' });
-      }
-    } else {
-      const newUser = {
-        fullName: authForm.fullName,
-        username: authForm.username,
-        password: authForm.password
-      };
-      setUsers([...users, newUser]);
-      const userData = { fullName: newUser.fullName, username: newUser.username };
-      setCurrentUser(userData);
+      if (error) throw error;
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('full_name')
+        .eq('id', data.user.id)
+        .single();
+
+      setCurrentUser({
+        fullName: profile?.full_name || data.user.email,
+        username: data.user.email
+      });
       setIsAuthenticated(true);
-      sessionStorage.setItem('corpRadioUser', JSON.stringify(userData));
       setShowAuthModal(false);
       setAuthForm({ fullName: '', username: '', password: '', confirmPassword: '' });
 
-      // Show success popup
-      setSuccessMessage(`Welcome, ${newUser.fullName}! You've successfully registered and logged in.`);
+      setSuccessMessage(`Welcome back, ${profile?.full_name || data.user.email}! You've successfully logged in.`);
+      setShowSuccessPopup(true);
+      setTimeout(() => setShowSuccessPopup(false), 4000);
+    } else {
+      const { data, error } = await supabase.auth.signUp({
+        email: authForm.username,
+        password: authForm.password,
+        options: {
+          data: {
+            full_name: authForm.fullName,
+          }
+        }
+      });
+
+      if (error) throw error;
+
+      setCurrentUser({
+        fullName: authForm.fullName,
+        username: authForm.username
+      });
+      setIsAuthenticated(true);
+      setShowAuthModal(false);
+      setAuthForm({ fullName: '', username: '', password: '', confirmPassword: '' });
+
+      setSuccessMessage(`Welcome, ${authForm.fullName}! You've successfully registered and logged in.`);
       setShowSuccessPopup(true);
       setTimeout(() => setShowSuccessPopup(false), 4000);
     }
-  };
+  } catch (error) {
+    setAuthErrors({ general: error.message });
+  }
+};
 
-  const handleForgotPassword = (e) => {
-    e.preventDefault();
-    const errors = {};
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const handleForgotPassword = async (e) => {
+  e.preventDefault();
+  const errors = {};
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!resetEmail.trim()) {
-      errors.email = 'Email is required';
-    } else if (!emailRegex.test(resetEmail)) {
-      errors.email = 'Please enter a valid email address';
-    }
+  if (!resetEmail.trim()) {
+    errors.email = 'Email is required';
+  } else if (!emailRegex.test(resetEmail)) {
+    errors.email = 'Please enter a valid email address';
+  }
 
-    if (Object.keys(errors).length > 0) {
-      setResetErrors(errors);
-      return;
-    }
+  if (Object.keys(errors).length > 0) {
+    setResetErrors(errors);
+    return;
+  }
 
-    const user = users.find(u => u.username === resetEmail);
-    if (!user) {
-      setResetErrors({ email: 'No account found with this email address' });
-      return;
-    }
+  try {
+    const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
 
-    // Simulate password reset (in real app, send email)
-    // For demo, we'll just set a temporary password
-    // Generates an 8-character temporary password with at least:
-    // 1 uppercase, 1 lowercase, 1 digit and 1 symbol.
-    function generateTempPassword(length = 8) {
-      const upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-      const lower = "abcdefghijklmnopqrstuvwxyz";
-      const digits = "0123456789";
-      const symbols = "!@#$%^&*()-_=+[]{}<>?";
-      const all = upper + lower + digits + symbols;
-
-      // secure random int [0, max)
-      const secureRandomInt = (max) => {
-        if (typeof crypto !== "undefined" && crypto.getRandomValues) {
-          // browser or secure environment
-          const arr = new Uint32Array(1);
-          crypto.getRandomValues(arr);
-          return arr[0] % max;
-        }
-        // fallback
-        return Math.floor(Math.random() * max);
-      };
-
-      const pick = (set) => set[secureRandomInt(set.length)];
-
-      // Ensure at least one of each required type
-      const pwdChars = [
-        pick(upper),
-        pick(lower),
-        pick(digits),
-        pick(symbols),
-      ];
-
-      // Fill the rest with random chars from the full set
-      for (let i = pwdChars.length; i < length; i++) {
-        pwdChars.push(pick(all));
-      }
-
-      // Shuffle (Fisher-Yates) using secureRandomInt
-      for (let i = pwdChars.length - 1; i > 0; i--) {
-        const j = secureRandomInt(i + 1);
-        [pwdChars[i], pwdChars[j]] = [pwdChars[j], pwdChars[i]];
-      }
-
-      return pwdChars.join("");
-    }
-
-    // Example usage
-    const newTempPassword = generateTempPassword(8);
-setTempPassword(newTempPassword); // Store in state
-console.log("Temp password:", newTempPassword);
-
-    const updatedUsers = users.map(u =>
-      u.username === resetEmail ? { ...u, password: newTempPassword  } : u
-    );
-    setUsers(updatedUsers);
+    if (error) throw error;
 
     setShowResetSuccess(true);
     setResetEmail('');
+    setTempPassword('Check your email for reset instructions');
     setTimeout(() => {
       setShowResetSuccess(false);
       setShowForgotPassword(false);
-      setShowAuthModal(true);
-      setAuthMode('login');
     }, 5000);
-  };
+  } catch (error) {
+    setResetErrors({ email: error.message });
+  }
+};
 
-  const handleChangePassword = (e) => {
-    e.preventDefault();
-    const errors = {};
+  const handleChangePassword = async (e) => {
+  e.preventDefault();
+  const errors = {};
 
-    if (!changePasswordForm.currentPassword) {
-      errors.currentPassword = 'Current password is required';
-    }
-    if (changePasswordForm.newPassword.length < 6) {
-      errors.newPassword = 'New password must be at least 6 characters';
-    }
-    if (changePasswordForm.newPassword !== changePasswordForm.confirmNewPassword) {
-      errors.confirmNewPassword = 'Passwords do not match';
-    }
+  if (!changePasswordForm.currentPassword) {
+    errors.currentPassword = 'Current password is required';
+  }
+  if (changePasswordForm.newPassword.length < 6) {
+    errors.newPassword = 'New password must be at least 6 characters';
+  }
+  if (changePasswordForm.newPassword !== changePasswordForm.confirmNewPassword) {
+    errors.confirmNewPassword = 'Passwords do not match';
+  }
 
-    if (Object.keys(errors).length > 0) {
-      setChangePasswordErrors(errors);
-      return;
-    }
+  if (Object.keys(errors).length > 0) {
+    setChangePasswordErrors(errors);
+    return;
+  }
 
-    // Verify current password
-    const user = users.find(u => u.username === currentUser.username);
-    if (!user || user.password !== changePasswordForm.currentPassword) {
+  try {
+    // Verify current password by attempting to sign in
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: currentUser.username,
+      password: changePasswordForm.currentPassword,
+    });
+
+    if (signInError) {
       setChangePasswordErrors({ currentPassword: 'Current password is incorrect' });
       return;
     }
 
     // Update password
-    const updatedUsers = users.map(u =>
-      u.username === currentUser.username ? { ...u, password: changePasswordForm.newPassword } : u
-    );
-    setUsers(updatedUsers);
+    const { error } = await supabase.auth.updateUser({
+      password: changePasswordForm.newPassword
+    });
+
+    if (error) throw error;
 
     setSuccessMessage('Password changed successfully!');
     setShowSuccessPopup(true);
@@ -366,15 +374,18 @@ console.log("Temp password:", newTempPassword);
     setShowChangePassword(false);
     setChangePasswordForm({ currentPassword: '', newPassword: '', confirmNewPassword: '' });
     setChangePasswordErrors({});
-  };
+  } catch (error) {
+    setChangePasswordErrors({ general: error.message });
+  }
+};
 
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-    setCurrentUser(null);
-    sessionStorage.removeItem('corpRadioUser');
-    setCurrentView('main');
-    scrollTo('hero');
-  };
+ const handleLogout = async () => {
+  await supabase.auth.signOut();
+  setIsAuthenticated(false);
+  setCurrentUser(null);
+  setCurrentView('main');
+  scrollTo('hero');
+};
 
   const openAuthModal = (mode) => {
     setAuthMode(mode);
@@ -434,14 +445,31 @@ console.log("Temp password:", newTempPassword);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (validateForm()) {
-      setShowSuccess(true);
-      setContact({ name: "", email: "", subject: "", message: "" });
-      setTimeout(() => setShowSuccess(false), 5000);
-    }
-  };
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!validateForm()) return;
+
+  try {
+    // Call the edge function
+    const { data, error } = await supabase.functions.invoke('send-contact-email', {
+      body: {
+        name: contact.name,
+        email: contact.email,
+        subject: contact.subject,
+        message: contact.message,
+      },
+    });
+
+    if (error) throw error;
+
+    setShowSuccess(true);
+    setContact({ name: "", email: "", subject: "", message: "" });
+    setTimeout(() => setShowSuccess(false), 5000);
+  } catch (error) {
+    console.error('Error sending message:', error);
+    alert('Failed to send message. Please try again.');
+  }
+};
 
   // Members Dashboard Component
   const MembersDashboard = () => (
