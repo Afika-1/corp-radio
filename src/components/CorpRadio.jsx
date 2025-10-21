@@ -1508,11 +1508,12 @@ useEffect(() => {
         </div>
       </section>
 
-      <section id="members" className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto text-center mb-12">
-            <Award className="mx-auto text-[#001F3F] w-16 h-16 mb-6" />
-            <h2 className="text-3xl md:text-4xl font-bold text-[#001F3F] mb-4">Members Only Content</h2>
+      {isAuthenticated && (
+  <section id="members" className="py-24 bg-white">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto text-center mb-12">
+        <Award className="mx-auto text-[#001F3F] w-16 h-16 mb-6" />
+        <h2 className="text-3xl md:text-4xl font-bold text-[#001F3F] mb-4">Members Only Content</h2>
             <p className="text-gray-600 text-lg mb-8">Extended interviews, exclusive resources and behind-the-scenes content. Join our community for free.</p>
             <div className="flex flex-wrap justify-center gap-4">
               <button
@@ -1572,9 +1573,45 @@ useEffect(() => {
                 }}
               />
             </div>
-          </div>
-        </div>
-      </section>
+           </div>
+    </div>
+  </section>
+)}
+      <section id="introduction" className="py-24 bg-gradient-to-b from-gray-50 to-white">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="max-w-4xl mx-auto text-center mb-12">
+      <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-semibold mb-6">
+        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+        <span>Free Preview - No Login Required</span>
+      </div>
+      <h2 className="text-3xl md:text-4xl font-bold text-[#001F3F] mb-4">Welcome to Corp Radio</h2>
+      <p className="text-gray-600 text-lg mb-8">Get a taste of what we offer with this free introduction video. See how our content can help transform your business.</p>
+    </div>
+
+    <div className="max-w-5xl mx-auto">
+      <div className="aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl">
+        <video
+          className="w-full h-full"
+          controls
+          poster="/path/to/your-thumbnail.jpg"
+        >
+          <source src="/path/to/your-intro-video.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </div>
+      
+      <div className="mt-8 text-center">
+        <p className="text-gray-700 mb-6">Ready to access our full library of exclusive content?</p>
+        <button
+          onClick={() => isAuthenticated ? setCurrentView('members-dashboard') : openAuthModal('register')}
+          className="bg-[#001F3F] cursor-pointer text-white px-8 py-4 rounded-lg font-bold shadow-xl hover:bg-blue-900 transition-all transform hover:scale-105"
+        >
+          {isAuthenticated ? 'Go to Dashboard' : 'Register Free - Unlock All Content'}
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
 
       <section id="about" className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
