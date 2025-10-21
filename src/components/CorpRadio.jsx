@@ -1220,7 +1220,13 @@ useEffect(() => {
                     onClick={() => openAuthModal('login')}
                     className="bg-[#001F3F] text-white cursor-pointer text-sm font-semibold px-5 py-2.5 rounded-lg shadow-md hover:bg-blue-900 transition"
                   >
-                    Login / Register
+                    Login
+                  </button>
+                  <button
+                    onClick={() => openAuthModal('register')}
+                    className="bg-[#001F3F] text-white cursor-pointer text-sm font-semibold px-5 py-2.5 rounded-lg shadow-md hover:bg-blue-900 transition"
+                  >
+                    Register
                   </button>
                 </>
               )}
@@ -1256,6 +1262,9 @@ useEffect(() => {
                       </button>
                       <button onClick={() => openAuthModal('login')} className="flex-1 border-2 cursor-pointer border-[#001F3F] text-[#001F3F] rounded-lg py-2.5 font-semibold">
                         Login
+                      </button>
+                      <button onClick={() => openAuthModal('register')} className="flex-1 border-2 cursor-pointer border-[#001F3F] text-[#001F3F] rounded-lg py-2.5 font-semibold">
+                        Register
                       </button>
                     </>
                   )}
