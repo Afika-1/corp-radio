@@ -88,69 +88,55 @@ export default function CorpRadio() {
   }, [videoWatchTime, isAuthenticated]);
 
   // Check if user is logged in on mount
-useEffect(() => {
-  const checkUser = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session?.user) {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('full_name')
-        .eq('id', session.user.id)
-        .single();
-      
-      setCurrentUser({
-        fullName: profile?.full_name || session.user.email,
-        username: session.user.email
-      });
-      setIsAuthenticated(true);
-    }
-  };
-  
-  checkUser();
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('full_name')
+          .eq('id', session.user.id)
+          .single();
+
+        setCurrentUser({
+          fullName: profile?.full_name || session.user.email,
+          username: session.user.email
+        });
+        setIsAuthenticated(true);
+      }
+    };
+
+    checkUser();
     // Listen for auth changes
-  const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-    if (session?.user) {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('full_name')
-        .eq('id', session.user.id)
-        .single();
-      
-      setCurrentUser({
-        fullName: profile?.full_name || session.user.email,
-        username: session.user.email
-      });
-      setIsAuthenticated(true);
-    } else {
-      setIsAuthenticated(false);
-      setCurrentUser(null);
-    }
-  });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (session?.user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('full_name')
+          .eq('id', session.user.id)
+          .single();
 
-  return () => subscription.unsubscribe();
-}, []);
+        setCurrentUser({
+          fullName: profile?.full_name || session.user.email,
+          username: session.user.email
+        });
+        setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
+        setCurrentUser(null);
+      }
+    });
 
-useEffect(() => {
-  console.log('Supabase client:', supabase);
-  console.log('Is connected:', supabase ? 'Yes' : 'No');
-}, []);
+    return () => subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    console.log('Supabase client:', supabase);
+    console.log('Is connected:', supabase ? 'Yes' : 'No');
+  }, []);
 
   // Show definitions
   const shows = [
-    {
-      id: "corporate",
-      title: "The Corporate Show",
-      host: "Jeff Kahn",
-      desc: "Warm, professional interviews with CEOs & C-suite — focused on leadership and strategy.",
-      img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=800&q=60&auto=format&fit=crop",
-      videoType: "youtube",
-      episodes: [
-        { id: 1, title: "Leadership in Crisis", videoUrl: "https://www.youtube.com/embed/wguafJWO5Rs" },
-        { id: 2, title: "Building High-Performance Teams", videoUrl: "https://www.youtube.com/embed/fNEYwdWrs1I" },
-        { id: 3, title: "Strategic Planning for 2025", videoUrl: "https://www.youtube.com/embed/a-_DWgHUqq0" },
-        { id: 4, title: "Innovation & Disruption", videoUrl: "https://www.youtube.com/embed/BPZeMI-V-YU" }
-      ]
-    },
     {
       id: "fundamentals",
       title: "Business Fundamentals",
@@ -165,6 +151,21 @@ useEffect(() => {
         { id: 4, title: "Funding Your Business", videoUrl: "https://www.youtube.com/embed/XLEFAcI98r0" }
       ]
     },
+    {
+      id: "corporate",
+      title: "The Corporate Show",
+      host: "Jeff Kahn",
+      desc: "Warm, professional interviews with CEOs & C-suite — focused on leadership and strategy.",
+      img: "src/assets/Jeff Kahn.jpeg",
+      videoType: "youtube",
+      episodes: [
+        { id: 1, title: "Leadership in Crisis", videoUrl: "https://www.youtube.com/embed/wguafJWO5Rs" },
+        { id: 2, title: "Building High-Performance Teams", videoUrl: "https://www.youtube.com/embed/fNEYwdWrs1I" },
+        { id: 3, title: "Strategic Planning for 2025", videoUrl: "https://www.youtube.com/embed/a-_DWgHUqq0" },
+        { id: 4, title: "Innovation & Disruption", videoUrl: "https://www.youtube.com/embed/BPZeMI-V-YU" }
+      ]
+    },
+
     // {
     //   id: "acquisition",
     //   title: "Acquisition & Franchise",
@@ -184,8 +185,7 @@ useEffect(() => {
       title: "The AI Playbook",
       host: "Charl Imalman",
       desc: "Real tools, case studies and policies for adopting AI in business workflows.",
-      img: "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=800&q=60&auto=format&fit=crop",
-      videoType: "facebook",
+      img: "src/assets/charl1.jpeg",
       episodes: [
         { id: 1, title: "Franchise Fundamentals", videoUrl: "https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F4359229150964045&show_text=false&width=867&t=0" },
         { id: 2, title: "Acquisition Strategies", videoUrl: "https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F783620987637550%2F&show_text=false&width=867&t=0" },
@@ -206,186 +206,186 @@ useEffect(() => {
 
   // Auth functions
   const handleAuthSubmit = async (e) => {
-  e.preventDefault();
-  const errors = {};
+    e.preventDefault();
+    const errors = {};
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  if (!authForm.username.trim()) {
-    errors.username = 'Email is required';
-  } else if (!emailRegex.test(authForm.username)) {
-    errors.username = 'Please enter a valid email address';
-  }
-
-  if (!authForm.password) {
-    errors.password = 'Password is required';
-  }
-
-  if (authMode === 'register') {
-    if (!authForm.fullName.trim()) {
-      errors.fullName = 'Full name is required';
+    if (!authForm.username.trim()) {
+      errors.username = 'Email is required';
+    } else if (!emailRegex.test(authForm.username)) {
+      errors.username = 'Please enter a valid email address';
     }
-    if (authForm.password.length < 6) {
-      errors.password = 'Password must be at least 6 characters';
+
+    if (!authForm.password) {
+      errors.password = 'Password is required';
     }
-    if (authForm.password !== authForm.confirmPassword) {
-      errors.confirmPassword = 'Passwords do not match';
+
+    if (authMode === 'register') {
+      if (!authForm.fullName.trim()) {
+        errors.fullName = 'Full name is required';
+      }
+      if (authForm.password.length < 6) {
+        errors.password = 'Password must be at least 6 characters';
+      }
+      if (authForm.password !== authForm.confirmPassword) {
+        errors.confirmPassword = 'Passwords do not match';
+      }
     }
-  }
 
-  if (Object.keys(errors).length > 0) {
-    setAuthErrors(errors);
-    return;
-  }
-
-  try {
-    if (authMode === 'login') {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: authForm.username,
-        password: authForm.password,
-      });
-
-      if (error) throw error;
-
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('full_name')
-        .eq('id', data.user.id)
-        .single();
-
-      setCurrentUser({
-        fullName: profile?.full_name || data.user.email,
-        username: data.user.email
-      });
-      setIsAuthenticated(true);
-      setShowAuthModal(false);
-      setAuthForm({ fullName: '', username: '', password: '', confirmPassword: '' });
-
-      setSuccessMessage(`Welcome back, ${profile?.full_name || data.user.email}! You've successfully logged in.`);
-      setShowSuccessPopup(true);
-      setTimeout(() => setShowSuccessPopup(false), 4000);
-    } else {
-      const { data, error } = await supabase.auth.signUp({
-        email: authForm.username,
-        password: authForm.password,
-        options: {
-          data: {
-            full_name: authForm.fullName,
-          }
-        }
-      });
-
-      if (error) throw error;
-
-      setCurrentUser({
-        fullName: authForm.fullName,
-        username: authForm.username
-      });
-      setIsAuthenticated(true);
-      setShowAuthModal(false);
-      setAuthForm({ fullName: '', username: '', password: '', confirmPassword: '' });
-
-      setSuccessMessage(`Welcome, ${authForm.fullName}! You've successfully registered and logged in.`);
-      setShowSuccessPopup(true);
-      setTimeout(() => setShowSuccessPopup(false), 4000);
-    }
-  } catch (error) {
-    setAuthErrors({ general: error.message });
-  }
-};
-
-  const handleForgotPassword = async (e) => {
-  e.preventDefault();
-  const errors = {};
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-  if (!resetEmail.trim()) {
-    errors.email = 'Email is required';
-  } else if (!emailRegex.test(resetEmail)) {
-    errors.email = 'Please enter a valid email address';
-  }
-
-  if (Object.keys(errors).length > 0) {
-    setResetErrors(errors);
-    return;
-  }
-
-  try {
-    const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
-      redirectTo: `${window.location.origin}/reset-password`,
-    });
-
-    if (error) throw error;
-
-    setShowResetSuccess(true);
-    setResetEmail('');
-    setTempPassword('Check your email for reset instructions');
-    setTimeout(() => {
-      setShowResetSuccess(false);
-      setShowForgotPassword(false);
-    }, 5000);
-  } catch (error) {
-    setResetErrors({ email: error.message });
-  }
-};
-
-  const handleChangePassword = async (e) => {
-  e.preventDefault();
-  const errors = {};
-
-  if (!changePasswordForm.currentPassword) {
-    errors.currentPassword = 'Current password is required';
-  }
-  if (changePasswordForm.newPassword.length < 6) {
-    errors.newPassword = 'New password must be at least 6 characters';
-  }
-  if (changePasswordForm.newPassword !== changePasswordForm.confirmNewPassword) {
-    errors.confirmNewPassword = 'Passwords do not match';
-  }
-
-  if (Object.keys(errors).length > 0) {
-    setChangePasswordErrors(errors);
-    return;
-  }
-
-  try {
-    // Verify current password by attempting to sign in
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email: currentUser.username,
-      password: changePasswordForm.currentPassword,
-    });
-
-    if (signInError) {
-      setChangePasswordErrors({ currentPassword: 'Current password is incorrect' });
+    if (Object.keys(errors).length > 0) {
+      setAuthErrors(errors);
       return;
     }
 
-    // Update password
-    const { error } = await supabase.auth.updateUser({
-      password: changePasswordForm.newPassword
-    });
+    try {
+      if (authMode === 'login') {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: authForm.username,
+          password: authForm.password,
+        });
 
-    if (error) throw error;
+        if (error) throw error;
 
-    setSuccessMessage('Password changed successfully!');
-    setShowSuccessPopup(true);
-    setTimeout(() => setShowSuccessPopup(false), 4000);
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('full_name')
+          .eq('id', data.user.id)
+          .single();
 
-    setShowChangePassword(false);
-    setChangePasswordForm({ currentPassword: '', newPassword: '', confirmNewPassword: '' });
-    setChangePasswordErrors({});
-  } catch (error) {
-    setChangePasswordErrors({ general: error.message });
-  }
-};
+        setCurrentUser({
+          fullName: profile?.full_name || data.user.email,
+          username: data.user.email
+        });
+        setIsAuthenticated(true);
+        setShowAuthModal(false);
+        setAuthForm({ fullName: '', username: '', password: '', confirmPassword: '' });
 
- const handleLogout = async () => {
-  await supabase.auth.signOut();
-  setIsAuthenticated(false);
-  setCurrentUser(null);
-  setCurrentView('main');
-  scrollTo('hero');
-};
+        setSuccessMessage(`Welcome back, ${profile?.full_name || data.user.email}! You've successfully logged in.`);
+        setShowSuccessPopup(true);
+        setTimeout(() => setShowSuccessPopup(false), 4000);
+      } else {
+        const { data, error } = await supabase.auth.signUp({
+          email: authForm.username,
+          password: authForm.password,
+          options: {
+            data: {
+              full_name: authForm.fullName,
+            }
+          }
+        });
+
+        if (error) throw error;
+
+        setCurrentUser({
+          fullName: authForm.fullName,
+          username: authForm.username
+        });
+        setIsAuthenticated(true);
+        setShowAuthModal(false);
+        setAuthForm({ fullName: '', username: '', password: '', confirmPassword: '' });
+
+        setSuccessMessage(`Welcome, ${authForm.fullName}! You've successfully registered and logged in.`);
+        setShowSuccessPopup(true);
+        setTimeout(() => setShowSuccessPopup(false), 4000);
+      }
+    } catch (error) {
+      setAuthErrors({ general: error.message });
+    }
+  };
+
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    const errors = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!resetEmail.trim()) {
+      errors.email = 'Email is required';
+    } else if (!emailRegex.test(resetEmail)) {
+      errors.email = 'Please enter a valid email address';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setResetErrors(errors);
+      return;
+    }
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+
+      if (error) throw error;
+
+      setShowResetSuccess(true);
+      setResetEmail('');
+      setTempPassword('Check your email for reset instructions');
+      setTimeout(() => {
+        setShowResetSuccess(false);
+        setShowForgotPassword(false);
+      }, 5000);
+    } catch (error) {
+      setResetErrors({ email: error.message });
+    }
+  };
+
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+    const errors = {};
+
+    if (!changePasswordForm.currentPassword) {
+      errors.currentPassword = 'Current password is required';
+    }
+    if (changePasswordForm.newPassword.length < 6) {
+      errors.newPassword = 'New password must be at least 6 characters';
+    }
+    if (changePasswordForm.newPassword !== changePasswordForm.confirmNewPassword) {
+      errors.confirmNewPassword = 'Passwords do not match';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setChangePasswordErrors(errors);
+      return;
+    }
+
+    try {
+      // Verify current password by attempting to sign in
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: currentUser.username,
+        password: changePasswordForm.currentPassword,
+      });
+
+      if (signInError) {
+        setChangePasswordErrors({ currentPassword: 'Current password is incorrect' });
+        return;
+      }
+
+      // Update password
+      const { error } = await supabase.auth.updateUser({
+        password: changePasswordForm.newPassword
+      });
+
+      if (error) throw error;
+
+      setSuccessMessage('Password changed successfully!');
+      setShowSuccessPopup(true);
+      setTimeout(() => setShowSuccessPopup(false), 4000);
+
+      setShowChangePassword(false);
+      setChangePasswordForm({ currentPassword: '', newPassword: '', confirmNewPassword: '' });
+      setChangePasswordErrors({});
+    } catch (error) {
+      setChangePasswordErrors({ general: error.message });
+    }
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setIsAuthenticated(false);
+    setCurrentUser(null);
+    setCurrentView('main');
+    scrollTo('hero');
+  };
 
   const openAuthModal = (mode) => {
     setAuthMode(mode);
@@ -446,30 +446,30 @@ useEffect(() => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!validateForm()) return;
+    e.preventDefault();
+    if (!validateForm()) return;
 
-  try {
-    // Call the edge function
-    const { data, error } = await supabase.functions.invoke('send-contact-email', {
-      body: {
-        name: contact.name,
-        email: contact.email,
-        subject: contact.subject,
-        message: contact.message,
-      },
-    });
+    try {
+      // Call the edge function
+      const { data, error } = await supabase.functions.invoke('send-contact-email', {
+        body: {
+          name: contact.name,
+          email: contact.email,
+          subject: contact.subject,
+          message: contact.message,
+        },
+      });
 
-    if (error) throw error;
+      if (error) throw error;
 
-    setShowSuccess(true);
-    setContact({ name: "", email: "", subject: "", message: "" });
-    setTimeout(() => setShowSuccess(false), 5000);
-  } catch (error) {
-    console.error('Error sending message:', error);
-    alert('Failed to send message. Please try again.');
-  }
-};
+      setShowSuccess(true);
+      setContact({ name: "", email: "", subject: "", message: "" });
+      setTimeout(() => setShowSuccess(false), 5000);
+    } catch (error) {
+      console.error('Error sending message:', error);
+      alert('Failed to send message. Please try again.');
+    }
+  };
 
   // Members Dashboard Component
   const MembersDashboard = () => (
@@ -1176,7 +1176,7 @@ useEffect(() => {
               {[
                 { label: "Shows", id: "shows" },
                 { label: "Public Episodes", id: "radio" },
-                { label: "Members", id: "members" },
+                { label: "Introduction", id: "introduction" },
                 { label: "About", id: "about" },
                 { label: "Contact", id: "contact" },
               ].map((link) => (
@@ -1213,9 +1213,9 @@ useEffect(() => {
                 </>
               ) : (
                 <>
-                  <button onClick={() => scrollTo("contact")} className="text-sm cursor-pointer font-semibold text-[#001F3F] hover:text-blue-800 transition">
+                  {/* <button onClick={() => scrollTo("contact")} className="text-sm cursor-pointer font-semibold text-[#001F3F] hover:text-blue-800 transition">
                     Advertise
-                  </button>
+                  </button> */}
                   <button
                     onClick={() => openAuthModal('login')}
                     className="bg-[#001F3F] text-white cursor-pointer text-sm font-semibold px-5 py-2.5 rounded-lg shadow-md hover:bg-blue-900 transition"
@@ -1242,8 +1242,7 @@ useEffect(() => {
               <div className="flex flex-col gap-2">
                 <button className="text-left px-3 py-2 text-sm font-semibold cursor-pointer hover:bg-gray-50 rounded" onClick={() => scrollTo("shows")}>Shows</button>
                 <button className="text-left px-3 py-2 text-sm font-semibold cursor-pointer hover:bg-gray-50 rounded" onClick={() => scrollTo("radio")}>Public Episodes</button>
-                <button className="text-left px-3 py-2 text-sm font-semibold cursor-pointer hover:bg-gray-50 rounded" onClick={() => scrollTo("members")}>Members</button>
-                <button className="text-left px-3 py-2 text-sm font-semibold cursor-pointer hover:bg-gray-50 rounded" onClick={() => scrollTo("about")}>About</button>
+                <button className="text-left px-3 py-2 text-sm font-semibold cursor-pointer hover:bg-gray-50 rounded" onClick={() => scrollTo("introduction")}>Introduction</button>                <button className="text-left px-3 py-2 text-sm font-semibold cursor-pointer hover:bg-gray-50 rounded" onClick={() => scrollTo("about")}>About</button>
                 <button className="text-left px-3 py-2 text-sm font-semibold cursor-pointer hover:bg-gray-50 rounded" onClick={() => scrollTo("contact")}>Contact</button>
                 <div className="flex gap-3 px-3 pt-4">
                   {isAuthenticated ? (
@@ -1257,9 +1256,9 @@ useEffect(() => {
                     </>
                   ) : (
                     <>
-                      <button onClick={() => scrollTo("contact")} className="flex-1 bg-[#001F3F] cursor-pointer text-white rounded-lg py-2.5 font-semibold">
+                      {/* <button onClick={() => scrollTo("contact")} className="flex-1 bg-[#001F3F] cursor-pointer text-white rounded-lg py-2.5 font-semibold">
                         Advertise
-                      </button>
+                      </button> */}
                       <button onClick={() => openAuthModal('login')} className="flex-1 border-2 cursor-pointer border-[#001F3F] text-[#001F3F] rounded-lg py-2.5 font-semibold">
                         Login
                       </button>
@@ -1295,10 +1294,10 @@ useEffect(() => {
             </p>
             <div className="flex flex-row lg:flex-row gap-4 justify-center mb-16">
               <button
-                onClick={() => scrollTo("contact")}
+                onClick={() => scrollTo("introduction")}
                 className="bg-white cursor-pointer text-[#001F3F] px-8 py-4 rounded-lg font-bold shadow-xl hover:bg-gray-100 transition-all transform hover:scale-105"
               >
-                Enquire About Advertising
+                Enjoy a snipped
               </button>
               <button
                 onClick={() => isAuthenticated ? setCurrentView('members-dashboard') : openAuthModal('register')}
@@ -1509,109 +1508,109 @@ useEffect(() => {
       </section>
 
       {isAuthenticated && (
-  <section id="members" className="py-24 bg-white">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto text-center mb-12">
-        <Award className="mx-auto text-[#001F3F] w-16 h-16 mb-6" />
-        <h2 className="text-3xl md:text-4xl font-bold text-[#001F3F] mb-4">Members Only Content</h2>
-            <p className="text-gray-600 text-lg mb-8">Extended interviews, exclusive resources and behind-the-scenes content. Join our community for free.</p>
-            <div className="flex flex-wrap justify-center gap-4">
+        <section id="members" className="py-24 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-4xl mx-auto text-center mb-12">
+              <Award className="mx-auto text-[#001F3F] w-16 h-16 mb-6" />
+              <h2 className="text-3xl md:text-4xl font-bold text-[#001F3F] mb-4">Members Only Content</h2>
+              <p className="text-gray-600 text-lg mb-8">Extended interviews, exclusive resources and behind-the-scenes content. Join our community for free.</p>
+              <div className="flex flex-wrap justify-center gap-4">
+                <button
+                  onClick={() => isAuthenticated ? setCurrentView('members-dashboard') : openAuthModal('register')}
+                  className="bg-[#001F3F] cursor-pointer text-white px-8 py-4 rounded-lg font-bold shadow-xl hover:bg-blue-900 transition-all transform hover:scale-105"
+                >
+                  {isAuthenticated ? 'Go to Dashboard' : 'Become a Member (Free)'}
+                </button>
+                {!isAuthenticated && (
+                  <button
+                    onClick={() => openAuthModal('login')}
+                    className="border-2 cursor-pointer border-[#001F3F] text-[#001F3F] px-8 py-4 rounded-lg font-bold hover:bg-[#001F3F] hover:!text-white transition-all transform hover:scale-105"
+                  >
+                    Already a Member? Login
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <div className="max-w-5xl mx-auto relative">
+              {!isAuthenticated && videoWatchTime >= 30 && (
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent z-10 rounded-2xl flex items-center justify-center">
+                  <div className="text-center p-8">
+                    <Lock className="w-16  from-black/80 via-black/20 h-16 text-white mx-auto mb-4" />
+                    <p className="text-white text-xl font-bold mb-2">Preview Time Expired</p>
+                    <p className="text-white text-sm mb-4">Register now to continue watching</p>
+                    <button
+                      onClick={() => openAuthModal('register')}
+                      className="bg-white cursor-pointer text-[#001F3F] px-6 py-3 rounded-lg font-bold hover:bg-gray-100 transition"
+                    >
+                      Register to Continue
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {!isAuthenticated && videoWatchTime > 0 && videoWatchTime < 30 && showTimeoutWarning && (
+                <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20 bg-yellow-500 text-black px-4 py-2 rounded-lg shadow-lg flex items-center gap-2">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-sm font-semibold">{10 - videoWatchTime}s remaining - Register to continue</span>
+                </div>
+              )}
+
+              <div className={`aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl ${!isAuthenticated && videoWatchTime >= 30 ? 'blur-sm pointer-events-none' : ''}`}>
+                <iframe
+                  title="Members sample"
+                  className="w-full h-full"
+                  src={shows.find(s => s.id === memberTab)?.episodes[3]?.videoUrl}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  onLoad={() => {
+                    if (!isAuthenticated) {
+                      setVideoWatchTime(1); // Start the timer when video loads
+                    }
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+      <section id="introduction" className="py-24 bg-gradient-to-b from-gray-50 to-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto text-center mb-12">
+            <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-semibold mb-6">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <span>Free Preview - No Login Required</span>
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-[#001F3F] mb-4">Welcome to Corp Radio</h2>
+            <p className="text-gray-600 text-lg mb-8">Get a taste of what we offer with this free introduction video. See how our content can help transform your business.</p>
+          </div>
+
+          <div className="max-w-5xl mx-auto">
+            <div className="aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl">
+              <video
+                className="w-full h-full"
+                controls
+                poster="/path/to/your-thumbnail.jpg"
+              >
+                <source src="/src/assets/The Business Fundamentals Show.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+
+            <div className="mt-8 text-center">
+              <p className="text-gray-700 mb-6">Ready to access our full library of exclusive content?</p>
               <button
                 onClick={() => isAuthenticated ? setCurrentView('members-dashboard') : openAuthModal('register')}
                 className="bg-[#001F3F] cursor-pointer text-white px-8 py-4 rounded-lg font-bold shadow-xl hover:bg-blue-900 transition-all transform hover:scale-105"
               >
-                {isAuthenticated ? 'Go to Dashboard' : 'Become a Member (Free)'}
+                {isAuthenticated ? 'Go to Dashboard' : 'Register Free - Unlock All Content'}
               </button>
-              {!isAuthenticated && (
-                <button
-                  onClick={() => openAuthModal('login')}
-                  className="border-2 cursor-pointer border-[#001F3F] text-[#001F3F] px-8 py-4 rounded-lg font-bold hover:bg-[#001F3F] hover:!text-white transition-all transform hover:scale-105"
-                >
-                  Already a Member? Login
-                </button>
-              )}
             </div>
           </div>
-
-          <div className="max-w-5xl mx-auto relative">
-            {!isAuthenticated && videoWatchTime >= 30 && (
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent z-10 rounded-2xl flex items-center justify-center">
-                <div className="text-center p-8">
-                  <Lock className="w-16  from-black/80 via-black/20 h-16 text-white mx-auto mb-4" />
-                  <p className="text-white text-xl font-bold mb-2">Preview Time Expired</p>
-                  <p className="text-white text-sm mb-4">Register now to continue watching</p>
-                  <button
-                    onClick={() => openAuthModal('register')}
-                    className="bg-white cursor-pointer text-[#001F3F] px-6 py-3 rounded-lg font-bold hover:bg-gray-100 transition"
-                  >
-                    Register to Continue
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {!isAuthenticated && videoWatchTime > 0 && videoWatchTime < 30 && showTimeoutWarning && (
-              <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20 bg-yellow-500 text-black px-4 py-2 rounded-lg shadow-lg flex items-center gap-2">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                </svg>
-                <span className="text-sm font-semibold">{10 - videoWatchTime}s remaining - Register to continue</span>
-              </div>
-            )}
-
-            <div className={`aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl ${!isAuthenticated && videoWatchTime >= 30 ? 'blur-sm pointer-events-none' : ''}`}>
-              <iframe
-                title="Members sample"
-                className="w-full h-full"
-                src={shows.find(s => s.id === memberTab)?.episodes[3]?.videoUrl}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
-                onLoad={() => {
-                  if (!isAuthenticated) {
-                    setVideoWatchTime(1); // Start the timer when video loads
-                  }
-                }}
-              />
-            </div>
-           </div>
-    </div>
-  </section>
-)}
-      <section id="introduction" className="py-24 bg-gradient-to-b from-gray-50 to-white">
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div className="max-w-4xl mx-auto text-center mb-12">
-      <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-semibold mb-6">
-        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-        <span>Free Preview - No Login Required</span>
-      </div>
-      <h2 className="text-3xl md:text-4xl font-bold text-[#001F3F] mb-4">Welcome to Corp Radio</h2>
-      <p className="text-gray-600 text-lg mb-8">Get a taste of what we offer with this free introduction video. See how our content can help transform your business.</p>
-    </div>
-
-    <div className="max-w-5xl mx-auto">
-      <div className="aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl">
-        <video
-          className="w-full h-full"
-          controls
-          poster="/path/to/your-thumbnail.jpg"
-        >
-          <source src="/path/to/your-intro-video.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-      </div>
-      
-      <div className="mt-8 text-center">
-        <p className="text-gray-700 mb-6">Ready to access our full library of exclusive content?</p>
-        <button
-          onClick={() => isAuthenticated ? setCurrentView('members-dashboard') : openAuthModal('register')}
-          className="bg-[#001F3F] cursor-pointer text-white px-8 py-4 rounded-lg font-bold shadow-xl hover:bg-blue-900 transition-all transform hover:scale-105"
-        >
-          {isAuthenticated ? 'Go to Dashboard' : 'Register Free - Unlock All Content'}
-        </button>
-      </div>
-    </div>
-  </div>
-</section>
+        </div>
+      </section>
 
       <section id="about" className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
