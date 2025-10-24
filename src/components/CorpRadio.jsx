@@ -3,6 +3,9 @@ import { Menu, X, Radio, Play, Mic, Users, TrendingUp, Award, Phone, Mail, Youtu
 import "../App.css";
 import logo from "../assets/CorpRadioLogo - Copy.jpeg";
 import footerLogo from "../assets/CorpRadioLogo - Copy.jpeg";
+import businessShow from "../assets/Lester.jpg";
+import jeffKahn from "../assets/Jeff Kahn.jpeg";
+import charlImage from "../assets/charl1.jpeg";
 import heroBg from "../assets/hero.jpeg";
 import introVideo from "../assets/The Business Fundamentals Show Intro.mp4";
 
@@ -154,7 +157,7 @@ export default function CorpRadio() {
       title: "Business Fundamentals",
       host: "Lester Philander",
       desc: "Tactical episodes on Sales, Marketing, HR, Funding and small-business growth.",
-      img: "src/assets/Lester.jpg",
+      img: businessShow,
       videoType: "youtube",
       episodes: [
         { id: 1, title: "Sales Fundamentals", videoUrl: "https://www.youtube.com/embed/gBBbOOM2onA" },
@@ -168,7 +171,7 @@ export default function CorpRadio() {
       title: "The Corporate Show",
       host: "Jeff Kahn",
       desc: "Warm, professional interviews with CEOs & C-suite — focused on leadership and strategy.",
-      img: "src/assets/Jeff Kahn.jpeg",
+      img: jeffKahn,
       videoType: "youtube",
       episodes: [
         { id: 1, title: "Leadership in Crisis", videoUrl: "https://www.youtube.com/embed/wguafJWO5Rs" },
@@ -197,7 +200,7 @@ export default function CorpRadio() {
       title: "The AI Playbook",
       host: "Charl Imalman",
       desc: "Real tools, case studies and policies for adopting AI in business workflows.",
-      img: "src/assets/charl1.jpeg",
+      img: charlImage,
       episodes: [
         { id: 1, title: "Franchise Fundamentals", videoUrl: "https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F4359229150964045&show_text=false&width=867&t=0" },
         { id: 2, title: "Acquisition Strategies", videoUrl: "https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F783620987637550%2F&show_text=false&width=867&t=0" },
