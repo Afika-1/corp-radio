@@ -51,8 +51,8 @@ export default function CorpRadio() {
   // UI state
   const [menuOpen, setMenuOpen] = useState(false);
   const [active, setActive] = useState("hero");
-  const [publicTab, setPublicTab] = useState("corporate");
-  const [memberTab, setMemberTab] = useState("corporate");
+  const [publicTab, setPublicTab] = useState("fundamentals");
+  const [memberTab, setMemberTab] = useState("fundamentals");
   const [currentView, setCurrentView] = useState('main');
 
   // Refs to observe
