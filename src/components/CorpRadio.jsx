@@ -4,6 +4,8 @@ import "../App.css";
 import logo from "../assets/CorpRadioLogo - Copy.jpeg";
 import footerLogo from "../assets/CorpRadioLogo - Copy.jpeg";
 import heroBg from "../assets/hero.jpeg";
+import introVideo from "../assets/The Business Fundamentals Show Intro.mp4";
+
 
 import { supabase } from '../supabaseClient'
 
@@ -13,8 +15,18 @@ export default function CorpRadio() {
   const [currentUser, setCurrentUser] = useState(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState('login');
-  const [authForm, setAuthForm] = useState({ fullName: '', username: '', password: '', confirmPassword: '' });
-  const [authErrors, setAuthErrors] = useState({});
+  const [registrationStep, setRegistrationStep] = useState(1);
+  const [authForm, setAuthForm] = useState({
+    fullName: '',
+    username: '',
+    password: '',
+    confirmPassword: '',
+    businessName: '',
+    industry: '',
+    cellNumber: '',
+    location: '',
+    businessChallenge: ''
+  }); const [authErrors, setAuthErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -205,32 +217,31 @@ export default function CorpRadio() {
   }, [publicTab]);
 
   // Auth functions
-  const handleAuthSubmit = async (e) => {
-    e.preventDefault();
-    const errors = {};
+const handleAuthSubmit = async (e) => {
+  e.preventDefault();
+  const errors = {};
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  // South African cellphone regex: starts with 06, 07, 08 followed by 8 digits
+  const cellPhoneRegex = /^0[6-8][0-9]{8}$/;
 
+  if (authMode === 'register' && registrationStep === 1) {
+    // Stage 1 validation
+    if (!authForm.fullName.trim()) {
+      errors.fullName = 'Full name is required';
+    }
     if (!authForm.username.trim()) {
       errors.username = 'Email is required';
     } else if (!emailRegex.test(authForm.username)) {
       errors.username = 'Please enter a valid email address';
     }
-
     if (!authForm.password) {
       errors.password = 'Password is required';
+    } else if (authForm.password.length < 6) {
+      errors.password = 'Password must be at least 6 characters';
     }
-
-    if (authMode === 'register') {
-      if (!authForm.fullName.trim()) {
-        errors.fullName = 'Full name is required';
-      }
-      if (authForm.password.length < 6) {
-        errors.password = 'Password must be at least 6 characters';
-      }
-      if (authForm.password !== authForm.confirmPassword) {
-        errors.confirmPassword = 'Passwords do not match';
-      }
+    if (authForm.password !== authForm.confirmPassword) {
+      errors.confirmPassword = 'Passwords do not match';
     }
 
     if (Object.keys(errors).length > 0) {
@@ -238,61 +249,145 @@ export default function CorpRadio() {
       return;
     }
 
-    try {
-      if (authMode === 'login') {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: authForm.username,
-          password: authForm.password,
-        });
+    // Move to step 2
+    setRegistrationStep(2);
+    setAuthErrors({});
+    return;
+  }
 
-        if (error) throw error;
-
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('full_name')
-          .eq('id', data.user.id)
-          .single();
-
-        setCurrentUser({
-          fullName: profile?.full_name || data.user.email,
-          username: data.user.email
-        });
-        setIsAuthenticated(true);
-        setShowAuthModal(false);
-        setAuthForm({ fullName: '', username: '', password: '', confirmPassword: '' });
-
-        setSuccessMessage(`Welcome back, ${profile?.full_name || data.user.email}! You've successfully logged in.`);
-        setShowSuccessPopup(true);
-        setTimeout(() => setShowSuccessPopup(false), 4000);
-      } else {
-        const { data, error } = await supabase.auth.signUp({
-          email: authForm.username,
-          password: authForm.password,
-          options: {
-            data: {
-              full_name: authForm.fullName,
-            }
-          }
-        });
-
-        if (error) throw error;
-
-        setCurrentUser({
-          fullName: authForm.fullName,
-          username: authForm.username
-        });
-        setIsAuthenticated(true);
-        setShowAuthModal(false);
-        setAuthForm({ fullName: '', username: '', password: '', confirmPassword: '' });
-
-        setSuccessMessage(`Welcome, ${authForm.fullName}! You've successfully registered and logged in.`);
-        setShowSuccessPopup(true);
-        setTimeout(() => setShowSuccessPopup(false), 4000);
-      }
-    } catch (error) {
-      setAuthErrors({ general: error.message });
+  if (authMode === 'register' && registrationStep === 2) {
+    // Stage 2 validation
+    if (!authForm.businessName.trim()) {
+      errors.businessName = 'Business name is required';
     }
-  };
+    if (!authForm.industry.trim()) {
+      errors.industry = 'Industry is required';
+    }
+    if (!authForm.cellNumber.trim()) {
+      errors.cellNumber = 'Cell number is required';
+    } else if (!cellPhoneRegex.test(authForm.cellNumber.replace(/\s/g, ''))) {
+      errors.cellNumber = 'Please enter a valid SA cell number (e.g., 0821234567)';
+    }
+    if (!authForm.location.trim()) {
+      errors.location = 'Location is required';
+    }
+    if (!authForm.businessChallenge.trim()) {
+      errors.businessChallenge = 'Please describe your current business challenge';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setAuthErrors(errors);
+      return;
+    }
+  }
+
+  if (authMode === 'login') {
+    if (!authForm.username.trim()) {
+      errors.username = 'Email is required';
+    } else if (!emailRegex.test(authForm.username)) {
+      errors.username = 'Please enter a valid email address';
+    }
+    if (!authForm.password) {
+      errors.password = 'Password is required';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setAuthErrors(errors);
+      return;
+    }
+  }
+
+  try {
+    if (authMode === 'login') {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: authForm.username,
+        password: authForm.password,
+      });
+
+      if (error) throw error;
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('full_name')
+        .eq('id', data.user.id)
+        .single();
+
+      setCurrentUser({
+        fullName: profile?.full_name || data.user.email,
+        username: data.user.email
+      });
+      setIsAuthenticated(true);
+      setShowAuthModal(false);
+      setAuthForm({ 
+        fullName: '', 
+        username: '', 
+        password: '', 
+        confirmPassword: '',
+        businessName: '',
+        industry: '',
+        cellNumber: '',
+        location: '',
+        businessChallenge: ''
+      });
+
+      setSuccessMessage(`Welcome back, ${profile?.full_name || data.user.email}! You've successfully logged in.`);
+      setShowSuccessPopup(true);
+      setTimeout(() => setShowSuccessPopup(false), 4000);
+    } else {
+      // Register user
+      const { data, error } = await supabase.auth.signUp({
+        email: authForm.username,
+        password: authForm.password,
+        options: {
+          data: {
+            full_name: authForm.fullName,
+          }
+        }
+      });
+
+      if (error) throw error;
+
+      // Update profile with additional business information
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({
+          business_name: authForm.businessName,
+          industry: authForm.industry,
+          cell_number: authForm.cellNumber,
+          location: authForm.location,
+          business_challenge: authForm.businessChallenge
+        })
+        .eq('id', data.user.id);
+
+      if (profileError) throw profileError;
+
+      setCurrentUser({
+        fullName: authForm.fullName,
+        username: authForm.username
+      });
+      setIsAuthenticated(true);
+      setShowAuthModal(false);
+      setRegistrationStep(1);
+      setAuthForm({ 
+        fullName: '', 
+        username: '', 
+        password: '', 
+        confirmPassword: '',
+        businessName: '',
+        industry: '',
+        cellNumber: '',
+        location: '',
+        businessChallenge: ''
+      });
+
+      setSuccessMessage(`Welcome, ${authForm.fullName}! You've successfully registered and logged in.`);
+      setShowSuccessPopup(true);
+      setTimeout(() => setShowSuccessPopup(false), 4000);
+    }
+  } catch (error) {
+    setAuthErrors({ general: error.message });
+  }
+};
 
   const handleForgotPassword = async (e) => {
     e.preventDefault();
@@ -391,8 +486,18 @@ export default function CorpRadio() {
     setAuthMode(mode);
     setShowAuthModal(true);
     setAuthErrors({});
-    setAuthForm({ fullName: '', username: '', password: '', confirmPassword: '' });
-  };
+ setRegistrationStep(1);
+  setAuthForm({ 
+    fullName: '', 
+    username: '', 
+    password: '', 
+    confirmPassword: '',
+    businessName: '',
+    industry: '',
+    cellNumber: '',
+    location: '',
+    businessChallenge: ''
+  });  };
 
   const scrollTo = (id) => {
     setMenuOpen(false);
@@ -652,7 +757,7 @@ export default function CorpRadio() {
           </div>
         )}
 
-        {showAuthModal && (
+        {/* {showAuthModal && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
             <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 relative">
               <button onClick={() => setShowAuthModal(false)} className="absolute cursor-pointer top-4 right-4 text-gray-400 hover:text-gray-600">
@@ -785,7 +890,296 @@ export default function CorpRadio() {
               </form>
             </div>
           </div>
+        )} */}
+
+
+        {showAuthModal && (
+  <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
+    <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 relative max-h-[90vh] overflow-y-auto">
+      <button onClick={() => {
+        setShowAuthModal(false);
+        setRegistrationStep(1);
+      }} className="absolute cursor-pointer top-4 right-4 text-gray-400 hover:text-gray-600">
+        <X className="w-6 h-6" />
+      </button>
+
+      <div className="text-center mb-6">
+        <div className="w-16 h-16 bg-[#001F3F] rounded-full flex items-center justify-center mx-auto mb-4">
+          <Lock className="w-8 h-8 text-white" />
+        </div>
+        <h2 className="text-2xl font-bold text-[#001F3F] mb-2">
+          {authMode === 'login' ? 'Welcome Back' : registrationStep === 1 ? 'Create Account - Step 1' : 'Create Account - Step 2'}
+        </h2>
+        <p className="text-gray-600">
+          {authMode === 'login'
+            ? 'Login to access member content'
+            : registrationStep === 1
+              ? 'Personal Information'
+              : 'Business Information'}
+        </p>
+        {authMode === 'register' && (
+          <div className="flex justify-center gap-2 mt-4">
+            <div className={`h-2 w-16 rounded-full ${registrationStep === 1 ? 'bg-[#001F3F]' : 'bg-gray-300'}`}></div>
+            <div className={`h-2 w-16 rounded-full ${registrationStep === 2 ? 'bg-[#001F3F]' : 'bg-gray-300'}`}></div>
+          </div>
         )}
+      </div>
+
+      {authErrors.general && (
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
+          {authErrors.general}
+        </div>
+      )}
+
+      <form onSubmit={handleAuthSubmit} className="space-y-4">
+        {authMode === 'register' && registrationStep === 1 && (
+          <>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Full Name</label>
+              <input
+                type="text"
+                value={authForm.fullName}
+                onChange={(e) => setAuthForm({ ...authForm, fullName: e.target.value })}
+                className={`w-full p-3 border-2 rounded-lg outline-none transition ${authErrors.fullName ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'}`}
+                placeholder="Enter your full name"
+              />
+              {authErrors.fullName && <p className="text-red-500 text-xs mt-1">{authErrors.fullName}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Email Address</label>
+              <input
+                type="email"
+                value={authForm.username}
+                onChange={(e) => setAuthForm({ ...authForm, username: e.target.value })}
+                className={`w-full p-3 border-2 rounded-lg outline-none transition ${authErrors.username ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'}`}
+                placeholder="your@email.com"
+              />
+              {authErrors.username && <p className="text-red-500 text-xs mt-1">{authErrors.username}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Password</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={authForm.password}
+                  onChange={(e) => setAuthForm({ ...authForm, password: e.target.value })}
+                  className={`w-full p-3 border-2 rounded-lg outline-none transition pr-10 ${authErrors.password ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'}`}
+                  placeholder="Enter password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute cursor-pointer right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
+              {authErrors.password && <p className="text-red-500 text-xs mt-1">{authErrors.password}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Confirm Password</label>
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={authForm.confirmPassword}
+                  onChange={(e) => setAuthForm({ ...authForm, confirmPassword: e.target.value })}
+                  className={`w-full p-3 border-2 rounded-lg outline-none transition pr-10 ${authErrors.confirmPassword ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'}`}
+                  placeholder="Confirm password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute cursor-pointer right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
+              {authErrors.confirmPassword && <p className="text-red-500 text-xs mt-1">{authErrors.confirmPassword}</p>}
+            </div>
+
+            <button type="submit" className="w-full bg-[#001F3F] cursor-pointer text-white py-3 rounded-lg font-bold hover:bg-blue-900 transition">
+              Continue to Business Info
+            </button>
+
+            <div className="text-center">
+              <button
+                type="button"
+                onClick={() => {
+                  setAuthMode('login');
+                  setAuthErrors({});
+                }}
+                className="text-sm cursor-pointer text-[#001F3F] hover:underline"
+              >
+                Already have an account? Login
+              </button>
+            </div>
+          </>
+        )}
+
+        {authMode === 'register' && registrationStep === 2 && (
+          <>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Business Name</label>
+              <input
+                type="text"
+                value={authForm.businessName}
+                onChange={(e) => setAuthForm({ ...authForm, businessName: e.target.value })}
+                className={`w-full p-3 border-2 rounded-lg outline-none transition ${authErrors.businessName ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'}`}
+                placeholder="Your business name"
+              />
+              {authErrors.businessName && <p className="text-red-500 text-xs mt-1">{authErrors.businessName}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Industry</label>
+              <select
+                value={authForm.industry}
+                onChange={(e) => setAuthForm({ ...authForm, industry: e.target.value })}
+                className={`w-full p-3 border-2 rounded-lg outline-none transition ${authErrors.industry ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'}`}
+              >
+                <option value="">Select your industry</option>
+                <option value="Technology">Technology</option>
+                <option value="Finance">Finance</option>
+                <option value="Healthcare">Healthcare</option>
+                <option value="Retail">Retail</option>
+                <option value="Manufacturing">Manufacturing</option>
+                <option value="Consulting">Consulting</option>
+                <option value="Real Estate">Real Estate</option>
+                <option value="Education">Education</option>
+                <option value="Hospitality">Hospitality</option>
+                <option value="Other">Other</option>
+              </select>
+              {authErrors.industry && <p className="text-red-500 text-xs mt-1">{authErrors.industry}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Cell Number (SA)</label>
+              <input
+                type="tel"
+                value={authForm.cellNumber}
+                onChange={(e) => setAuthForm({ ...authForm, cellNumber: e.target.value })}
+                className={`w-full p-3 border-2 rounded-lg outline-none transition ${authErrors.cellNumber ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'}`}
+                placeholder="0821234567"
+              />
+              {authErrors.cellNumber && <p className="text-red-500 text-xs mt-1">{authErrors.cellNumber}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Location</label>
+              <input
+                type="text"
+                value={authForm.location}
+                onChange={(e) => setAuthForm({ ...authForm, location: e.target.value })}
+                className={`w-full p-3 border-2 rounded-lg outline-none transition ${authErrors.location ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'}`}
+                placeholder="City, Province"
+              />
+              {authErrors.location && <p className="text-red-500 text-xs mt-1">{authErrors.location}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Current Business Challenge</label>
+              <textarea
+                value={authForm.businessChallenge}
+                onChange={(e) => setAuthForm({ ...authForm, businessChallenge: e.target.value })}
+                className={`w-full p-3 border-2 rounded-lg outline-none transition ${authErrors.businessChallenge ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'}`}
+                placeholder="Describe your main business challenge..."
+                rows={3}
+              />
+              {authErrors.businessChallenge && <p className="text-red-500 text-xs mt-1">{authErrors.businessChallenge}</p>}
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setRegistrationStep(1);
+                  setAuthErrors({});
+                }}
+                className="flex-1 border-2 cursor-pointer border-gray-300 text-gray-700 py-3 rounded-lg font-bold hover:bg-gray-50 transition"
+              >
+                Back
+              </button>
+              <button type="submit" className="flex-1 bg-[#001F3F] cursor-pointer text-white py-3 rounded-lg font-bold hover:bg-blue-900 transition">
+                Complete Registration
+              </button>
+            </div>
+          </>
+        )}
+
+        {authMode === 'login' && (
+          <>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Email</label>
+              <input
+                type="email"
+                value={authForm.username}
+                onChange={(e) => setAuthForm({ ...authForm, username: e.target.value })}
+                className={`w-full p-3 border-2 rounded-lg outline-none transition ${authErrors.username ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'}`}
+                placeholder="your@email.com"
+              />
+              {authErrors.username && <p className="text-red-500 text-xs mt-1">{authErrors.username}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Password</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={authForm.password}
+                  onChange={(e) => setAuthForm({ ...authForm, password: e.target.value })}
+                  className={`w-full p-3 border-2 rounded-lg outline-none transition pr-10 ${authErrors.password ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'}`}
+                  placeholder="Enter password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute cursor-pointer right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
+              {authErrors.password && <p className="text-red-500 text-xs mt-1">{authErrors.password}</p>}
+            </div>
+
+            <div className="text-right">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowAuthModal(false);
+                  setShowForgotPassword(true);
+                }}
+                className="text-sm cursor-pointer text-[#001F3F] hover:underline font-semibold"
+              >
+                Forgot Password?
+              </button>
+            </div>
+
+            <button type="submit" className="w-full bg-[#001F3F] cursor-pointer text-white py-3 rounded-lg font-bold hover:bg-blue-900 transition">
+              Login
+            </button>
+
+            <div className="text-center">
+              <button
+                type="button"
+                onClick={() => {
+                  setAuthMode('register');
+                  setRegistrationStep(1);
+                  setAuthErrors({});
+                }}
+                className="text-sm cursor-pointer text-[#001F3F] hover:underline"
+              >
+                Don't have an account? Register
+              </button>
+            </div>
+          </>
+        )}
+      </form>
+    </div>
+  </div>
+)}
         <header className="fixed inset-x-0 top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-20">
@@ -1024,7 +1418,7 @@ export default function CorpRadio() {
         </div>
       )}
 
-      {showAuthModal && (
+      {/* {showAuthModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 relative">
             <button onClick={() => setShowAuthModal(false)} className="absolute cursor-pointer top-4 right-4 text-gray-400 hover:text-gray-600">
@@ -1157,7 +1551,295 @@ export default function CorpRadio() {
             </form>
           </div>
         </div>
+      )} */}
+
+      {showAuthModal && (
+  <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
+    <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 relative max-h-[90vh] overflow-y-auto">
+      <button onClick={() => {
+        setShowAuthModal(false);
+        setRegistrationStep(1);
+      }} className="absolute cursor-pointer top-4 right-4 text-gray-400 hover:text-gray-600">
+        <X className="w-6 h-6" />
+      </button>
+
+      <div className="text-center mb-6">
+        <div className="w-16 h-16 bg-[#001F3F] rounded-full flex items-center justify-center mx-auto mb-4">
+          <Lock className="w-8 h-8 text-white" />
+        </div>
+        <h2 className="text-2xl font-bold text-[#001F3F] mb-2">
+          {authMode === 'login' ? 'Welcome Back' : registrationStep === 1 ? 'Create Account - Step 1' : 'Create Account - Step 2'}
+        </h2>
+        <p className="text-gray-600">
+          {authMode === 'login'
+            ? 'Login to access member content'
+            : registrationStep === 1
+              ? 'Personal Information'
+              : 'Business Information'}
+        </p>
+        {authMode === 'register' && (
+          <div className="flex justify-center gap-2 mt-4">
+            <div className={`h-2 w-16 rounded-full ${registrationStep === 1 ? 'bg-[#001F3F]' : 'bg-gray-300'}`}></div>
+            <div className={`h-2 w-16 rounded-full ${registrationStep === 2 ? 'bg-[#001F3F]' : 'bg-gray-300'}`}></div>
+          </div>
+        )}
+      </div>
+
+      {authErrors.general && (
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
+          {authErrors.general}
+        </div>
       )}
+
+      <form onSubmit={handleAuthSubmit} className="space-y-4">
+        {authMode === 'register' && registrationStep === 1 && (
+          <>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Full Name</label>
+              <input
+                type="text"
+                value={authForm.fullName}
+                onChange={(e) => setAuthForm({ ...authForm, fullName: e.target.value })}
+                className={`w-full p-3 border-2 rounded-lg outline-none transition ${authErrors.fullName ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'}`}
+                placeholder="Enter your full name"
+              />
+              {authErrors.fullName && <p className="text-red-500 text-xs mt-1">{authErrors.fullName}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Email Address</label>
+              <input
+                type="email"
+                value={authForm.username}
+                onChange={(e) => setAuthForm({ ...authForm, username: e.target.value })}
+                className={`w-full p-3 border-2 rounded-lg outline-none transition ${authErrors.username ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'}`}
+                placeholder="your@email.com"
+              />
+              {authErrors.username && <p className="text-red-500 text-xs mt-1">{authErrors.username}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Password</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={authForm.password}
+                  onChange={(e) => setAuthForm({ ...authForm, password: e.target.value })}
+                  className={`w-full p-3 border-2 rounded-lg outline-none transition pr-10 ${authErrors.password ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'}`}
+                  placeholder="Enter password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute cursor-pointer right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
+              {authErrors.password && <p className="text-red-500 text-xs mt-1">{authErrors.password}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Confirm Password</label>
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={authForm.confirmPassword}
+                  onChange={(e) => setAuthForm({ ...authForm, confirmPassword: e.target.value })}
+                  className={`w-full p-3 border-2 rounded-lg outline-none transition pr-10 ${authErrors.confirmPassword ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'}`}
+                  placeholder="Confirm password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute cursor-pointer right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
+              {authErrors.confirmPassword && <p className="text-red-500 text-xs mt-1">{authErrors.confirmPassword}</p>}
+            </div>
+
+            <button type="submit" className="w-full bg-[#001F3F] cursor-pointer text-white py-3 rounded-lg font-bold hover:bg-blue-900 transition">
+              Continue to Business Info
+            </button>
+
+            <div className="text-center">
+              <button
+                type="button"
+                onClick={() => {
+                  setAuthMode('login');
+                  setAuthErrors({});
+                }}
+                className="text-sm cursor-pointer text-[#001F3F] hover:underline"
+              >
+                Already have an account? Login
+              </button>
+            </div>
+          </>
+        )}
+
+        {authMode === 'register' && registrationStep === 2 && (
+          <>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Business Name</label>
+              <input
+                type="text"
+                value={authForm.businessName}
+                onChange={(e) => setAuthForm({ ...authForm, businessName: e.target.value })}
+                className={`w-full p-3 border-2 rounded-lg outline-none transition ${authErrors.businessName ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'}`}
+                placeholder="Your business name"
+              />
+              {authErrors.businessName && <p className="text-red-500 text-xs mt-1">{authErrors.businessName}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Industry</label>
+              <select
+                value={authForm.industry}
+                onChange={(e) => setAuthForm({ ...authForm, industry: e.target.value })}
+                className={`w-full p-3 border-2 rounded-lg outline-none transition ${authErrors.industry ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'}`}
+              >
+                <option value="">Select your industry</option>
+                <option value="Technology">Technology</option>
+                <option value="Finance">Finance</option>
+                <option value="Healthcare">Healthcare</option>
+                <option value="Retail">Retail</option>
+                <option value="Manufacturing">Manufacturing</option>
+                <option value="Consulting">Consulting</option>
+                <option value="Real Estate">Real Estate</option>
+                <option value="Education">Education</option>
+                <option value="Hospitality">Hospitality</option>
+                <option value="Other">Other</option>
+              </select>
+              {authErrors.industry && <p className="text-red-500 text-xs mt-1">{authErrors.industry}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Cell Number (SA)</label>
+              <input
+                type="tel"
+                value={authForm.cellNumber}
+                onChange={(e) => setAuthForm({ ...authForm, cellNumber: e.target.value })}
+                className={`w-full p-3 border-2 rounded-lg outline-none transition ${authErrors.cellNumber ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'}`}
+                placeholder="0821234567"
+              />
+              {authErrors.cellNumber && <p className="text-red-500 text-xs mt-1">{authErrors.cellNumber}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Location</label>
+              <input
+                type="text"
+                value={authForm.location}
+                onChange={(e) => setAuthForm({ ...authForm, location: e.target.value })}
+                className={`w-full p-3 border-2 rounded-lg outline-none transition ${authErrors.location ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'}`}
+                placeholder="City, Province"
+              />
+              {authErrors.location && <p className="text-red-500 text-xs mt-1">{authErrors.location}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Current Business Challenge</label>
+              <textarea
+                value={authForm.businessChallenge}
+                onChange={(e) => setAuthForm({ ...authForm, businessChallenge: e.target.value })}
+                className={`w-full p-3 border-2 rounded-lg outline-none transition ${authErrors.businessChallenge ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'}`}
+                placeholder="Describe your main business challenge..."
+                rows={3}
+              />
+              {authErrors.businessChallenge && <p className="text-red-500 text-xs mt-1">{authErrors.businessChallenge}</p>}
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setRegistrationStep(1);
+                  setAuthErrors({});
+                }}
+                className="flex-1 border-2 cursor-pointer border-gray-300 text-gray-700 py-3 rounded-lg font-bold hover:bg-gray-50 transition"
+              >
+                Back
+              </button>
+              <button type="submit" className="flex-1 bg-[#001F3F] cursor-pointer text-white py-3 rounded-lg font-bold hover:bg-blue-900 transition">
+                Complete Registration
+              </button>
+            </div>
+          </>
+        )}
+
+        {authMode === 'login' && (
+          <>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Email</label>
+              <input
+                type="email"
+                value={authForm.username}
+                onChange={(e) => setAuthForm({ ...authForm, username: e.target.value })}
+                className={`w-full p-3 border-2 rounded-lg outline-none transition ${authErrors.username ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'}`}
+                placeholder="your@email.com"
+              />
+              {authErrors.username && <p className="text-red-500 text-xs mt-1">{authErrors.username}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Password</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={authForm.password}
+                  onChange={(e) => setAuthForm({ ...authForm, password: e.target.value })}
+                  className={`w-full p-3 border-2 rounded-lg outline-none transition pr-10 ${authErrors.password ? 'border-red-500' : 'border-gray-300 focus:border-[#001F3F]'}`}
+                  placeholder="Enter password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute cursor-pointer right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
+              {authErrors.password && <p className="text-red-500 text-xs mt-1">{authErrors.password}</p>}
+            </div>
+
+            <div className="text-right">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowAuthModal(false);
+                  setShowForgotPassword(true);
+                }}
+                className="text-sm cursor-pointer text-[#001F3F] hover:underline font-semibold"
+              >
+                Forgot Password?
+              </button>
+            </div>
+
+            <button type="submit" className="w-full bg-[#001F3F] cursor-pointer text-white py-3 rounded-lg font-bold hover:bg-blue-900 transition">
+              Login
+            </button>
+
+            <div className="text-center">
+              <button
+                type="button"
+                onClick={() => {
+                  setAuthMode('register');
+                  setRegistrationStep(1);
+                  setAuthErrors({});
+                }}
+                className="text-sm cursor-pointer text-[#001F3F] hover:underline"
+              >
+                Don't have an account? Register
+              </button>
+            </div>
+          </>
+        )}
+      </form>
+    </div>
+  </div>
+)}
 
       <header className="fixed inset-x-0 top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1594,7 +2276,7 @@ export default function CorpRadio() {
                 controls
                 poster="/path/to/your-thumbnail.jpg"
               >
-                <source src="/src/assets/The Business Fundamentals Show.mp4" type="video/mp4" />
+  <source src={introVideo} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
             </div>
