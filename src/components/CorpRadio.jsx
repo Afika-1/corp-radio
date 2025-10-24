@@ -2056,7 +2056,7 @@ const handleAuthSubmit = async (e) => {
                     >
                       Listen
                     </button>
-                    <button
+                    {/* <button
                       onClick={() =>
                         isAuthenticated
                           ? setCurrentView("members-dashboard")
@@ -2065,7 +2065,7 @@ const handleAuthSubmit = async (e) => {
                       className="text-sm cursor-pointer font-medium border border-gray-300 px-3 py-2 rounded hover:border-[#001F3F] hover:text-[#001F3F] transition"
                     >
                       Members
-                    </button>
+                    </button> */}
                   </div>
                 </div>
               </article>
