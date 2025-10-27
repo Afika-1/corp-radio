@@ -215,20 +215,6 @@ export default function CorpRadio() {
       ]
     },
 
-    // {
-    //   id: "acquisition",
-    //   title: "Acquisition & Franchise",
-    //   host: "Lester Philander",
-    //   desc: "Practical guidance for acquisitions, franchising and growing via M&A strategies.",
-    //   img: "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=800&q=60&auto=format&fit=crop",
-    //   videoType: "facebook",
-    //   episodes: [
-    //     { id: 1, title: "Franchise Fundamentals", videoUrl: "https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F4359229150964045&show_text=false&width=867&t=0" },
-    //     { id: 2, title: "Acquisition Strategies", videoUrl: "https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F783620987637550%2F&show_text=false&width=867&t=0" },
-    //     { id: 3, title: "M&A Best Practices", videoUrl: "https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1474116340586636%2F&show_text=true&width=867&t=0" },
-    //     { id: 4, title: "Scaling Through Franchising", videoUrl: "https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F814388837754086%2F&show_text=false&width=867&t=0" }
-    //   ]
-    // },
     {
       id: "ai",
       title: "The AI Playbook",
@@ -1407,7 +1393,7 @@ export default function CorpRadio() {
 
               <div className="flex-shrink-0 w-full">
                 <video className="w-full rounded-xl bg-black" style={{ maxHeight: '50vh' }} controls autoPlay>
-  <source src={selectedShow.previewVideo || introVideo} type="video/mp4" />
+                  <source src={selectedShow.previewVideo || introVideo} type="video/mp4" />
                   Your browser does not support the video tag.
                 </video>
               </div>
@@ -2174,12 +2160,17 @@ export default function CorpRadio() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
               <h3 className="text-3xl md:text-4xl font-bold text-[#001F3F] mb-6">About Corp Radio</h3>
-              <p className="text-gray-700 text-lg leading-relaxed mb-6">
+              {/* <p className="text-gray-700 text-lg leading-relaxed mb-6">
                 Corp Radio is a premium business-focused platform providing content, insights, networking and mentorship for entrepreneurs, corporate leaders and NPOs.
               </p>
               <p className="text-gray-700 text-lg leading-relaxed mb-8">
                 Our mission is to empower business leaders with actionable knowledge, valuable connections, and a thriving community dedicated to growth and innovation.
-              </p>
+              </p> */}
+              <p className="text-gray-700 text-lg leading-relaxed mb-6">
+                Corporates and NPOs for content on Growth, Funding, Marketing, Sales and AI. With knowledgeable presenters and interviewees, Corp Radio becomes the go-to place for established and growing enterprises to get business advice, inspiration and to join a community that fosters collaboration and growth.              </p>
+              <p className="text-gray-700 text-lg leading-relaxed mb-8">
+                Founded in 2025, Corp Radio forms part of a bigger flywheel and eco-system for entrepreneurs and NPOs. We host networking events (for members), raise funds and coach businesses bot on-air and face to face.              </p>
+              <div className="space-y-4 mb-8"></div>
               <div className="space-y-4 mb-8">
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
