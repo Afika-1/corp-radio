@@ -10,7 +10,7 @@ import heroBg from "../assets/hero.jpeg";
 import introVideo from "../assets/The Business Fundamentals Show Intro.mp4";
 // import fundamentalsPreview from "../assets/fundamentals-preview.mp4";
 import corporatePreview from "../assets/Jeff Kahn - Corporate Show Intro.mp4";
-import aiPreview from "../assets/ai-preview.mp4";
+import aiPreview from "../assets/ai-preview.m4a";
 
 
 import { supabase } from '../supabaseClient'
