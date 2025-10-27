@@ -8,6 +8,9 @@ import jeffKahn from "../assets/Jeff Kahn.jpeg";
 import charlImage from "../assets/charl1.jpeg";
 import heroBg from "../assets/hero.jpeg";
 import introVideo from "../assets/The Business Fundamentals Show Intro.mp4";
+// import fundamentalsPreview from "../assets/fundamentals-preview.mp4";
+import corporatePreview from "../assets/Jeff Kahn - Corporate Show Intro.mp4";
+import aiPreview from "../assets/ai-preview.mp4";
 
 
 import { supabase } from '../supabaseClient'
@@ -48,14 +51,15 @@ export default function CorpRadio() {
   const [resetEmail, setResetEmail] = useState('');
   const [resetErrors, setResetErrors] = useState({});
   const [showResetSuccess, setShowResetSuccess] = useState(false);
-  const [tempPassword, setTempPassword] = useState('');
+
   // UI state
   const [menuOpen, setMenuOpen] = useState(false);
   const [active, setActive] = useState("hero");
   const [publicTab, setPublicTab] = useState("fundamentals");
   const [memberTab, setMemberTab] = useState("fundamentals");
   const [currentView, setCurrentView] = useState('main');
-
+  const [showVideoPopup, setShowVideoPopup] = useState(false);
+  const [selectedShow, setSelectedShow] = useState(null);
   // Refs to observe
   const sectionIds = ["hero", "shows", "radio", "members", "about", "contact"];
   const sectionRefs = useRef({});
@@ -110,9 +114,23 @@ export default function CorpRadio() {
       if (session?.user) {
         const { data: profile } = await supabase
           .from('profiles')
-          .select('full_name')
+          .select('*')
           .eq('id', session.user.id)
           .single();
+
+        // If profile exists but business info is missing, update from user metadata
+        if (profile && !profile.business_name && session.user.user_metadata?.business_name) {
+          await supabase
+            .from('profiles')
+            .update({
+              business_name: session.user.user_metadata.business_name,
+              industry: session.user.user_metadata.industry,
+              cell_number: session.user.user_metadata.cell_number,
+              location: session.user.user_metadata.location,
+              business_challenge: session.user.user_metadata.business_challenge
+            })
+            .eq('id', session.user.id);
+        }
 
         setCurrentUser({
           fullName: profile?.full_name || session.user.email,
@@ -123,14 +141,28 @@ export default function CorpRadio() {
     };
 
     checkUser();
-    // Listen for auth changes
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (session?.user) {
         const { data: profile } = await supabase
           .from('profiles')
-          .select('full_name')
+          .select('*')
           .eq('id', session.user.id)
           .single();
+
+        // Sync business info if missing
+        if (profile && !profile.business_name && session.user.user_metadata?.business_name) {
+          await supabase
+            .from('profiles')
+            .update({
+              business_name: session.user.user_metadata.business_name,
+              industry: session.user.user_metadata.industry,
+              cell_number: session.user.user_metadata.cell_number,
+              location: session.user.user_metadata.location,
+              business_challenge: session.user.user_metadata.business_challenge
+            })
+            .eq('id', session.user.id);
+        }
 
         setCurrentUser({
           fullName: profile?.full_name || session.user.email,
@@ -145,7 +177,6 @@ export default function CorpRadio() {
 
     return () => subscription.unsubscribe();
   }, []);
-
   useEffect(() => {
     console.log('Supabase client:', supabase);
     console.log('Is connected:', supabase ? 'Yes' : 'No');
@@ -159,6 +190,7 @@ export default function CorpRadio() {
       host: "Lester Philander",
       desc: "Tactical episodes on Sales, Marketing, HR, Funding and small-business growth.",
       img: businessShow,
+      previewVideo: introVideo,
       videoType: "youtube",
       episodes: [
         { id: 1, title: "Sales Fundamentals", videoUrl: "https://www.youtube.com/embed/gBBbOOM2onA" },
@@ -173,6 +205,7 @@ export default function CorpRadio() {
       host: "Jeff Kahn",
       desc: "Warm, professional interviews with CEOs & C-suite — focused on leadership and strategy.",
       img: jeffKahn,
+      previewVideo: corporatePreview,
       videoType: "youtube",
       episodes: [
         { id: 1, title: "Leadership in Crisis", videoUrl: "https://www.youtube.com/embed/wguafJWO5Rs" },
@@ -202,6 +235,8 @@ export default function CorpRadio() {
       host: "Charl Imalman",
       desc: "Real tools, case studies and policies for adopting AI in business workflows.",
       img: charlImage,
+      previewVideo: aiPreview,
+      videoType: "youtube",
       episodes: [
         { id: 1, title: "Franchise Fundamentals", videoUrl: "https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F4359229150964045&show_text=false&width=867&t=0" },
         { id: 2, title: "Acquisition Strategies", videoUrl: "https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F783620987637550%2F&show_text=false&width=867&t=0" },
@@ -337,88 +372,115 @@ export default function CorpRadio() {
         setSuccessMessage(`Welcome back, ${profile?.full_name || data.user.email}! You've successfully logged in.`);
         setShowSuccessPopup(true);
         setTimeout(() => setShowSuccessPopup(false), 4000);
-      }  else {
-  // Register user
-  const { data, error } = await supabase.auth.signUp({
-    email: authForm.username,
-    password: authForm.password,
-    options: {
-      data: {
-        full_name: authForm.fullName,
-      },
-      emailRedirectTo: `${window.location.origin}`
-    }
-  });
+      }
 
-  if (error) throw error;
+      else {
+        // Register user
+        const { data, error } = await supabase.auth.signUp({
+          email: authForm.username,
+          password: authForm.password,
+          options: {
+            data: {
+              full_name: authForm.fullName,
+            },
+            emailRedirectTo: `${window.location.origin}`
+          }
+        });
 
-  // Check if email confirmation is required
-  if (data?.user && !data.session) {
-    // Email confirmation required
-    setShowAuthModal(false);
-    setRegistrationStep(1);
-    setAuthForm({ 
-      fullName: '', 
-      username: '', 
-      password: '', 
-      confirmPassword: '',
-      businessName: '',
-      industry: '',
-      cellNumber: '',
-      location: '',
-      businessChallenge: ''
-    });
+        if (error) throw error;
+        // Store business info temporarily in user metadata
+        const { error: updateError } = await supabase.auth.updateUser({
+          data: {
+            full_name: authForm.fullName,
+            business_name: authForm.businessName,
+            industry: authForm.industry,
+            cell_number: authForm.cellNumber,
+            location: authForm.location,
+            business_challenge: authForm.businessChallenge,
+            profile_completed: false
+          }
+        });
+        // Check if email confirmation is required
+        if (data?.user && !data.session) {
+          // Email confirmation required
+          setShowAuthModal(false);
+          setRegistrationStep(1);
+          setAuthForm({
+            fullName: '',
+            username: '',
+            password: '',
+            confirmPassword: '',
+            businessName: '',
+            industry: '',
+            cellNumber: '',
+            location: '',
+            businessChallenge: ''
+          });
 
-    setSuccessMessage('Registration successful! Please check your email to confirm your account, then login.');
-    setShowSuccessPopup(true);
-    setTimeout(() => {
-      setShowSuccessPopup(false);
-      openAuthModal('login');
-    }, 5000);
-    
-    return;
-  }
+          setSuccessMessage('Registration successful! Please check your email to confirm your account, then login.');
+          setShowSuccessPopup(true);
+          setTimeout(() => {
+            setShowSuccessPopup(false);
+            openAuthModal('login');
+          }, 5000);
 
-  // If auto-confirmed (email confirmation disabled in Supabase)
-  // Update profile with additional business information
-  const { error: profileError } = await supabase
-    .from('profiles')
-    .update({
-      business_name: authForm.businessName,
-      industry: authForm.industry,
-      cell_number: authForm.cellNumber,
-      location: authForm.location,
-      business_challenge: authForm.businessChallenge
-    })
-    .eq('id', data.user.id);
+          return;
+        }
 
-  if (profileError) throw profileError;
+        // If auto-confirmed (email confirmation disabled in Supabase)
+        // Update profile with additional business information
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .update({
+            business_name: authForm.businessName,
+            industry: authForm.industry,
+            cell_number: authForm.cellNumber,
+            location: authForm.location,
+            business_challenge: authForm.businessChallenge
+          })
+          .eq('id', data.user.id);
 
-  setCurrentUser({
-    fullName: authForm.fullName,
-    username: authForm.username
-  });
-  setIsAuthenticated(true);
-  setShowAuthModal(false);
-  setRegistrationStep(1);
-  setAuthForm({ 
-    fullName: '', 
-    username: '', 
-    password: '', 
-    confirmPassword: '',
-    businessName: '',
-    industry: '',
-    cellNumber: '',
-    location: '',
-    businessChallenge: ''
-  });
+        if (profileError) console.error('Profile update error:', profileError);
 
-  setSuccessMessage(`Welcome, ${authForm.fullName}! You've successfully registered and logged in.`);
-  setShowSuccessPopup(true);
-  setTimeout(() => setShowSuccessPopup(false), 4000);
-}
+        setCurrentUser({
+          fullName: authForm.fullName,
+          username: authForm.username
+        });
+        setIsAuthenticated(true);
+        setShowAuthModal(false);
+        setRegistrationStep(1);
+        setAuthForm({
+          fullName: '',
+          username: '',
+          password: '',
+          confirmPassword: '',
+          businessName: '',
+          industry: '',
+          cellNumber: '',
+          location: '',
+          businessChallenge: ''
+        });
+
+        setSuccessMessage(`Welcome, ${authForm.fullName}! You've successfully registered and logged in.`);
+        setShowSuccessPopup(true);
+        setTimeout(() => setShowSuccessPopup(false), 4000);
+      }
     } catch (error) {
-      setAuthErrors({ general: error.message });
+      console.error('Auth error:', error);
+      let errorMessage = 'An unexpected error occurred. Please try again.';
+
+      if (error.message) {
+        // Try to make the error message more user-friendly
+        if (error.message.includes('duplicate key')) {
+          errorMessage = 'This email is already registered. Please login instead.';
+        } else if (error.message.includes('network')) {
+          errorMessage = 'Network error. Please check your internet connection.';
+        } else {
+          errorMessage = error.message;
+        }
+      }
+
+      setAuthErrors({ general: errorMessage });
     }
   };
 
@@ -447,7 +509,6 @@ export default function CorpRadio() {
 
       setShowResetSuccess(true);
       setResetEmail('');
-      setTempPassword('Check your email for reset instructions');
       setTimeout(() => {
         setShowResetSuccess(false);
         setShowForgotPassword(false);
@@ -477,9 +538,17 @@ export default function CorpRadio() {
     }
 
     try {
-      // Verify current password by attempting to sign in
+      // Supabase requires reauthentication for password changes
+      // First verify the current password
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (!user) {
+        throw new Error('No authenticated user found');
+      }
+
+      // Attempt to sign in with current password to verify it
       const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: currentUser.username,
+        email: user.email,
         password: changePasswordForm.currentPassword,
       });
 
@@ -1161,7 +1230,6 @@ export default function CorpRadio() {
                 setResetEmail('');
                 setResetErrors({});
                 setShowResetSuccess(false);
-                setTempPassword('');
               }}
               className="absolute cursor-pointer top-4 right-4 text-gray-400 hover:text-gray-600"
             >
@@ -1183,12 +1251,12 @@ export default function CorpRadio() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Password Reset Successful!</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Check Your Email!</h3>
                 <p className="text-gray-600 mb-4">
-                  Your temporary password is: <span className="font-mono font-bold text-[#001F3F]">{tempPassword}</span>
+                  We've sent a password reset link to <span className="font-semibold text-[#001F3F]">{resetEmail}</span>
                 </p>
                 <p className="text-sm text-gray-500">
-                  Please login with this temporary password and change it immediately in you DASHBOARD.
+                  Click the link in the email to reset your password. The link will expire in 1 hour.
                 </p>
               </div>
             ) : (
@@ -1316,7 +1384,50 @@ export default function CorpRadio() {
           </div>
         </div>
       )}
+      {/* Video Popup */}
+      {showVideoPopup && selectedShow && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-5xl max-h-[85vh] flex flex-col relative">
+            <button
+              onClick={() => {
+                setShowVideoPopup(false);
+                setSelectedShow(null);
+              }}
+              className="absolute cursor-pointer -top-12 right-0 text-white hover:text-gray-300 transition z-10"
+            >
+              <X className="w-8 h-8" />
+            </button>
 
+            <div className="p-4 sm:p-6 flex flex-col gap-3 h-full">
+              {/* Header */}
+              <div className="flex-shrink-0">
+                <h3 className="text-lg sm:text-xl font-bold text-[#001F3F] mb-1">{selectedShow.title}</h3>
+                <p className="text-xs sm:text-sm text-gray-600">Hosted by {selectedShow.host}</p>
+              </div>
+
+              <div className="flex-shrink-0 w-full">
+                <video className="w-full rounded-xl bg-black" style={{ maxHeight: '50vh' }} controls autoPlay>
+  <source src={selectedShow.previewVideo || introVideo} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+              {/* Description and Button */}
+              <div className="flex-shrink-0">
+                <p className="text-sm text-gray-700 leading-relaxed mb-3 line-clamp-2">{selectedShow.desc}</p>
+                <button
+                  onClick={() => {
+                    setShowVideoPopup(false);
+                    setSelectedShow(null);
+                  }}
+                  className="w-full bg-[#001F3F] cursor-pointer text-white py-2.5 rounded-lg font-bold hover:bg-blue-900 transition"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       {showAuthModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 relative max-h-[90vh] overflow-y-auto">
@@ -1810,8 +1921,8 @@ export default function CorpRadio() {
                   <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
                     <button
                       onClick={() => {
-                        setPublicTab(s.id);
-                        scrollTo("radio");
+                        setSelectedShow(s);
+                        setShowVideoPopup(true);
                       }}
                       className="flex-1 cursor-pointer text-sm font-semibold text-[#001F3F] hover:bg-blue-50 py-2 rounded transition"
                     >
