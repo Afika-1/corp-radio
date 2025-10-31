@@ -590,12 +590,33 @@ export default function CorpRadio() {
   };
 
   const handleLogout = async () => {
+  // Show confirmation dialog
+  const confirmLogout = window.confirm('Are you sure you want to logout?');
+  
+  if (!confirmLogout) {
+    return; // User cancelled logout
+  }
+
+  try {
     await supabase.auth.signOut();
     setIsAuthenticated(false);
     setCurrentUser(null);
     setCurrentView('main');
-    scrollTo('hero');
-  };
+    
+    // Show success message
+    setSuccessMessage('You have been successfully logged out. See you next time!');
+    setShowSuccessPopup(true);
+    setTimeout(() => setShowSuccessPopup(false), 4000);
+    
+    // Scroll to top after a short delay
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 100);
+  } catch (error) {
+    console.error('Logout error:', error);
+    alert('An error occurred during logout. Please try again.');
+  }
+};
 
   const openAuthModal = (mode) => {
     setAuthMode(mode);
@@ -615,7 +636,7 @@ export default function CorpRadio() {
     });
   };
 
-    window.location.href = '/';
+    
 
 
   useEffect(() => {
