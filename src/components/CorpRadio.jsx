@@ -24,7 +24,7 @@ export default function CorpRadio() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState('login');
   const [registrationStep, setRegistrationStep] = useState(1);
-  const [pendingBusinessInfo, setPendingBusinessInfo] = useState(null);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [authForm, setAuthForm] = useState({
     fullName: '',
     username: '',
@@ -590,33 +590,27 @@ export default function CorpRadio() {
   };
 
   const handleLogout = async () => {
-  // Show confirmation dialog
-  const confirmLogout = window.confirm('Are you sure you want to logout?');
-  
-  if (!confirmLogout) {
-    return; // User cancelled logout
-  }
+    try {
+      await supabase.auth.signOut();
+      setIsAuthenticated(false);
+      setCurrentUser(null);
+      setCurrentView('main');
+      setShowLogoutConfirm(false);
 
-  try {
-    await supabase.auth.signOut();
-    setIsAuthenticated(false);
-    setCurrentUser(null);
-    setCurrentView('main');
-    
-    // Show success message
-    setSuccessMessage('You have been successfully logged out. See you next time!');
-    setShowSuccessPopup(true);
-    setTimeout(() => setShowSuccessPopup(false), 4000);
-    
-    // Scroll to top after a short delay
-    setTimeout(() => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 100);
-  } catch (error) {
-    console.error('Logout error:', error);
-    alert('An error occurred during logout. Please try again.');
-  }
-};
+      // Show success message
+      setSuccessMessage('You have been successfully logged out. See you next time!');
+      setShowSuccessPopup(true);
+      setTimeout(() => setShowSuccessPopup(false), 4000);
+
+      // Scroll to top after a short delay
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 100);
+    } catch (error) {
+      console.error('Logout error:', error);
+      setAuthErrors({ general: 'An error occurred during logout. Please try again.' });
+    }
+  };
 
   const openAuthModal = (mode) => {
     setAuthMode(mode);
@@ -636,7 +630,7 @@ export default function CorpRadio() {
     });
   };
 
-    
+
 
 
   useEffect(() => {
@@ -1261,7 +1255,10 @@ export default function CorpRadio() {
                 <button onClick={() => setCurrentView('main')} className="text-sm cursor-pointer font-medium text-gray-600 hover:text-[#001F3F] transition">
                   Back to Home
                 </button>
-                <button onClick={handleLogout} className="flex items-center gap-2 cursor-pointer bg-red-50 text-red-600 px-4 py-2 rounded-lg hover:bg-red-100 transition">
+                <button
+                  onClick={() => setShowLogoutConfirm(true)}
+                  className="flex items-center gap-2 cursor-pointer bg-red-50 text-red-600 px-4 py-2 rounded-lg hover:bg-red-100 transition"
+                >
                   <LogOut className="w-4 h-4" />
                   <span className="hidden md:inline text-sm font-semibold">Logout</span>
                 </button>
@@ -1269,7 +1266,7 @@ export default function CorpRadio() {
             </div>
           </div>
         </header>
-        <MembersDashboard />
+        <MembersDashboard /> 
       </div>
     );
   }
@@ -1308,6 +1305,43 @@ export default function CorpRadio() {
           </div>
         )
       }
+
+      {/* Logout Confirmation Modal */}
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 relative">
+            <button
+              onClick={() => setShowLogoutConfirm(false)}
+              className="absolute cursor-pointer top-4 right-4 text-gray-400 hover:text-gray-600"
+            >
+              <X className="w-6 h-6" />
+            </button>
+
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <LogOut className="w-8 h-8 text-red-600" />
+              </div>
+              <h2 className="text-2xl font-bold text-[#001F3F] mb-2">Confirm Logout</h2>
+              <p className="text-gray-600">Are you sure you want to logout?</p>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowLogoutConfirm(false)}
+                className="flex-1 border-2 cursor-pointer border-gray-300 text-gray-700 py-3 rounded-lg font-bold hover:bg-gray-50 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleLogout}
+                className="flex-1 bg-red-600 cursor-pointer text-white py-3 rounded-lg font-bold hover:bg-red-700 transition"
+              >
+                Yes, Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Forgot Password Modal */}
       {showForgotPassword && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
@@ -1849,7 +1883,7 @@ export default function CorpRadio() {
                     {currentUser?.fullName}
                   </button>
                   <button
-                    onClick={handleLogout}
+                    onClick={() => setShowLogoutConfirm(true)}
                     className="flex items-center cursor-pointer gap-2 bg-red-50 text-red-600 px-4 py-2 rounded-lg hover:bg-red-100 transition"
                   >
                     <LogOut className="w-4 h-4" />
@@ -1895,7 +1929,10 @@ export default function CorpRadio() {
                       <button onClick={() => setCurrentView('members-dashboard')} className="flex-1 bg-[#001F3F] cursor-pointer text-white rounded-lg py-2.5 font-semibold">
                         Dashboard
                       </button>
-                      <button onClick={handleLogout} className="flex-1 border-2 cursor-pointer border-red-600 text-red-600 rounded-lg py-2.5 font-semibold">
+                      <button
+                        onClick={() => setShowLogoutConfirm(true)}
+                        className="flex-1 border-2 cursor-pointer border-red-600 text-red-600 rounded-lg py-2.5 font-semibold"
+                      >
                         Logout
                       </button>
                     </>
@@ -1970,72 +2007,72 @@ export default function CorpRadio() {
       </section>
 
       <section id="shows" className="py-24 bg-white">
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    {/* Heading */}
-    <div className="text-center mb-16">
-      <h2 className="text-3xl md:text-5xl font-bold text-[#001F3F] mb-4">
-        Our Shows
-      </h2>
-      <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-        Short, high-value series hosted by experienced presenters—tailored to
-        business outcomes.
-      </p>
-    </div>
-
-    {/* Centered grid */}
-    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
-      {shows.map((s) => (
-        <article
-          key={s.id}
-          className="group rounded-2xl overflow-hidden border border-gray-200 shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 bg-white w-full max-w-sm"
-        >
-          <div className="h-56 bg-gray-100 overflow-hidden relative">
-            <img
-              src={s.img}
-              alt={s.host}
-              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-            />
-            {!s.isPublic && !isAuthenticated && (
-              <div className="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
-                <Lock className="w-3 h-3" />
-                LOCKED
-              </div>
-            )}
-            {!s.isPublic && isAuthenticated && (
-              <div className="absolute top-3 right-3 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full">UNLOCKED</div>
-            )}
-            {s.isPublic && (
-              <div className="absolute top-3 right-3 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full">FREE</div>
-            )}
-          </div>
-          <div className="p-5">
-            <div className="text-xs text-gray-500 uppercase tracking-wider mb-2 font-semibold">
-              {s.host}
-            </div>
-            <h3 className="text-lg font-bold text-[#001F3F] mb-3">
-              {s.title}
-            </h3>
-            <p className="text-sm text-gray-600 mb-4 leading-relaxed">
-              {s.desc}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Heading */}
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-bold text-[#001F3F] mb-4">
+              Our Shows
+            </h2>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+              Short, high-value series hosted by experienced presenters—tailored to
+              business outcomes.
             </p>
-            <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
-              {/* Listen button is ALWAYS accessible - shows preview video */}
-              <button
-                onClick={() => {
-                  setSelectedShow(s);
-                  setShowVideoPopup(true);
-                }}
-                className="flex-1 cursor-pointer text-sm font-semibold text-[#001F3F] hover:bg-blue-50 py-2 rounded transition"
-              >
-                Listen
-              </button>
-            </div>
           </div>
-        </article>
-      ))}
-    </div>
-  </div>
-</section>
+
+          {/* Centered grid */}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
+            {shows.map((s) => (
+              <article
+                key={s.id}
+                className="group rounded-2xl overflow-hidden border border-gray-200 shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 bg-white w-full max-w-sm"
+              >
+                <div className="h-56 bg-gray-100 overflow-hidden relative">
+                  <img
+                    src={s.img}
+                    alt={s.host}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                  {!s.isPublic && !isAuthenticated && (
+                    <div className="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
+                      <Lock className="w-3 h-3" />
+                      LOCKED
+                    </div>
+                  )}
+                  {!s.isPublic && isAuthenticated && (
+                    <div className="absolute top-3 right-3 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full">UNLOCKED</div>
+                  )}
+                  {s.isPublic && (
+                    <div className="absolute top-3 right-3 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full">FREE</div>
+                  )}
+                </div>
+                <div className="p-5">
+                  <div className="text-xs text-gray-500 uppercase tracking-wider mb-2 font-semibold">
+                    {s.host}
+                  </div>
+                  <h3 className="text-lg font-bold text-[#001F3F] mb-3">
+                    {s.title}
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-4 leading-relaxed">
+                    {s.desc}
+                  </p>
+                  <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
+                    {/* Listen button is ALWAYS accessible - shows preview video */}
+                    <button
+                      onClick={() => {
+                        setSelectedShow(s);
+                        setShowVideoPopup(true);
+                      }}
+                      className="flex-1 cursor-pointer text-sm font-semibold text-[#001F3F] hover:bg-blue-50 py-2 rounded transition"
+                    >
+                      Listen
+                    </button>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
 
       <section id="radio" className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -2050,8 +2087,8 @@ export default function CorpRadio() {
                   key={s.id}
                   onClick={() => setPublicTab(s.id)}
                   className={`px-5 cursor-pointer py-2.5 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 ${publicTab === s.id
-                      ? "bg-[#001F3F] text-white shadow-lg"
-                      : "bg-white border-2 border-gray-200 text-gray-700 hover:border-[#001F3F]"
+                    ? "bg-[#001F3F] text-white shadow-lg"
+                    : "bg-white border-2 border-gray-200 text-gray-700 hover:border-[#001F3F]"
                     }`}
                 >
                   {s.title.replace("Show", "").trim()}
@@ -2127,8 +2164,8 @@ export default function CorpRadio() {
                       key={episode.id}
                       onClick={() => setCurrentEpisode({ ...currentEpisode, [publicTab]: episode })}
                       className={`flex items-center gap-3 p-3 rounded-lg border transition cursor-pointer group ${currentEpisode[publicTab]?.id === episode.id
-                          ? 'border-[#001F3F] bg-blue-50 shadow-md'
-                          : 'border-gray-200 hover:border-[#001F3F] hover:shadow-md'
+                        ? 'border-[#001F3F] bg-blue-50 shadow-md'
+                        : 'border-gray-200 hover:border-[#001F3F] hover:shadow-md'
                         }`}
                     >
                       <div className={`w-16 h-12 rounded flex items-center justify-center flex-shrink-0 ${currentEpisode[publicTab]?.id === episode.id ? 'bg-[#001F3F]' : 'bg-gradient-to-br from-blue-900 to-gray-700'
@@ -2226,40 +2263,40 @@ export default function CorpRadio() {
         </section>
       )}
       <section id="introduction" className="py-24 bg-gradient-to-b from-gray-50 to-white">
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div className="max-w-4xl mx-auto text-center mb-12">
-      <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-semibold mb-6">
-        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-        <span>Free Preview - No Login Required</span>
-      </div>
-      <h2 className="text-3xl md:text-4xl font-bold text-[#001F3F] mb-4">Welcome to Corp Radio</h2>
-      <p className="text-gray-600 text-lg mb-8">Get a taste of what we offer with this free introduction video. See how our content can help transform your business.</p>
-    </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto text-center mb-12">
+            <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-semibold mb-6">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <span>Free Preview - No Login Required</span>
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-[#001F3F] mb-4">Welcome to Corp Radio</h2>
+            <p className="text-gray-600 text-lg mb-8">Get a taste of what we offer with this free introduction video. See how our content can help transform your business.</p>
+          </div>
 
-    <div className="max-w-5xl mx-auto">
-      <div className="aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl">
-        <video
-          className="w-full h-full"
-          controls
-          poster={intro}
-        >
-          <source src={introVideo} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-      </div>
+          <div className="max-w-5xl mx-auto">
+            <div className="aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl">
+              <video
+                className="w-full h-full"
+                controls
+                poster={intro}
+              >
+                <source src={introVideo} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
 
-      <div className="mt-8 text-center">
-        <p className="text-gray-700 mb-6">Ready to access our full library of exclusive content?</p>
-        <button
-          onClick={() => isAuthenticated ? setCurrentView('members-dashboard') : openAuthModal('register')}
-          className="bg-[#001F3F] cursor-pointer text-white px-8 py-4 rounded-lg font-bold shadow-xl hover:bg-blue-900 transition-all transform hover:scale-105"
-        >
-          {isAuthenticated ? 'Go to Dashboard' : 'Register Free - Unlock All Content'}
-        </button>
-      </div>
-    </div>
-  </div>
-</section>
+            <div className="mt-8 text-center">
+              <p className="text-gray-700 mb-6">Ready to access our full library of exclusive content?</p>
+              <button
+                onClick={() => isAuthenticated ? setCurrentView('members-dashboard') : openAuthModal('register')}
+                className="bg-[#001F3F] cursor-pointer text-white px-8 py-4 rounded-lg font-bold shadow-xl hover:bg-blue-900 transition-all transform hover:scale-105"
+              >
+                {isAuthenticated ? 'Go to Dashboard' : 'Register Free - Unlock All Content'}
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <section id="about" className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
