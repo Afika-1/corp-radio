@@ -615,11 +615,8 @@ export default function CorpRadio() {
     });
   };
 
-  const scrollTo = (id) => {
-    setMenuOpen(false);
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
+    window.location.href = '/';
+
 
   useEffect(() => {
     if (currentView !== 'main') return;
