@@ -7,6 +7,8 @@ import businessShow from "../assets/Lester.jpg";
 import jeffKahn from "../assets/Jeff Kahn.jpeg";
 import charlImage from "../assets/charl1.jpeg";
 import heroBg from "../assets/hero.jpeg";
+import intro from "../assets/intro.png";
+
 import introVideo from "../assets/The Business Fundamentals Show Intro.mp4";
 // import fundamentalsPreview from "../assets/fundamentals-preview.mp4";
 import corporatePreview from "../assets/Jeff Kahn - Corporate Show Intro.mp4";
@@ -195,7 +197,7 @@ export default function CorpRadio() {
   const shows = [
     {
       id: "fundamentals",
-      title: "Business Fundamentals",
+      title: "Business Fundamentals Show",
       host: "Lester Philander",
       desc: "Tactical episodes on Sales, Marketing, HR, Funding and small-business growth.",
       img: businessShow,
@@ -228,7 +230,7 @@ export default function CorpRadio() {
 
     {
       id: "ai",
-      title: "The AI Playbook",
+      title: "The AI Playbook Show",
       host: "Charl Imalman",
       desc: "Real tools, case studies and policies for adopting AI in business workflows.",
       img: charlImage,
@@ -1950,81 +1952,72 @@ export default function CorpRadio() {
       </section>
 
       <section id="shows" className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Heading */}
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold text-[#001F3F] mb-4">
-              Our Shows
-            </h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              Short, high-value series hosted by experienced presenters—tailored to
-              business outcomes.
-            </p>
-          </div>
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    {/* Heading */}
+    <div className="text-center mb-16">
+      <h2 className="text-3xl md:text-5xl font-bold text-[#001F3F] mb-4">
+        Our Shows
+      </h2>
+      <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+        Short, high-value series hosted by experienced presenters—tailored to
+        business outcomes.
+      </p>
+    </div>
 
-          {/* Centered grid - simpler approach */}
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
-            {shows.map((s) => (
-              <article
-                key={s.id}
-                className="group rounded-2xl overflow-hidden border border-gray-200 shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 bg-white w-full max-w-sm"
-              >
-                <div className="h-56 bg-gray-100 overflow-hidden relative">
-                  <img
-                    src={s.img}
-                    alt={s.host}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                  />
-                  {!s.isPublic && !isAuthenticated && (
-                    <div className="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
-                      <Lock className="w-3 h-3" />
-                      LOCKED
-                    </div>
-                  )}
-                  {!s.isPublic && isAuthenticated && (
-                    <div className="absolute top-3 right-3 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full">UNLOCKED</div>
-                  )}
-                  {s.isPublic && (
-                    <div className="absolute top-3 right-3 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full">FREE</div>
-                  )}
-                </div>
-                <div className="p-5">
-                  <div className="text-xs text-gray-500 uppercase tracking-wider mb-2 font-semibold">
-                    {s.host}
-                  </div>
-                  <h3 className="text-lg font-bold text-[#001F3F] mb-3">
-                    {s.title}
-                  </h3>
-                  <p className="text-sm text-gray-600 mb-4 leading-relaxed">
-                    {s.desc}
-                  </p>
-                  <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
-                    {s.isPublic || isAuthenticated ? (
-                      <button
-                        onClick={() => {
-                          setSelectedShow(s);
-                          setShowVideoPopup(true);
-                        }}
-                        className="flex-1 cursor-pointer text-sm font-semibold text-[#001F3F] hover:bg-blue-50 py-2 rounded transition"
-                      >
-                        Listen
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => openAuthModal('register')}
-                        className="flex-1 cursor-pointer text-sm font-semibold bg-red-50 text-red-600 hover:bg-red-100 py-2 rounded transition flex items-center justify-center gap-1"
-                      >
-                        <Lock className="w-3 h-3" />
-                        Register to Unlock
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </article>
-            ))}
+    {/* Centered grid */}
+    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
+      {shows.map((s) => (
+        <article
+          key={s.id}
+          className="group rounded-2xl overflow-hidden border border-gray-200 shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 bg-white w-full max-w-sm"
+        >
+          <div className="h-56 bg-gray-100 overflow-hidden relative">
+            <img
+              src={s.img}
+              alt={s.host}
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+            />
+            {!s.isPublic && !isAuthenticated && (
+              <div className="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
+                <Lock className="w-3 h-3" />
+                LOCKED
+              </div>
+            )}
+            {!s.isPublic && isAuthenticated && (
+              <div className="absolute top-3 right-3 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full">UNLOCKED</div>
+            )}
+            {s.isPublic && (
+              <div className="absolute top-3 right-3 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full">FREE</div>
+            )}
           </div>
-        </div>
-      </section>
+          <div className="p-5">
+            <div className="text-xs text-gray-500 uppercase tracking-wider mb-2 font-semibold">
+              {s.host}
+            </div>
+            <h3 className="text-lg font-bold text-[#001F3F] mb-3">
+              {s.title}
+            </h3>
+            <p className="text-sm text-gray-600 mb-4 leading-relaxed">
+              {s.desc}
+            </p>
+            <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
+              {/* Listen button is ALWAYS accessible - shows preview video */}
+              <button
+                onClick={() => {
+                  setSelectedShow(s);
+                  setShowVideoPopup(true);
+                }}
+                className="flex-1 cursor-pointer text-sm font-semibold text-[#001F3F] hover:bg-blue-50 py-2 rounded transition"
+              >
+                Listen
+              </button>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
 
       <section id="radio" className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -2215,40 +2208,40 @@ export default function CorpRadio() {
         </section>
       )}
       <section id="introduction" className="py-24 bg-gradient-to-b from-gray-50 to-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto text-center mb-12">
-            <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-semibold mb-6">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span>Free Preview - No Login Required</span>
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-[#001F3F] mb-4">Welcome to Corp Radio</h2>
-            <p className="text-gray-600 text-lg mb-8">Get a taste of what we offer with this free introduction video. See how our content can help transform your business.</p>
-          </div>
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="max-w-4xl mx-auto text-center mb-12">
+      <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-semibold mb-6">
+        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+        <span>Free Preview - No Login Required</span>
+      </div>
+      <h2 className="text-3xl md:text-4xl font-bold text-[#001F3F] mb-4">Welcome to Corp Radio</h2>
+      <p className="text-gray-600 text-lg mb-8">Get a taste of what we offer with this free introduction video. See how our content can help transform your business.</p>
+    </div>
 
-          <div className="max-w-5xl mx-auto">
-            <div className="aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl">
-              <video
-                className="w-full h-full"
-                controls
-                poster="/path/to/your-thumbnail.jpg"
-              >
-                <source src={introVideo} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-            </div>
+    <div className="max-w-5xl mx-auto">
+      <div className="aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl">
+        <video
+          className="w-full h-full"
+          controls
+          poster={intro}
+        >
+          <source src={introVideo} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </div>
 
-            <div className="mt-8 text-center">
-              <p className="text-gray-700 mb-6">Ready to access our full library of exclusive content?</p>
-              <button
-                onClick={() => isAuthenticated ? setCurrentView('members-dashboard') : openAuthModal('register')}
-                className="bg-[#001F3F] cursor-pointer text-white px-8 py-4 rounded-lg font-bold shadow-xl hover:bg-blue-900 transition-all transform hover:scale-105"
-              >
-                {isAuthenticated ? 'Go to Dashboard' : 'Register Free - Unlock All Content'}
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
+      <div className="mt-8 text-center">
+        <p className="text-gray-700 mb-6">Ready to access our full library of exclusive content?</p>
+        <button
+          onClick={() => isAuthenticated ? setCurrentView('members-dashboard') : openAuthModal('register')}
+          className="bg-[#001F3F] cursor-pointer text-white px-8 py-4 rounded-lg font-bold shadow-xl hover:bg-blue-900 transition-all transform hover:scale-105"
+        >
+          {isAuthenticated ? 'Go to Dashboard' : 'Register Free - Unlock All Content'}
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
 
       <section id="about" className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
