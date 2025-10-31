@@ -64,11 +64,6 @@ export default function CorpRadio() {
   const sectionIds = ["hero", "shows", "radio", "members", "about", "contact"];
   const sectionRefs = useRef({});
 
-  // Initialize users from memory
-  // const [users, setUsers] = useState([
-  //   { fullName: 'Demo User', username: 'demo@corpradio.com', password: 'demo123' }
-  // ]);
-
   //Members only limited viewership
   const [videoWatchTime, setVideoWatchTime] = useState(0);
   const [showTimeoutWarning, setShowTimeoutWarning] = useState(false);
@@ -123,6 +118,7 @@ export default function CorpRadio() {
           await supabase
             .from('profiles')
             .update({
+              email: session.user.email,
               business_name: session.user.user_metadata.business_name,
               industry: session.user.user_metadata.industry,
               cell_number: session.user.user_metadata.cell_number,
@@ -134,7 +130,13 @@ export default function CorpRadio() {
 
         setCurrentUser({
           fullName: profile?.full_name || session.user.email,
-          username: session.user.email
+          username: session.user.email,
+          email: session.user.email,
+          businessName: profile?.business_name,
+          industry: profile?.industry,
+          cellNumber: profile?.cell_number,
+          location: profile?.location,
+          businessChallenge: profile?.business_challenge
         });
         setIsAuthenticated(true);
       }
@@ -155,6 +157,7 @@ export default function CorpRadio() {
           await supabase
             .from('profiles')
             .update({
+              email: session.user.email,
               business_name: session.user.user_metadata.business_name,
               industry: session.user.user_metadata.industry,
               cell_number: session.user.user_metadata.cell_number,
@@ -166,7 +169,13 @@ export default function CorpRadio() {
 
         setCurrentUser({
           fullName: profile?.full_name || session.user.email,
-          username: session.user.email
+          username: session.user.email,
+          email: session.user.email,
+          businessName: profile?.business_name,
+          industry: profile?.industry,
+          cellNumber: profile?.cell_number,
+          location: profile?.location,
+          businessChallenge: profile?.business_challenge
         });
         setIsAuthenticated(true);
       } else {
@@ -192,6 +201,7 @@ export default function CorpRadio() {
       img: businessShow,
       previewVideo: introVideo,
       videoType: "youtube",
+      isPublic: true,
       episodes: [
         { id: 1, title: "Sales Fundamentals", videoUrl: "https://www.youtube.com/embed/gBBbOOM2onA" },
         { id: 2, title: "Marketing Basics", videoUrl: "https://www.youtube.com/embed/64MW4JM0q2k" },
@@ -207,6 +217,7 @@ export default function CorpRadio() {
       img: jeffKahn,
       previewVideo: corporatePreview,
       videoType: "youtube",
+      isPublic: false,
       episodes: [
         { id: 1, title: "Leadership in Crisis", videoUrl: "https://www.youtube.com/embed/wguafJWO5Rs" },
         { id: 2, title: "Building High-Performance Teams", videoUrl: "https://www.youtube.com/embed/fNEYwdWrs1I" },
@@ -223,6 +234,7 @@ export default function CorpRadio() {
       img: charlImage,
       previewVideo: aiPreview,
       videoType: "youtube",
+      isPublic: false,
       episodes: [
         { id: 1, title: "Franchise Fundamentals", videoUrl: "https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F4359229150964045&show_text=false&width=867&t=0" },
         { id: 2, title: "Acquisition Strategies", videoUrl: "https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F783620987637550%2F&show_text=false&width=867&t=0" },
@@ -333,13 +345,19 @@ export default function CorpRadio() {
 
         const { data: profile } = await supabase
           .from('profiles')
-          .select('full_name')
+          .select('*')
           .eq('id', data.user.id)
           .single();
 
         setCurrentUser({
           fullName: profile?.full_name || data.user.email,
-          username: data.user.email
+          username: data.user.email,
+          email: data.user.email,
+          businessName: profile?.business_name,
+          industry: profile?.industry,
+          cellNumber: profile?.cell_number,
+          location: profile?.location,
+          businessChallenge: profile?.business_challenge
         });
         setIsAuthenticated(true);
         setShowAuthModal(false);
@@ -368,24 +386,31 @@ export default function CorpRadio() {
           options: {
             data: {
               full_name: authForm.fullName,
+              business_name: authForm.businessName,
+              industry: authForm.industry,
+              cell_number: authForm.cellNumber,
+              location: authForm.location,
+              business_challenge: authForm.businessChallenge,
             },
             emailRedirectTo: `${window.location.origin}`
           }
         });
 
         if (error) throw error;
-        // Store business info temporarily in user metadata
-        const { error: updateError } = await supabase.auth.updateUser({
-          data: {
-            full_name: authForm.fullName,
-            business_name: authForm.businessName,
-            industry: authForm.industry,
-            cell_number: authForm.cellNumber,
-            location: authForm.location,
-            business_challenge: authForm.businessChallenge,
-            profile_completed: false
-          }
-        });
+        // // Store business info temporarily in user metadata
+        // const { error: updateError } = await supabase.auth.updateUser({
+        //   data: {
+        //     full_name: authForm.fullName,
+        //     business_name: authForm.businessName,
+        //     industry: authForm.industry,
+        //     cell_number: authForm.cellNumber,
+        //     location: authForm.location,
+        //     business_challenge: authForm.businessChallenge,
+        //     profile_completed: false
+        //   }
+        // });
+
+
         // Check if email confirmation is required
         if (data?.user && !data.session) {
           // Email confirmation required
@@ -670,14 +695,72 @@ export default function CorpRadio() {
     <div className="min-h-screen bg-gray-50 pt-24 pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-3xl font-bold text-[#001F3F] mb-2">Welcome Back, {currentUser?.fullName}!</h1>              <p className="text-gray-600">Access all exclusive member content below</p>
+          <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-3xl font-bold text-[#001F3F] mb-2">
+                Welcome Back, {currentUser?.fullName}!
+              </h1>
+              <p className="text-gray-600">Access all exclusive member content below</p>
             </div>
             <div className="flex items-center gap-2 bg-green-50 px-4 py-2 rounded-lg border border-green-200">
               <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
               <span className="text-sm font-semibold text-green-700">Premium Member</span>
             </div>
+          </div>
+
+          {/* User Profile Info Card */}
+          <div className="mt-6 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+              <div className="text-xs text-gray-500 uppercase tracking-wider mb-1 font-semibold">
+                Email
+              </div>
+              <div className="text-sm font-medium text-gray-900">{currentUser?.email}</div>
+            </div>
+
+            {currentUser?.businessName && (
+              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                <div className="text-xs text-gray-500 uppercase tracking-wider mb-1 font-semibold">
+                  Business
+                </div>
+                <div className="text-sm font-medium text-gray-900">{currentUser?.businessName}</div>
+              </div>
+            )}
+
+            {currentUser?.industry && (
+              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                <div className="text-xs text-gray-500 uppercase tracking-wider mb-1 font-semibold">
+                  Industry
+                </div>
+                <div className="text-sm font-medium text-gray-900">{currentUser?.industry}</div>
+              </div>
+            )}
+
+            {currentUser?.cellNumber && (
+              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                <div className="text-xs text-gray-500 uppercase tracking-wider mb-1 font-semibold">
+                  Phone
+                </div>
+                <div className="text-sm font-medium text-gray-900">{currentUser?.cellNumber}</div>
+              </div>
+            )}
+
+            {currentUser?.location && (
+              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                <div className="text-xs text-gray-500 uppercase tracking-wider mb-1 font-semibold">
+                  Location
+                </div>
+                <div className="text-sm font-medium text-gray-900">{currentUser?.location}</div>
+              </div>
+            )}
+
+            {currentUser?.businessChallenge && (
+              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 md:col-span-2 lg:col-span-3">
+                <div className="text-xs text-gray-500 uppercase tracking-wider mb-1 font-semibold">
+                  Business Challenge
+                </div>
+                <div className="text-sm font-medium text-gray-900">{currentUser?.businessChallenge}</div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -713,7 +796,6 @@ export default function CorpRadio() {
             ))}
           </div>
         </div>
-
         <div id="member-player" className="bg-white rounded-2xl shadow-xl p-8">
           <div className="grid lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
@@ -1840,7 +1922,7 @@ export default function CorpRadio() {
                 onClick={() => scrollTo("introduction")}
                 className="bg-white cursor-pointer text-[#001F3F] px-8 py-4 rounded-lg font-bold shadow-xl hover:bg-gray-100 transition-all transform hover:scale-105"
               >
-                Enjoy a snipped
+                Welcome to Corp Radio
               </button>
               <button
                 onClick={() => isAuthenticated ? setCurrentView('members-dashboard') : openAuthModal('register')}
@@ -1887,12 +1969,24 @@ export default function CorpRadio() {
                 key={s.id}
                 className="group rounded-2xl overflow-hidden border border-gray-200 shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 bg-white w-full max-w-sm"
               >
-                <div className="h-56 bg-gray-100 overflow-hidden">
+                <div className="h-56 bg-gray-100 overflow-hidden relative">
                   <img
                     src={s.img}
                     alt={s.host}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                   />
+                  {!s.isPublic && !isAuthenticated && (
+                    <div className="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
+                      <Lock className="w-3 h-3" />
+                      LOCKED
+                    </div>
+                  )}
+                  {!s.isPublic && isAuthenticated && (
+                    <div className="absolute top-3 right-3 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full">UNLOCKED</div>
+                  )}
+                  {s.isPublic && (
+                    <div className="absolute top-3 right-3 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full">FREE</div>
+                  )}
                 </div>
                 <div className="p-5">
                   <div className="text-xs text-gray-500 uppercase tracking-wider mb-2 font-semibold">
@@ -1905,25 +1999,25 @@ export default function CorpRadio() {
                     {s.desc}
                   </p>
                   <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
-                    <button
-                      onClick={() => {
-                        setSelectedShow(s);
-                        setShowVideoPopup(true);
-                      }}
-                      className="flex-1 cursor-pointer text-sm font-semibold text-[#001F3F] hover:bg-blue-50 py-2 rounded transition"
-                    >
-                      Listen
-                    </button>
-                    {/* <button
-                      onClick={() =>
-                        isAuthenticated
-                          ? setCurrentView("members-dashboard")
-                          : openAuthModal("register")
-                      }
-                      className="text-sm cursor-pointer font-medium border border-gray-300 px-3 py-2 rounded hover:border-[#001F3F] hover:text-[#001F3F] transition"
-                    >
-                      Members
-                    </button> */}
+                    {s.isPublic || isAuthenticated ? (
+                      <button
+                        onClick={() => {
+                          setSelectedShow(s);
+                          setShowVideoPopup(true);
+                        }}
+                        className="flex-1 cursor-pointer text-sm font-semibold text-[#001F3F] hover:bg-blue-50 py-2 rounded transition"
+                      >
+                        Listen
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => openAuthModal('register')}
+                        className="flex-1 cursor-pointer text-sm font-semibold bg-red-50 text-red-600 hover:bg-red-100 py-2 rounded transition flex items-center justify-center gap-1"
+                      >
+                        <Lock className="w-3 h-3" />
+                        Register to Unlock
+                      </button>
+                    )}
                   </div>
                 </div>
               </article>
@@ -1944,26 +2038,27 @@ export default function CorpRadio() {
                 <button
                   key={s.id}
                   onClick={() => setPublicTab(s.id)}
-                  className={`px-5 cursor-pointer py-2.5 rounded-lg text-sm font-semibold transition-all ${publicTab === s.id
-                    ? "bg-[#001F3F] text-white shadow-lg"
-                    : "bg-white border-2 border-gray-200 text-gray-700 hover:border-[#001F3F]"
+                  className={`px-5 cursor-pointer py-2.5 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 ${publicTab === s.id
+                      ? "bg-[#001F3F] text-white shadow-lg"
+                      : "bg-white border-2 border-gray-200 text-gray-700 hover:border-[#001F3F]"
                     }`}
                 >
                   {s.title.replace("Show", "").trim()}
+                  {!s.isPublic && !isAuthenticated && <Lock className="w-3 h-3" />}
                 </button>
               ))}
             </div>
           </div>
 
           <div className="bg-white border border-gray-200 rounded-2xl shadow-xl p-6 lg:p-8 relative">
-            {!isAuthenticated && (
-              <div className="absolute inset-0  backdrop-blur-sm z-10 rounded-2xl flex items-center justify-center">
+            {!shows.find(s => s.id === publicTab)?.isPublic && !isAuthenticated && (
+              <div className="absolute inset-0 backdrop-blur-sm z-10 rounded-2xl flex items-center justify-center">
                 <div className="text-center p-8 max-w-md">
                   <div className="w-20 h-20 bg-[#001F3F] rounded-full flex items-center justify-center mx-auto mb-6">
                     <Lock className="w-10 h-10 text-white" />
                   </div>
                   <h3 className="text-2xl font-bold text-[#001F3F] mb-3">Member Content</h3>
-                  <p className="text-gray-600 mb-6">Login or register for free to access all episodes and exclusive content.</p>
+                  <p className="text-gray-600 mb-6">Login or register for free to access this show and all exclusive content.</p>
                   <div className="flex gap-3 justify-center">
                     <button
                       onClick={() => openAuthModal('login')}
@@ -1982,7 +2077,7 @@ export default function CorpRadio() {
               </div>
             )}
 
-            <div className={!isAuthenticated ? 'opacity-30 pointer-events-none' : ''}>
+            <div className={(!shows.find(s => s.id === publicTab)?.isPublic && !isAuthenticated) ? 'opacity-30 pointer-events-none' : ''}>
               <div className="grid lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-2">
                   <div className="aspect-video bg-black rounded-xl overflow-hidden shadow-lg">
@@ -2021,8 +2116,8 @@ export default function CorpRadio() {
                       key={episode.id}
                       onClick={() => setCurrentEpisode({ ...currentEpisode, [publicTab]: episode })}
                       className={`flex items-center gap-3 p-3 rounded-lg border transition cursor-pointer group ${currentEpisode[publicTab]?.id === episode.id
-                        ? 'border-[#001F3F] bg-blue-50 shadow-md'
-                        : 'border-gray-200 hover:border-[#001F3F] hover:shadow-md'
+                          ? 'border-[#001F3F] bg-blue-50 shadow-md'
+                          : 'border-gray-200 hover:border-[#001F3F] hover:shadow-md'
                         }`}
                     >
                       <div className={`w-16 h-12 rounded flex items-center justify-center flex-shrink-0 ${currentEpisode[publicTab]?.id === episode.id ? 'bg-[#001F3F]' : 'bg-gradient-to-br from-blue-900 to-gray-700'
@@ -2040,7 +2135,7 @@ export default function CorpRadio() {
                       onClick={() => scrollTo('contact')}
                       className="w-full cursor-pointer bg-[#001F3F] text-white py-3 rounded-lg font-bold hover:bg-blue-900 transition shadow-md"
                     >
-                      Enquire About Advertising
+                      Want to be a guest?
                     </button>
                   </div>
                 </aside>
@@ -2232,7 +2327,7 @@ export default function CorpRadio() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h3 className="text-3xl md:text-4xl font-bold text-[#001F3F] mb-4">Get in Touch</h3>
-            <p className="text-gray-600 text-lg">Questions about advertising, partnerships or memberships? We'd love to hear from you.</p>
+            <p className="text-gray-600 text-lg">Questions about shows, partnerships or memberships? We'd love to hear from you.</p>
           </div>
           <div className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-200">
             <div className="grid lg:grid-cols-2 gap-8">
@@ -2348,7 +2443,7 @@ export default function CorpRadio() {
                       name="subject"
                       value={contact.subject}
                       onChange={onChange}
-                      placeholder="Advertising Inquiry"
+                      placeholder="Partnership Inquiry"
                       className={`w-full p-2 rounded-lg border-2 ${errors.subject ? 'border-red-500' : 'border-gray-300'} focus:border-[#001F3F] focus:ring-2 focus:ring-blue-100 outline-none transition`}
                     />
                   </div>
